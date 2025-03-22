@@ -1,0 +1,1844 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Go-DDDマーケットプレイスアプリケーションを０から構築するためのセットアップ手順">
+      
+      
+        <meta name="author" content="Project Team">
+      
+      
+      
+        <link rel="prev" href="../setup_guide/">
+      
+      
+        <link rel="next" href="../documentation_summary/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
+    
+    
+      
+        <title>セットアップガイド - Go-DDD Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../wiki/assets/css/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#go-ddd" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Go-DDD Wiki" class="md-header__button md-logo" aria-label="Go-DDD Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go-DDD Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              セットアップガイド
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/yourusername/go-ddd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    go-ddd
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../home/" class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../architecture/" class="md-tabs__link">
+        
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../feature_list/" class="md-tabs__link">
+        
+  
+    
+  
+  Features
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../user_stories/" class="md-tabs__link">
+        
+  
+    
+  
+  User Stories
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../release_plan/" class="md-tabs__link">
+          
+  
+  Planning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../system_implementation/" class="md-tabs__link">
+          
+  
+  Implementation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../setup_guide/" class="md-tabs__link">
+          
+  
+  Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../documentation_summary/" class="md-tabs__link">
+          
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Go-DDD Wiki" class="md-nav__button md-logo" aria-label="Go-DDD Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Go-DDD Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/yourusername/go-ddd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    go-ddd
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../home/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../feature_list/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user_stories/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    User Stories
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Planning
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Planning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release Plan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iteration_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration Plan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Implementation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Implementation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Product
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../seller_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Seller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm_mapper_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ORM Mapper
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Setup
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setup Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Setup Guide (Mermaid)
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Setup Guide (Mermaid)
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 概要
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 前提条件
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. セットアップ手順
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. セットアップ手順">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 前提条件のインストール
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 前提条件のインストール">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#311-go" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.1 Go のインストール
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-docker-docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.2 Docker と Docker Compose のインストール
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#313-nodejs" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1.3 Node.js のインストール
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 リポジトリのクローン
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 依存関係のインストール
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 開発環境の起動
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5 データベースのセットアップ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.6 アプリケーションの構築
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.7 アプリケーションの実行
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.8 テストの実行
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. アプリケーション構造
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. アプリケーション構造">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 プロジェクト構造
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 主要なコンポーネント
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 主要なコンポーネント">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#421" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2.1 ドメインレイヤー
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#422" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2.2 アプリケーションレイヤー
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#423" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2.3 インフラストラクチャレイヤー
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#424" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2.4 インターフェースレイヤー
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. API エンドポイント
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. API エンドポイント">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 商品 API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 出品者 API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 システム API
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. トラブルシューティング
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. トラブルシューティング">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 よくある問題と解決策
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1 よくある問題と解決策">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      データベース接続エラー
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      ビルドエラー
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      実行時エラー
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. まとめ
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. 参考リンク
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation_summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Documentation Summary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../revision_summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Revision Summary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="go-ddd">Go-DDDマーケットプレイスアプリケーション<a class="headerlink" href="#go-ddd" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概要<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>Go-DDDマーケットプレイスアプリケーションは、ドメイン駆動設計（Domain-Driven Design, DDD）の原則に従って構築されたGoアプリケーションです。このセットアップガイドでは、開発環境の構築から、アプリケーションの実行、テストまでの一連の手順を説明します。</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph "開発環境"
+        go["Go"]
+        docker["Docker"]
+        git["Git"]
+        node["Node.js"]
+    end
+
+    subgraph "データベース"
+        postgres["PostgreSQL"]
+        mysql["MySQL"]
+    end
+
+    subgraph "アプリケーション"
+        backend["バックエンド"]
+        frontend["フロントエンド"]
+        docs["ドキュメント"]
+    end
+
+    subgraph "ツール"
+        wiki["Wiki.js"]
+        plantuml["PlantUML"]
+    end
+
+    go --&gt; backend
+    docker --&gt; postgres
+    docker --&gt; mysql
+    docker --&gt; wiki
+    docker --&gt; plantuml
+    node --&gt; frontend
+    node --&gt; docs
+    git --&gt; backend
+    git --&gt; frontend
+    git --&gt; docs</code></pre>
+<h2 id="2">2. 前提条件<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<p>Go-DDDマーケットプレイスアプリケーションを構築するには、以下のソフトウェアが必要です：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">ソフトウェア</th>
+<th style="text-align: left;">バージョン</th>
+<th style="text-align: left;">備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Go</td>
+<td style="text-align: left;">1.23</td>
+<td style="text-align: left;">プログラミング言語</td>
+</tr>
+<tr>
+<td style="text-align: left;">Docker</td>
+<td style="text-align: left;">最新</td>
+<td style="text-align: left;">コンテナ化</td>
+</tr>
+<tr>
+<td style="text-align: left;">Docker Compose</td>
+<td style="text-align: left;">最新</td>
+<td style="text-align: left;">マルチコンテナ管理</td>
+</tr>
+<tr>
+<td style="text-align: left;">Git</td>
+<td style="text-align: left;">最新</td>
+<td style="text-align: left;">バージョン管理</td>
+</tr>
+<tr>
+<td style="text-align: left;">Node.js</td>
+<td style="text-align: left;">20.x</td>
+<td style="text-align: left;">フロントエンド開発</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3">3. セットアップ手順<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<p>以下のステップに従って、Go-DDDマーケットプレイスアプリケーションを構築します。</p>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; step1[1. 前提条件のインストール]
+    step1 --&gt; step2[2. リポジトリのクローン]
+    step2 --&gt; step3[3. 依存関係のインストール]
+    step3 --&gt; step4[4. 開発環境の起動]
+    step4 --&gt; step5[5. データベースのセットアップ]
+    step5 --&gt; step6[6. アプリケーションの構築]
+    step6 --&gt; step7[7. アプリケーションの実行]
+    step7 --&gt; step8[8. テストの実行]
+    step8 --&gt; stop([終了])</code></pre>
+<h3 id="31">3.1 前提条件のインストール<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<p>各プラットフォームに応じて、必要なソフトウェアをインストールします。</p>
+<h4 id="311-go">3.1.1 Go のインストール<a class="headerlink" href="#311-go" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; platform{プラットフォームは?}
+    platform --&gt;|macOS| mac[brew install go]
+    platform --&gt;|Linux| linux1[apt-get update]
+    linux1 --&gt; linux2[apt-get install golang-go]
+    platform --&gt;|Windows| win1[Go公式サイトからインストーラーをダウンロード]
+    win1 --&gt; win2[インストーラーを実行]
+    mac --&gt; check[go version でインストールを確認]
+    linux2 --&gt; check
+    win2 --&gt; check
+    check --&gt; stop([終了])</code></pre>
+<p><strong>macOS</strong>:
+<div class="highlight"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>go
+</code></pre></div></p>
+<p><strong>Linux (Ubuntu/Debian)</strong>:
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>golang-go
+</code></pre></div></p>
+<p><strong>Windows</strong>:
+1. <a href="https://golang.org/dl/">Go公式サイト</a>からインストーラーをダウンロード
+2. インストーラーを実行し、指示に従う</p>
+<p>インストールを確認:
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span>version
+</code></pre></div></p>
+<h4 id="312-docker-docker-compose">3.1.2 Docker と Docker Compose のインストール<a class="headerlink" href="#312-docker-docker-compose" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; platform{プラットフォームは?}
+    platform --&gt;|macOS| mac[Docker Desktop for Macをインストール]
+    platform --&gt;|Linux| linux1[apt-get update]
+    linux1 --&gt; linux2[apt-get install docker.io docker-compose]
+    platform --&gt;|Windows| win[Docker Desktop for Windowsをインストール]
+    mac --&gt; check1[docker --version でインストールを確認]
+    linux2 --&gt; check1
+    win --&gt; check1
+    check1 --&gt; check2[docker-compose --version でインストールを確認]
+    check2 --&gt; stop([終了])</code></pre>
+<p><strong>macOS &amp; Windows</strong>:
+1. <a href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>をダウンロードしてインストール</p>
+<p><strong>Linux (Ubuntu/Debian)</strong>:
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>docker.io<span class="w"> </span>docker-compose
+</code></pre></div></p>
+<p>インストールを確認:
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>--version
+docker-compose<span class="w"> </span>--version
+</code></pre></div></p>
+<h4 id="313-nodejs">3.1.3 Node.js のインストール<a class="headerlink" href="#313-nodejs" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; platform{プラットフォームは?}
+    platform --&gt;|macOS| mac["brew install node version 20"]
+    platform --&gt;|Linux| linux1["curl -fsSL https://deb.nodesource.com/setup_20.x | bash"]
+    linux1 --&gt; linux2[apt-get install -y nodejs]
+    platform --&gt;|Windows| win1[Node.js公式サイトからインストーラーをダウンロード]
+    win1 --&gt; win2[インストーラーを実行]
+    mac --&gt; check1[node --version でインストールを確認]
+    linux2 --&gt; check1
+    win2 --&gt; check1
+    check1 --&gt; check2[npm --version でインストールを確認]
+    check2 --&gt; stop([終了])</code></pre>
+<p><strong>macOS</strong>:
+<div class="highlight"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>node@20
+</code></pre></div></p>
+<p><strong>Linux (Ubuntu/Debian)</strong>:
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://deb.nodesource.com/setup_20.x<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>-E<span class="w"> </span>bash<span class="w"> </span>-
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>nodejs
+</code></pre></div></p>
+<p><strong>Windows</strong>:
+1. <a href="https://nodejs.org/">Node.js公式サイト</a>からインストーラーをダウンロード
+2. インストーラーを実行し、指示に従う</p>
+<p>インストールを確認:
+<div class="highlight"><pre><span></span><code>node<span class="w"> </span>--version
+npm<span class="w"> </span>--version
+</code></pre></div></p>
+<h3 id="32">3.2 リポジトリのクローン<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; clone[git clone https://github.com/yourusername/go-ddd.git]
+    clone --&gt; cd[cd go-ddd]
+    cd --&gt; stop([終了])</code></pre>
+<p>リポジトリをクローンし、プロジェクトディレクトリに移動します：</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yourusername/go-ddd.git
+<span class="nb">cd</span><span class="w"> </span>go-ddd
+</code></pre></div>
+<h3 id="33">3.3 依存関係のインストール<a class="headerlink" href="#33" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; npm[npm install]
+    npm --&gt; go[go mod download]
+    go --&gt; stop([終了])</code></pre>
+<p>Node.js の依存関係をインストールします：</p>
+<div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install
+</code></pre></div>
+<p>Go の依存関係をダウンロードします：</p>
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span>mod<span class="w"> </span>download
+</code></pre></div>
+<h3 id="34">3.4 開発環境の起動<a class="headerlink" href="#34" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; docker[docker-compose up -d]
+    docker --&gt; check[docker-compose ps で起動確認]
+    check --&gt; stop([終了])
+    docker -.-&gt; note["データベース、Wiki、PlantUMLサーバーを起動"]</code></pre>
+<p>Docker Compose を使用して、開発環境を起動します：</p>
+<div class="highlight"><pre><span></span><code>docker-compose<span class="w"> </span>up<span class="w"> </span>-d
+</code></pre></div>
+<p>起動したサービスを確認します：</p>
+<div class="highlight"><pre><span></span><code>docker-compose<span class="w"> </span>ps
+</code></pre></div>
+<p>以下のサービスが起動します：
+- PostgreSQL (ポート 9920)
+- MySQL (ポート 3306)
+- Wiki.js (ポート 80)
+- PlantUML Server (ポート 9999)</p>
+<h3 id="35">3.5 データベースのセットアップ<a class="headerlink" href="#35" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; check[データベース接続情報を確認]
+    check --&gt; migrate[アプリケーション起動時に自動マイグレーション]
+    migrate --&gt; stop([終了])
+    check -.-&gt; note["PostgreSQL接続情報"]</code></pre>
+<p>アプリケーションは起動時に自動的にデータベースマイグレーションを実行します。データベース接続情報は以下の通りです：</p>
+<p><strong>PostgreSQL</strong>:
+- ホスト: localhost
+- ポート: 9920
+- ユーザー: root
+- パスワード: password
+- データベース: mydb</p>
+<h3 id="36">3.6 アプリケーションの構築<a class="headerlink" href="#36" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; build[go build -o app/backend/cmd/marketplace/marketplace app/backend/cmd/marketplace/main.go]
+    build --&gt; stop([終了])</code></pre>
+<p>アプリケーションをビルドします：</p>
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span>build<span class="w"> </span>-o<span class="w"> </span>app/backend/cmd/marketplace/marketplace<span class="w"> </span>app/backend/cmd/marketplace/main.go
+</code></pre></div>
+<h3 id="37">3.7 アプリケーションの実行<a class="headerlink" href="#37" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; run[./app/backend/cmd/marketplace/marketplace]
+    run --&gt; access[ブラウザで http://localhost:9090/api/v1/health にアクセス]
+    access --&gt; stop([終了])
+    run -.-&gt; note["アプリケーションがポート9090で起動"]</code></pre>
+<p>ビルドしたアプリケーションを実行します：</p>
+<div class="highlight"><pre><span></span><code>./app/backend/cmd/marketplace/marketplace
+</code></pre></div>
+<p>アプリケーションはデフォルトでポート9090で起動します。ヘルスチェックエンドポイントにアクセスして、アプリケーションが正常に動作していることを確認します：</p>
+<div class="highlight"><pre><span></span><code>http://localhost:9090/api/v1/health
+</code></pre></div>
+<h3 id="38">3.8 テストの実行<a class="headerlink" href="#38" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; cd[cd app/backend]
+    cd --&gt; test[go test ./...]
+    test --&gt; stop([終了])</code></pre>
+<p>テストを実行します：</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>app/backend
+go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
+</code></pre></div>
+<h2 id="4">4. アプリケーション構造<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<p>Go-DDDマーケットプレイスアプリケーションは、ドメイン駆動設計の原則に従って、以下のレイヤーで構成されています：</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph "インターフェースレイヤー"
+        rest["REST API"]
+    end
+
+    subgraph "アプリケーションレイヤー"
+        services["サービス"]
+        commands["コマンド"]
+        queries["クエリ"]
+    end
+
+    subgraph "ドメインレイヤー"
+        entities["エンティティ"]
+        repos["リポジトリインターフェース"]
+    end
+
+    subgraph "インフラストラクチャレイヤー"
+        db["データベース実装"]
+    end
+
+    rest --&gt; services
+    services --&gt; entities
+    services --&gt; repos
+    commands --&gt; services
+    queries --&gt; services
+    db --&gt; repos</code></pre>
+<h3 id="41">4.1 プロジェクト構造<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>go-ddd/
+├── app/
+│   └── backend/
+│       ├── cmd/
+│       │   └── marketplace/
+│       │       └── main.go
+│       └── internal/
+│           ├── domain/
+│           │   ├── entities/
+│           │   └── repositories/
+│           ├── application/
+│           │   ├── services/
+│           │   ├── command/
+│           │   └── query/
+│           ├── infrastructure/
+│           │   └── db/
+│           └── interface/
+│               └── api/
+│                   └── rest/
+├── docs/
+│   └── wiki/
+├── ops/
+│   └── docker/
+└── docker-compose.yml
+</code></pre></div>
+<h3 id="42">4.2 主要なコンポーネント<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<h4 id="421">4.2.1 ドメインレイヤー<a class="headerlink" href="#421" title="Permanent link">&para;</a></h4>
+<p>ドメインレイヤーはアプリケーションの中心であり、ビジネスロジックとルールを含みます。</p>
+<ul>
+<li><strong>エンティティ</strong>: 商品（Product）や出品者（Seller）などのビジネスオブジェクト</li>
+<li><strong>リポジトリインターフェース</strong>: データの永続化を担当するインターフェース</li>
+</ul>
+<h4 id="422">4.2.2 アプリケーションレイヤー<a class="headerlink" href="#422" title="Permanent link">&para;</a></h4>
+<p>アプリケーションレイヤーはユースケースを実装し、ドメインレイヤーのオブジェクトを調整します。</p>
+<ul>
+<li><strong>サービス</strong>: 商品サービスや出品者サービスなど、ユースケースを実装するサービス</li>
+<li><strong>コマンド</strong>: ドメインの状態を変更する操作（書き込み操作）</li>
+<li><strong>クエリ</strong>: ドメインから情報を取得する操作（読み取り操作）</li>
+</ul>
+<h4 id="423">4.2.3 インフラストラクチャレイヤー<a class="headerlink" href="#423" title="Permanent link">&para;</a></h4>
+<p>インフラストラクチャレイヤーは、永続化やその他の技術的な関心事を処理します。</p>
+<ul>
+<li><strong>データベース実装</strong>: リポジトリインターフェースのデータベース実装（GORM を使用）</li>
+</ul>
+<h4 id="424">4.2.4 インターフェースレイヤー<a class="headerlink" href="#424" title="Permanent link">&para;</a></h4>
+<p>インターフェースレイヤーは、外部世界とのインタラクションを処理します。</p>
+<ul>
+<li><strong>REST API</strong>: 商品や出品者に関するREST APIエンドポイントを提供</li>
+</ul>
+<h2 id="5-api">5. API エンドポイント<a class="headerlink" href="#5-api" title="Permanent link">&para;</a></h2>
+<p>Go-DDDマーケットプレイスアプリケーションは、以下のREST APIエンドポイントを提供します：</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph "API エンドポイント"
+        subgraph "商品 API"
+            createProduct["POST /api/v1/products"]
+            getAllProducts["GET /api/v1/products"]
+            getProductById["GET /api/v1/products/{id}"]
+            updateProduct["PUT /api/v1/products/{id}"]
+        end
+
+        subgraph "出品者 API"
+            createSeller["POST /api/v1/sellers"]
+            getAllSellers["GET /api/v1/sellers"]
+            getSellerById["GET /api/v1/sellers/{id}"]
+            updateSellerName["PUT /api/v1/sellers/{id}/name"]
+            updateSellerEmail["PUT /api/v1/sellers/{id}/email"]
+            deleteSeller["DELETE /api/v1/sellers/{id}"]
+        end
+
+        subgraph "システム API"
+            healthCheck["GET /api/v1/health"]
+        end
+    end</code></pre>
+<h3 id="51-api">5.1 商品 API<a class="headerlink" href="#51-api" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>メソッド</th>
+<th>エンドポイント</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td>/api/v1/products</td>
+<td>新しい商品を作成</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/api/v1/products</td>
+<td>すべての商品を取得</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/api/v1/products/{id}</td>
+<td>指定IDの商品を取得</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/api/v1/products/{id}</td>
+<td>指定IDの商品を更新</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-api">5.2 出品者 API<a class="headerlink" href="#52-api" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>メソッド</th>
+<th>エンドポイント</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td>/api/v1/sellers</td>
+<td>新しい出品者を作成</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/api/v1/sellers</td>
+<td>すべての出品者を取得</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/api/v1/sellers/{id}</td>
+<td>指定IDの出品者を取得</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/api/v1/sellers/{id}/name</td>
+<td>指定IDの出品者の名前を更新</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/api/v1/sellers/{id}/email</td>
+<td>指定IDの出品者のメールアドレスを更新</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/api/v1/sellers/{id}</td>
+<td>指定IDの出品者を削除</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-api">5.3 システム API<a class="headerlink" href="#53-api" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>メソッド</th>
+<th>エンドポイント</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>/api/v1/health</td>
+<td>ヘルスチェック</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6">6. トラブルシューティング<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    start([開始]) --&gt; problem{問題は?}
+    problem --&gt;|データベース接続エラー| db1[Docker Composeが起動しているか確認]
+    db1 --&gt; db2[データベース接続情報が正しいか確認]
+    problem --&gt;|ビルドエラー| build1[Go依存関係が正しくインストールされているか確認]
+    build1 --&gt; build2[go mod tidy を実行]
+    problem --&gt;|実行時エラー| run1[ログを確認]
+    run1 --&gt; run2[データベースマイグレーションが成功したか確認]
+    db2 --&gt; issue[問題が解決しない場合はIssueを作成]
+    build2 --&gt; issue
+    run2 --&gt; issue
+    issue --&gt; stop([終了])</code></pre>
+<h3 id="61">6.1 よくある問題と解決策<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<h4 id="_1">データベース接続エラー<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<p><strong>症状</strong>: アプリケーション起動時に「Failed to connect to database」などのエラーが表示される</p>
+<p><strong>解決策</strong>:
+1. Docker Composeが起動しているか確認: <code>docker-compose ps</code>
+2. データベース接続情報が正しいか確認
+3. データベースコンテナに直接接続してみる: <code>docker-compose exec db_postgresql psql -U root -d mydb</code></p>
+<h4 id="_2">ビルドエラー<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p><strong>症状</strong>: <code>go build</code> コマンド実行時にエラーが発生する</p>
+<p><strong>解決策</strong>:
+1. Go依存関係が正しくインストールされているか確認: <code>go mod download</code>
+2. 依存関係を整理: <code>go mod tidy</code>
+3. Goのバージョンが1.23以上であることを確認: <code>go version</code></p>
+<h4 id="_3">実行時エラー<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p><strong>症状</strong>: アプリケーション実行時にエラーが発生する</p>
+<p><strong>解決策</strong>:
+1. ログを確認して具体的なエラーメッセージを特定
+2. データベースマイグレーションが成功したか確認
+3. 必要なテーブルがデータベースに作成されているか確認</p>
+<h2 id="7">7. まとめ<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<p>このセットアップガイドでは、Go-DDDマーケットプレイスアプリケーションを０から構築するための手順を説明しました。ドメイン駆動設計の原則に従って構築されたこのアプリケーションは、クリーンアーキテクチャを採用し、各レイヤーが明確に分離されています。</p>
+<pre class="mermaid"><code>flowchart LR
+    env["環境構築"] --&gt; dev["アプリケーション開発"]
+    dev --&gt; test["テスト"]
+    test --&gt; deploy["デプロイ"]
+
+    env -.-&gt; env_note["前提条件と環境のセットアップ"]
+    dev -.-&gt; dev_note["アプリケーション構築と実行"]
+    test -.-&gt; test_note["テストと検証"]
+    deploy -.-&gt; deploy_note["デプロイと運用"]</code></pre>
+<p><strong>環境構築</strong>:
+- 前提条件のインストール
+- リポジトリのクローン
+- 依存関係のインストール
+- 開発環境の起動</p>
+<p><strong>アプリケーション開発</strong>:
+- データベースのセットアップ
+- アプリケーションの構築
+- アプリケーションの実行</p>
+<p><strong>テスト</strong>:
+- テストの実行
+- APIエンドポイントの確認</p>
+<p><strong>デプロイ</strong>:
+- 本番環境へのデプロイ
+- 監視とメンテナンス</p>
+<p>このガイドに従うことで、Go-DDDマーケットプレイスアプリケーションを簡単に構築し、実行することができます。また、ドメイン駆動設計の原則を学び、実践するための良い例としても活用できます。</p>
+<h2 id="8">8. 参考リンク<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://golang.org/doc/">Go公式ドキュメント</a></li>
+<li><a href="https://docs.docker.com/">Docker公式ドキュメント</a></li>
+<li><a href="https://gorm.io/docs/">GORM公式ドキュメント</a></li>
+<li><a href="https://echo.labstack.com/guide/">Echo Framework公式ドキュメント</a></li>
+<li><a href="https://www.domainlanguage.com/ddd/reference/">ドメイン駆動設計リファレンス</a></li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/yourusername/go-ddd" target="_blank" rel="noopener" title="GitHub Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+        <script src="../wiki/assets/js/extra.js"></script>
+      
+    
+  </body>
+</html>
