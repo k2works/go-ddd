@@ -544,7 +544,16 @@ flowchart LR
 
 このガイドに従うことで、Go-DDDマーケットプレイスアプリケーションを簡単に構築し、実行することができます。また、ドメイン駆動設計の原則を学び、実践するための良い例としても活用できます。
 
-## 8. 参考リンク
+## 8. プロジェクト計画
+
+Go-DDDマーケットプレイスアプリケーションの開発計画は以下のドキュメントで詳細に定義されています：
+
+- [機能一覧](docs/wiki/feature_list.md) - アプリケーションの機能一覧
+- [ユーザーストーリー](docs/wiki/user_stories.md) - ユーザーストーリー
+- [リリースプラン](docs/wiki/release_plan.md) - リリースプラン
+- [イテレーションプラン](docs/wiki/iteration_plan.md) - イテレーションプラン
+
+## 9. 参考リンク
 
 - [Go公式ドキュメント](https://golang.org/doc/)
 - [Docker公式ドキュメント](https://docs.docker.com/)
