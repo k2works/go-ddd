@@ -20,7 +20,10 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	//gormDB.AutoMigrate()
+	err = gormDB.AutoMigrate()
+	if err != nil {
+		log.Fatalf("Failed to migrate database: %v", err)
+	}
 
 	productRepo := postgres2.NewGormProductRepository(gormDB)
 	sellerRepo := postgres2.NewGormSellerRepository(gormDB)
