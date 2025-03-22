@@ -11,9 +11,10 @@ docker compose run --rm mkdocs mkdocs build
 
 # Create a temporary directory for the build
 TEMP_DIR=$(mktemp -d)
-mkdir -p site
-docker compose run --rm mkdocs bash -c "cp -r /docs/site/. /tmp/site/"
-cp -r /tmp/site/. $TEMP_DIR/ || echo "Warning: No site files found to copy"
+
+# Copy the built site from the container to the host
+echo "Copying site files from container..."
+docker compose cp mkdocs:/docs/site/. $TEMP_DIR/
 
 # Switch to gh-pages branch or create it if it doesn't exist
 echo "Deploying to GitHub Pages..."
