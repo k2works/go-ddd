@@ -3,21 +3,17 @@ set -e
 
 # Ensure PlantUML server is running
 echo "Ensuring PlantUML server is running..."
-docker-compose up -d plantuml
+docker compose up -d plantuml
 
 # Build the MkDocs site
 echo "Building MkDocs site..."
-docker-compose run --rm mkdocs bash -c "
-  # Generate all PlantUML diagrams first
-  find docs -name '*.md' -exec grep -l 'plantuml' {} \; | xargs -I{} cat {} | grep -A 100 '```plantuml' | grep -B 100 '```' > /tmp/all_plantuml.txt
-
-  # Build the site
-  mkdocs build
-"
+docker compose run --rm mkdocs mkdocs build
 
 # Create a temporary directory for the build
 TEMP_DIR=$(mktemp -d)
-cp -r site/* $TEMP_DIR/
+mkdir -p site
+docker compose run --rm mkdocs bash -c "cp -r /docs/site/. /tmp/site/"
+cp -r /tmp/site/. $TEMP_DIR/ || echo "Warning: No site files found to copy"
 
 # Switch to gh-pages branch or create it if it doesn't exist
 echo "Deploying to GitHub Pages..."

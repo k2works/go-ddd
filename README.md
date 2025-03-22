@@ -525,7 +525,7 @@ flowchart TD
 MkDocsは、Markdownファイルからドキュメントサイトを生成するためのツールです。Docker Composeを使用して、MkDocsサーバーを起動できます：
 
 ```bash
-docker-compose up -d mkdocs
+docker compose up -d mkdocs
 ```
 
 MkDocsサーバーは、ポート8000で起動します。ブラウザで以下のURLにアクセスして、ドキュメントを表示できます：
