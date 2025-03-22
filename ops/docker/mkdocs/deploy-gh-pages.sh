@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-# Ensure PlantUML server is running
-echo "Ensuring PlantUML server is running..."
-docker compose up -d plantuml
+# Ensure services are running
+echo "Ensuring services are running..."
+docker compose up -d plantuml mkdocs
 
 # Build the MkDocs site
 echo "Building MkDocs site..."
-docker compose run --rm mkdocs mkdocs build
+docker compose exec mkdocs mkdocs build
 
 # Create a temporary directory for the build
 TEMP_DIR=$(mktemp -d)
