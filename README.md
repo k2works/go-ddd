@@ -243,6 +243,7 @@ docker-compose ps
 - MySQL (ポート 3306)
 - Wiki.js (ポート 80)
 - PlantUML Server (ポート 9999)
+- MkDocs (ポート 8000)
 
 ### 3.5 データベースのセットアップ
 
@@ -507,7 +508,65 @@ flowchart TD
 2. データベースマイグレーションが成功したか確認
 3. 必要なテーブルがデータベースに作成されているか確認
 
-## 7. まとめ
+## 7. ドキュメント
+
+Go-DDDマーケットプレイスアプリケーションのドキュメントは、MkDocsを使用してGitHub Pagesに公開することができます。
+
+```mermaid
+flowchart TD
+    start([開始]) --> local[MkDocsをローカルで実行]
+    local --> build[GitHub Pages用にビルド]
+    build --> deploy[GitHub Pagesにデプロイ]
+    deploy --> stop([終了])
+```
+
+### 7.1 MkDocsの使用
+
+MkDocsは、Markdownファイルからドキュメントサイトを生成するためのツールです。Docker Composeを使用して、MkDocsサーバーを起動できます：
+
+```bash
+docker compose up -d mkdocs
+```
+
+MkDocsサーバーは、ポート8000で起動します。ブラウザで以下のURLにアクセスして、ドキュメントを表示できます：
+
+```
+http://localhost:8000
+```
+
+### 7.2 GitHub Pagesへのデプロイ
+
+wikiフォルダのMarkdownファイルからGitHub Pagesサイトを生成し、デプロイするには、以下のスクリプトを実行します：
+
+```bash
+./ops/docker/mkdocs/deploy-gh-pages.sh
+```
+
+このスクリプトは以下の処理を行います：
+1. MkDocsサイトをビルド
+2. gh-pagesブランチを作成または切り替え
+3. ビルドしたサイトをgh-pagesブランチにコピー
+4. 変更をコミットしてGitHubにプッシュ
+
+デプロイが完了すると、以下のURLでドキュメントサイトにアクセスできます：
+
+```
+https://yourusername.github.io/go-ddd/
+```
+
+### 7.3 MkDocsの設定
+
+MkDocsの設定は、プロジェクトルートの`mkdocs.yml`ファイルで行います。このファイルでは、サイト名、テーマ、ナビゲーション構造などを設定できます。
+
+現在の設定では、Material for MkDocsテーマを使用し、以下の機能を有効にしています：
+
+- **Mermaidダイアグラム**: Markdown内で`mermaid`コードブロックを使用してフローチャート、シーケンス図、ガントチャートなどを作成できます
+- **PlantUMLダイアグラム**: Markdown内で`plantuml`コードブロックを使用してUML図を作成できます（Docker環境のPlantUMLサーバーを使用）
+- **カスタムスタイル**: ダイアグラムの表示を最適化するためのカスタムCSSスタイル
+
+ダイアグラムの使用例は、ドキュメントサイトの「Diagram Examples」ページで確認できます。
+
+## 8. まとめ
 
 このセットアップガイドでは、Go-DDDマーケットプレイスアプリケーションを０から構築するための手順を説明しました。ドメイン駆動設計の原則に従って構築されたこのアプリケーションは、クリーンアーキテクチャを採用し、各レイヤーが明確に分離されています。
 
