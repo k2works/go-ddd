@@ -37,4 +37,8 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Initialize product steps
 	productContext := steps.NewProductContext()
 	productContext.RegisterSteps(ctx)
+
+	// Initialize controller steps
+	controllerContext := steps.NewControllerContext()
+	controllerContext.RegisterSteps(ctx)
 }
