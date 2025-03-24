@@ -1,0 +1,1715 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for the Go-DDD project">
+      
+      
+        <meta name="author" content="Project Team">
+      
+      
+      
+        <link rel="prev" href="../product_implementation/">
+      
+      
+        <link rel="next" href="../modules_explanation/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
+    
+    
+      
+        <title>出品者管理機能の実装手順 - Go-DDD Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../wiki/assets/css/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#go-ddd" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Go-DDD Wiki" class="md-header__button md-logo" aria-label="Go-DDD Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go-DDD Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              出品者管理機能の実装手順
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/yourusername/go-ddd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    go-ddd
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../home/" class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../feature_list/" class="md-tabs__link">
+        
+  
+    
+  
+  Features
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../user_stories/" class="md-tabs__link">
+        
+  
+    
+  
+  User Stories
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../release_plan/" class="md-tabs__link">
+          
+  
+  Planning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../architecture/" class="md-tabs__link">
+        
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../system_implementation/" class="md-tabs__link">
+          
+  
+  Implementation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../setup_guide/" class="md-tabs__link">
+          
+  
+  Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../documentation_summary/" class="md-tabs__link">
+          
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Go-DDD Wiki" class="md-nav__button md-logo" aria-label="Go-DDD Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Go-DDD Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/yourusername/go-ddd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    go-ddd
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../home/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../feature_list/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user_stories/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    User Stories
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Planning
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Planning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release Plan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iteration_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration Plan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Implementation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Implementation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Product
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Seller
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Seller
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 概要
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概要">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 出品者のライフサイクル
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 実装ステップ
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 実装ステップ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 ドメインレイヤーの実装
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1 ドメインレイヤーの実装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#211" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1.1 出品者エンティティの作成
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#212" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1.2 バリデーション済み出品者エンティティの作成
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#213" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1.3 出品者リポジトリインターフェースの定義
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 アプリケーションレイヤーの実装
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 アプリケーションレイヤーの実装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#221" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2.1 出品者コマンドの作成
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#222" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2.2 出品者クエリの作成
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#223" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2.3 出品者サービスの実装
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 インフラストラクチャレイヤーの実装
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 インフラストラクチャレイヤーの実装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#231-postgresql" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3.1 出品者リポジトリの実装（PostgreSQL）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#232" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3.2 出品者マッパーの実装
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 インターフェースレイヤーの実装
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.4 インターフェースレイヤーの実装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#241" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4.1 出品者コントローラーの実装
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules_explanation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modules Explanation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm_mapper_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ORM Mapper
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../echo_framework_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Echo Framework
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../echo_jwt_authentication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Echo JWT Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Setup
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setup Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_guide_mermaid/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setup Guide (Mermaid)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation_summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Documentation Summary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../revision_summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Revision Summary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="go-ddd">Go-DDDマーケットプレイスアプリケーション 出品者管理機能の実装手順<a class="headerlink" href="#go-ddd" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概要<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>この文書では、Go-DDDマーケットプレイスアプリケーションにおける出品者管理機能の実装手順を説明します。実装はドメイン駆動設計（DDD）の原則に従い、レイヤードアーキテクチャを使用します。</p>
+<h3 id="11">1.1 出品者のライフサイクル<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<p>以下は出品者エンティティのライフサイクルを表すステート図です：</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IlNUQVRFIiBoZWlnaHQ9Ijg3N3B4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6NjUxcHg7aGVpZ2h0Ojg3N3B4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDY1MSA4NzciIHdpZHRoPSI2NTFweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PGRlZnMvPjxnPjxlbGxpcHNlIGN4PSIyMTUuMTMzNSIgY3k9IjE2IiBmaWxsPSIjMjIyMjIyIiByeD0iMTAiIHJ5PSIxMCIgc3R5bGU9InN0cm9rZTojMjIyMjIyO3N0cm9rZS13aWR0aDoxOyIvPjxnIGlkPSImIzIwMzE2OyYjMjUxMDQ7JiMyMDAxMzsiPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iNTAiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iNjEuOTk5OCIgeD0iMTg0LjEzMzUiIHk9IjEwMyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgeDE9IjE4NC4xMzM1IiB4Mj0iMjQ2LjEzMzMiIHkxPSIxMjkuMjk2OSIgeTI9IjEyOS4yOTY5Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iNDEuOTk5OCIgeD0iMTk0LjEzMzUiIHk9IjEyMC45OTUxIj4mIzIwMzE2OyYjMjUxMDQ7JiMyMDAxMzs8L3RleHQ+PC9nPjxlbGxpcHNlIGN4PSIyNi4xMzM1IiBjeT0iODYwIiBmaWxsPSJub25lIiByeD0iMTEiIHJ5PSIxMSIgc3R5bGU9InN0cm9rZTojMjIyMjIyO3N0cm9rZS13aWR0aDoxOyIvPjxlbGxpcHNlIGN4PSIyNi4xMzM1IiBjeT0iODYwIiBmaWxsPSIjMjIyMjIyIiByeD0iNiIgcnk9IjYiIHN0eWxlPSJzdHJva2U6IzIyMjIyMjtzdHJva2Utd2lkdGg6MTsiLz48ZyBpZD0iJiMxMjQ5NjsmIzEyNTIyOyYjMTI0ODc7JiMxMjU0MDsmIzEyNDcxOyYjMTI1MTk7JiMxMjUzMTsmIzIwMDEzOyI+PHJlY3QgZmlsbD0iI0YxRjFGMSIgaGVpZ2h0PSI1MCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxMzEuOTk5NSIgeD0iMjA2LjEzMzUiIHk9IjIzMCIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgeDE9IjIwNi4xMzM1IiB4Mj0iMzM4LjEzMyIgeTE9IjI1Ni4yOTY5IiB5Mj0iMjU2LjI5NjkiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxMTEuOTk5NSIgeD0iMjE2LjEzMzUiIHk9IjI0Ny45OTUxIj4mIzEyNDk2OyYjMTI1MjI7JiMxMjQ4NzsmIzEyNTQwOyYjMTI0NzE7JiMxMjUxOTsmIzEyNTMxOyYjMjAwMTM7PC90ZXh0PjwvZz48ZyBpZD0iJiMyMDQ0NTsmIzIzMzg0OyYjMjAwMTM7Ij48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjUwIiByeD0iMTIuNSIgcnk9IjEyLjUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjYxLjk5OTgiIHg9IjQxOS4xMzM1IiB5PSIzNTciLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHgxPSI0MTkuMTMzNSIgeDI9IjQ4MS4xMzMzIiB5MT0iMzgzLjI5NjkiIHkyPSIzODMuMjk2OSIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjQxLjk5OTgiIHg9IjQyOS4xMzM1IiB5PSIzNzQuOTk1MSI+JiMyMDQ0NTsmIzIzMzg0OyYjMjAwMTM7PC90ZXh0PjwvZz48ZyBpZD0iJiMzMDMzMTsmIzM3NjgyOyYjMjgxNjg7JiMxMjQxNTsiPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iNTAiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iNzUuOTk5OCIgeD0iNDEyLjEzMzUiIHk9IjQ4NCIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgeDE9IjQxMi4xMzM1IiB4Mj0iNDg4LjEzMzMiIHkxPSI1MTAuMjk2OSIgeTI9IjUxMC4yOTY5Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iNTUuOTk5OCIgeD0iNDIyLjEzMzUiIHk9IjUwMS45OTUxIj4mIzMwMzMxOyYjMzc2ODI7JiMyODE2ODsmIzEyNDE1OzwvdGV4dD48L2c+PGcgaWQ9IiYjMjE1MTc7JiMyMTA2OTsmIzI2MzU2OyYjMjYwMzI7JiMyMDAxMzsiPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iNTAiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iODkuOTk5NyIgeD0iMTkwLjEzMzUiIHk9IjYxMSIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgeDE9IjE5MC4xMzM1IiB4Mj0iMjgwLjEzMzIiIHkxPSI2MzcuMjk2OSIgeTI9IjYzNy4yOTY5Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iNjkuOTk5NyIgeD0iMjAwLjEzMzUiIHk9IjYyOC45OTUxIj4mIzIxNTE3OyYjMjEwNjk7JiMyNjM1NjsmIzI2MDMyOyYjMjAwMTM7PC90ZXh0PjwvZz48ZyBpZD0iJiMxMjUxMzsmIzEyNTQwOyYjMTI1MjM7JiMyNjM1NjsmIzI2MDMyOyYjMjAwMTM7Ij48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjUwIiByeD0iMTIuNSIgcnk9IjEyLjUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjEwMy45OTk2IiB4PSIzNTYuMTMzNSIgeT0iNjExIi8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB4MT0iMzU2LjEzMzUiIHgyPSI0NjAuMTMzMiIgeTE9IjYzNy4yOTY5IiB5Mj0iNjM3LjI5NjkiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSI4My45OTk2IiB4PSIzNjYuMTMzNSIgeT0iNjI4Ljk5NTEiPiYjMTI1MTM7JiMxMjU0MDsmIzEyNTIzOyYjMjYzNTY7JiMyNjAzMjsmIzIwMDEzOzwvdGV4dD48L2c+PGcgaWQ9IiYjMjEwNjY7JiMzODUwMDsmIzIwMDEzOyI+PHJlY3QgZmlsbD0iI0YxRjFGMSIgaGVpZ2h0PSI1MCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSI2MS45OTk4IiB4PSI1NDkuMTMzNSIgeT0iNjExIi8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB4MT0iNTQ5LjEzMzUiIHgyPSI2MTEuMTMzMyIgeTE9IjYzNy4yOTY5IiB5Mj0iNjM3LjI5NjkiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSI0MS45OTk4IiB4PSI1NTkuMTMzNSIgeT0iNjI4Ljk5NTEiPiYjMjEwNjY7JiMzODUwMDsmIzIwMDEzOzwvdGV4dD48L2c+PGcgaWQ9IiYjMjEwNjY7JiMzODUwMDsmIzI4MTY4OyYjMTI0MTU7Ij48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjUwIiByeD0iMTIuNSIgcnk9IjEyLjUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9Ijc1Ljk5OTgiIHg9IjMwMC4xMzM1IiB5PSI3MzgiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHgxPSIzMDAuMTMzNSIgeDI9IjM3Ni4xMzMzIiB5MT0iNzY0LjI5NjkiIHkyPSI3NjQuMjk2OSIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjU1Ljk5OTgiIHg9IjMxMC4xMzM1IiB5PSI3NTUuOTk1MSI+JiMyMTA2NjsmIzM4NTAwOyYjMjgxNjg7JiMxMjQxNTs8L3RleHQ+PC9nPjwhLS1saW5rICpzdGFydCogdG8gPz8/LS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9IipzdGFydCoiIGRhdGEtZW50aXR5LTI9IiYjMjAzMTY7JiMyNTEwNDsmIzIwMDEzOyIgZGF0YS1zb3VyY2UtbGluZT0iMSIgZGF0YS11aWQ9ImxuazQiIGlkPSJsaW5rXypzdGFydCpfJiMyMDMxNjsmIzI1MTA0OyYjMjAwMTM7Ij48cGF0aCBkPSJNMjE1LjEzMzUsMjYuMzggQzIxNS4xMzM1LDQzLjExIDIxNS4xMzM1LDcyLjU5IDIxNS4xMzM1LDk2LjYzIiBmaWxsPSJub25lIiBpZD0iKnN0YXJ0Ki10by0mIzIwMzE2OyYjMjUxMDQ7JiMyMDAxMzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjIxNS4xMzM1LDEwMi42MywyMTkuMTMzNSw5My42MywyMTUuMTMzNSw5Ny42MywyMTEuMTMzNSw5My42MywyMTUuMTMzNSwxMDIuNjMiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxMTcuMDAwMSIgeD0iMjE2LjEzMzUiIHk9IjY5LjA2NjkiPiYjMjYwMzI7JiMzNTIxNTsmIzIwOTg2OyYjMjE2OTc7JiMzMjc3MzsmIzIwMzE2OyYjMjUxMDQ7JiMzODI4MzsmIzIyOTg3OzwvdGV4dD48L2c+PCEtLWxpbmsgPz8/IHRvICplbmQqLS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9IiYjMjAzMTY7JiMyNTEwNDsmIzIwMDEzOyIgZGF0YS1lbnRpdHktMj0iKmVuZCoiIGRhdGEtc291cmNlLWxpbmU9IjIiIGRhdGEtdWlkPSJsbms2IiBpZD0ibGlua18mIzIwMzE2OyYjMjUxMDQ7JiMyMDAxMztfKmVuZCoiPjxwYXRoIGQ9Ik0xODMuODQzNSwxMzMuMDkgQzEyNS41NDM1LDE0Mi42NCA2LjEzMzUsMTcyLjE5IDYuMTMzNSwyNTQgQzYuMTMzNSwyNTQgNi4xMzM1LDI1NCA2LjEzMzUsNzY0IEM2LjEzMzUsNzk1LjY5IDE1LjAxNjIsODI2LjM4MTIgMjAuNzQ2Miw4NDMuNDcxMiIgZmlsbD0ibm9uZSIgaWQ9IiYjMjAzMTY7JiMyNTEwNDsmIzIwMDEzOy10by0qZW5kKiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMjIuNjUzNSw4NDkuMTYsMjMuNTg1LDgzOS4zNTUzLDIxLjA2NDEsODQ0LjQxOTQsMTYsODQxLjg5ODQsMjIuNjUzNSw4NDkuMTYiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSI5MS4wMDAxIiB4PSI3LjEzMzUiIHk9IjUxMy41NjY5Ij4mIzIwMzE2OyYjMjUxMDQ7JiMxMjQ2MTsmIzEyNTE1OyYjMTI1MzE7JiMxMjQ3NTsmIzEyNTIzOzwvdGV4dD48L2c+PCEtLWxpbmsgPz8/IHRvID8/Pz8/Pz8/LS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9IiYjMjAzMTY7JiMyNTEwNDsmIzIwMDEzOyIgZGF0YS1lbnRpdHktMj0iJiMxMjQ5NjsmIzEyNTIyOyYjMTI0ODc7JiMxMjU0MDsmIzEyNDcxOyYjMTI1MTk7JiMxMjUzMTsmIzIwMDEzOyIgZGF0YS1zb3VyY2UtbGluZT0iMyIgZGF0YS11aWQ9ImxuazgiIGlkPSJsaW5rXyYjMjAzMTY7JiMyNTEwNDsmIzIwMDEzO18mIzEyNDk2OyYjMTI1MjI7JiMxMjQ4NzsmIzEyNTQwOyYjMTI0NzE7JiMxMjUxOTsmIzEyNTMxOyYjMjAwMTM7Ij48cGF0aCBkPSJNMTgzLjY2MzUsMTQwLjI3IEMxNTMuNzgzNSwxNTIuODEgMTE1LjgwMzUsMTc0LjY3IDEzMy4xMzM1LDIwMCBDMTQ5LjY1MzUsMjI0LjE0IDE3Mi44ODI2LDIzNS45MjAxIDIwMC4xNDI2LDI0My4zMTAxIiBmaWxsPSJub25lIiBpZD0iJiMyMDMxNjsmIzI1MTA0OyYjMjAwMTM7LXRvLSYjMTI0OTY7JiMxMjUyMjsmIzEyNDg3OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7JiMyMDAxMzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjIwNS45MzM1LDI0NC44OCwxOTguMjkzNywyMzguNjY0NSwyMDEuMTA3NywyNDMuNTcxOCwxOTYuMjAwNSwyNDYuMzg1OCwyMDUuOTMzNSwyNDQuODgiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxMTcuMDAwMSIgeD0iMTM0LjEzMzUiIHk9IjE5Ni4wNjY5Ij4mIzIwOTg2OyYjMjE2OTc7JiMzMjc3MzsmIzI0NzczOyYjMjI1Nzc7JiMyMDgzNzsmIzIxMTQ3OyYjMjM0MzY7JiMyMDEwMjs8L3RleHQ+PC9nPjwhLS1saW5rID8/Pz8/Pz8/IHRvID8/Py0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSImIzEyNDk2OyYjMTI1MjI7JiMxMjQ4NzsmIzEyNTQwOyYjMTI0NzE7JiMxMjUxOTsmIzEyNTMxOyYjMjAwMTM7IiBkYXRhLWVudGl0eS0yPSImIzIwMzE2OyYjMjUxMDQ7JiMyMDAxMzsiIGRhdGEtc291cmNlLWxpbmU9IjUiIGRhdGEtdWlkPSJsbms5IiBpZD0ibGlua18mIzEyNDk2OyYjMTI1MjI7JiMxMjQ4NzsmIzEyNTQwOyYjMTI0NzE7JiMxMjUxOTsmIzEyNTMxOyYjMjAwMTM7XyYjMjAzMTY7JiMyNTEwNDsmIzIwMDEzOyI+PHBhdGggZD0iTTI2OS4zMDM1LDIyOS44MyBDMjY3LjAyMzUsMjE1LjY5IDI2My4wMTM1LDE5Ny43OCAyNTYuMTMzNSwxODMgQzI1MS4yNjM1LDE3Mi41NCAyNDcuODM2MiwxNjYuODg1NSAyNDAuODY2MiwxNTguMDc1NSIgZmlsbD0ibm9uZSIgaWQ9IiYjMTI0OTY7JiMxMjUyMjsmIzEyNDg3OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7JiMyMDAxMzstdG8tJiMyMDMxNjsmIzI1MTA0OyYjMjAwMTM7IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSIyMzcuMTQzNSwxNTMuMzcsMjM5LjU5MDYsMTYyLjkxLDI0MC4yNDU4LDE1Ny4yOTEyLDI0NS44NjQ2LDE1Ny45NDY0LDIzNy4xNDM1LDE1My4zNyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjEzMC4wMDAyIiB4PSIyNjMuMTMzNSIgeT0iMTk2LjA2NjkiPiYjMTI0OTY7JiMxMjUyMjsmIzEyNDg3OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7JiMxMjQ1NjsmIzEyNTIxOyYjMTI1NDA7PC90ZXh0PjwvZz48IS0tbGluayA/Pz8/Pz8/PyB0byA/Pz8tLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iJiMxMjQ5NjsmIzEyNTIyOyYjMTI0ODc7JiMxMjU0MDsmIzEyNDcxOyYjMTI1MTk7JiMxMjUzMTsmIzIwMDEzOyIgZGF0YS1lbnRpdHktMj0iJiMyMDQ0NTsmIzIzMzg0OyYjMjAwMTM7IiBkYXRhLXNvdXJjZS1saW5lPSI2IiBkYXRhLXVpZD0ibG5rMTEiIGlkPSJsaW5rXyYjMTI0OTY7JiMxMjUyMjsmIzEyNDg3OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7JiMyMDAxMztfJiMyMDQ0NTsmIzIzMzg0OyYjMjAwMTM7Ij48cGF0aCBkPSJNMjg2LjQ4MzUsMjgwLjI1IEMyOTYuMzYzNSwyOTUuMjkgMzEwLjY2MzUsMzE0LjE1IDMyNy4xMzM1LDMyNyBDMzU0LjgwMzUsMzQ4LjU5IDM4Ni43NDk0LDM2MS41OTkxIDQxMy4wNzk0LDM3MC4xODkxIiBmaWxsPSJub25lIiBpZD0iJiMxMjQ5NjsmIzEyNTIyOyYjMTI0ODc7JiMxMjU0MDsmIzEyNDcxOyYjMTI1MTk7JiMxMjUzMTsmIzIwMDEzOy10by0mIzIwNDQ1OyYjMjMzODQ7JiMyMDAxMzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjQxOC43ODM1LDM3Mi4wNSw0MTEuNDY4LDM2NS40NTU5LDQxNC4wMzAxLDM3MC40OTkyLDQwOC45ODY3LDM3My4wNjEzLDQxOC43ODM1LDM3Mi4wNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjExNy4wMDAxIiB4PSIzMjguMTMzNSIgeT0iMzIzLjA2NjkiPiYjMTI0OTY7JiMxMjUyMjsmIzEyNDg3OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7JiMyNTEwNDsmIzIxMTUxOzwvdGV4dD48L2c+PCEtLWxpbmsgPz8/IHRvID8/Py0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSImIzIwNDQ1OyYjMjMzODQ7JiMyMDAxMzsiIGRhdGEtZW50aXR5LTI9IiYjMjAzMTY7JiMyNTEwNDsmIzIwMDEzOyIgZGF0YS1zb3VyY2UtbGluZT0iOCIgZGF0YS11aWQ9ImxuazEyIiBpZD0ibGlua18mIzIwNDQ1OyYjMjMzODQ7JiMyMDAxMztfJiMyMDMxNjsmIzI1MTA0OyYjMjAwMTM7Ij48cGF0aCBkPSJNNDUyLjA4MzUsMzU2LjczIEM0NTQuMDEzNSwzMTQuNjUgNDUxLjI2MzUsMjI4LjM0IDQwMi4xMzM1LDE4MyBDMzU4LjY3MzUsMTQyLjkgMjkzLjIzMSwxMzIuNzc3IDI1Mi4zODEsMTMwLjEzNyIgZmlsbD0ibm9uZSIgaWQ9IiYjMjA0NDU7JiMyMzM4NDsmIzIwMDEzOy10by0mIzIwMzE2OyYjMjUxMDQ7JiMyMDAxMzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjI0Ni4zOTM1LDEyOS43NSwyNTUuMTE2OCwxMzQuMzIyMSwyNTEuMzgzMSwxMzAuMDcyNSwyNTUuNjMyOCwxMjYuMzM4OCwyNDYuMzkzNSwxMjkuNzUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSI2NS4wMDAxIiB4PSI0NDguMTMzNSIgeT0iMjU5LjU2NjkiPiYjMjA0NDU7JiMyMzM4NDsmIzEyNDU2OyYjMTI1MjE7JiMxMjU0MDs8L3RleHQ+PC9nPjwhLS1saW5rID8/PyB0byA/Pz8/LS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9IiYjMjA0NDU7JiMyMzM4NDsmIzIwMDEzOyIgZGF0YS1lbnRpdHktMj0iJiMzMDMzMTsmIzM3NjgyOyYjMjgxNjg7JiMxMjQxNTsiIGRhdGEtc291cmNlLWxpbmU9IjkiIGRhdGEtdWlkPSJsbmsxNCIgaWQ9ImxpbmtfJiMyMDQ0NTsmIzIzMzg0OyYjMjAwMTM7XyYjMzAzMzE7JiMzNzY4MjsmIzI4MTY4OyYjMTI0MTU7Ij48cGF0aCBkPSJNNDUwLjEzMzUsNDA3LjQgQzQ1MC4xMzM1LDQyOS40MiA0NTAuMTMzNSw0NTUuNjYgNDUwLjEzMzUsNDc3LjY2IiBmaWxsPSJub25lIiBpZD0iJiMyMDQ0NTsmIzIzMzg0OyYjMjAwMTM7LXRvLSYjMzAzMzE7JiMzNzY4MjsmIzI4MTY4OyYjMTI0MTU7IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI0NTAuMTMzNSw0ODMuNjYsNDU0LjEzMzUsNDc0LjY2LDQ1MC4xMzM1LDQ3OC42Niw0NDYuMTMzNSw0NzQuNjYsNDUwLjEzMzUsNDgzLjY2IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iNTIuMDAwMSIgeD0iNDUxLjEzMzUiIHk9IjQ1MC4wNjY5Ij4mIzIwNDQ1OyYjMjMzODQ7JiMyNTEwNDsmIzIxMTUxOzwvdGV4dD48L2c+PCEtLWxpbmsgPz8/PyB0byA/Pz8/Py0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSImIzMwMzMxOyYjMzc2ODI7JiMyODE2ODsmIzEyNDE1OyIgZGF0YS1lbnRpdHktMj0iJiMyMTUxNzsmIzIxMDY5OyYjMjYzNTY7JiMyNjAzMjsmIzIwMDEzOyIgZGF0YS1zb3VyY2UtbGluZT0iMTEiIGRhdGEtdWlkPSJsbmsxNiIgaWQ9ImxpbmtfJiMzMDMzMTsmIzM3NjgyOyYjMjgxNjg7JiMxMjQxNTtfJiMyMTUxNzsmIzIxMDY5OyYjMjYzNTY7JiMyNjAzMjsmIzIwMDEzOyI+PHBhdGggZD0iTTQxMS43OTM1LDUyNi43MSBDMzg5LjgwMzUsNTM2LjcyIDM2MS45MzM1LDU1MC4xNyAzMzguMTMzNSw1NjQgQzMxMy43MjM1LDU3OC4xOSAyOTIuNDA0NSw1OTIuNzUyOCAyNzIuNTQ0NSw2MDcuMTIyOCIgZmlsbD0ibm9uZSIgaWQ9IiYjMzAzMzE7JiMzNzY4MjsmIzI4MTY4OyYjMTI0MTU7LXRvLSYjMjE1MTc7JiMyMTA2OTsmIzI2MzU2OyYjMjYwMzI7JiMyMDAxMzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjI2Ny42ODM1LDYxMC42NCwyNzcuMzE5OCw2MDguNjA0OCwyNzEuNzM0Myw2MDcuNzA5LDI3Mi42MzAyLDYwMi4xMjM1LDI2Ny42ODM1LDYxMC42NCIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9Ijc4LjAwMDEiIHg9IjMzOS4xMzM1IiB5PSI1NzcuMDY2OSI+JiMyMTUxNzsmIzIxMDY5OyYjMjYzNTY7JiMyNjAzMjsmIzM4MjgzOyYjMjI5ODc7PC90ZXh0PjwvZz48IS0tbGluayA/Pz8/PyB0byA/Pz8/Pz8/Py0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSImIzIxNTE3OyYjMjEwNjk7JiMyNjM1NjsmIzI2MDMyOyYjMjAwMTM7IiBkYXRhLWVudGl0eS0yPSImIzEyNDk2OyYjMTI1MjI7JiMxMjQ4NzsmIzEyNTQwOyYjMTI0NzE7JiMxMjUxOTsmIzEyNTMxOyYjMjAwMTM7IiBkYXRhLXNvdXJjZS1saW5lPSIxMiIgZGF0YS11aWQ9ImxuazE3IiBpZD0ibGlua18mIzIxNTE3OyYjMjEwNjk7JiMyNjM1NjsmIzI2MDMyOyYjMjAwMTM7XyYjMTI0OTY7JiMxMjUyMjsmIzEyNDg3OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7JiMyMDAxMzsiPjxwYXRoIGQ9Ik0yMTIuMTgzNSw2MTAuNjcgQzE4MC40MzM1LDU3My45NyAxMjkuMTgzNSw1MDEuODQgMTQ5LjEzMzUsNDM3IEMxNjguNTczNSwzNzMuODEgMjE0LjM0MDMsMzE3LjMxNDcgMjQ0LjI4MDMsMjg0Ljc4NDciIGZpbGw9Im5vbmUiIGlkPSImIzIxNTE3OyYjMjEwNjk7JiMyNjM1NjsmIzI2MDMyOyYjMjAwMTM7LXRvLSYjMTI0OTY7JiMxMjUyMjsmIzEyNDg3OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7JiMyMDAxMzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjI0OC4zNDM1LDI4MC4zNywyMzkuMzA1NSwyODQuMjgzMywyNDQuOTU3NSwyODQuMDQ5LDI0NS4xOTE4LDI4OS43MDEsMjQ4LjM0MzUsMjgwLjM3IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iNzguMDAwMSIgeD0iMTUwLjEzMzUiIHk9IjQ1MC4wNjY5Ij4mIzIxNTE3OyYjMjEwNjk7JiMyNDc3MzsmIzIyNTc3OyYjMjYzNTY7JiMyNjAzMjs8L3RleHQ+PC9nPjwhLS1saW5rID8/Pz8gdG8gPz8/Pz8/LS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9IiYjMzAzMzE7JiMzNzY4MjsmIzI4MTY4OyYjMTI0MTU7IiBkYXRhLWVudGl0eS0yPSImIzEyNTEzOyYjMTI1NDA7JiMxMjUyMzsmIzI2MzU2OyYjMjYwMzI7JiMyMDAxMzsiIGRhdGEtc291cmNlLWxpbmU9IjE0IiBkYXRhLXVpZD0ibG5rMTkiIGlkPSJsaW5rXyYjMzAzMzE7JiMzNzY4MjsmIzI4MTY4OyYjMTI0MTU7XyYjMTI1MTM7JiMxMjU0MDsmIzEyNTIzOyYjMjYzNTY7JiMyNjAzMjsmIzIwMDEzOyI+PHBhdGggZD0iTTQ0MS45MzM1LDUzNC40IEM0MzQuNTMzNSw1NTYuNDIgNDI1LjYxNDEsNTgyLjk3MjMgNDE4LjIyNDEsNjA0Ljk3MjMiIGZpbGw9Im5vbmUiIGlkPSImIzMwMzMxOyYjMzc2ODI7JiMyODE2ODsmIzEyNDE1Oy10by0mIzEyNTEzOyYjMTI1NDA7JiMxMjUyMzsmIzI2MzU2OyYjMjYwMzI7JiMyMDAxMzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjQxNi4zMTM1LDYxMC42Niw0MjIuOTcxMSw2MDMuNDAyMiw0MTcuOTA1Nyw2MDUuOTIwMyw0MTUuMzg3Niw2MDAuODU0OCw0MTYuMzEzNSw2MTAuNjYiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxNDMuMDAwMiIgeD0iNDMyLjEzMzUiIHk9IjU3Ny4wNjY5Ij4mIzEyNTEzOyYjMTI1NDA7JiMxMjUyMzsmIzEyNDUwOyYjMTI0ODk7JiMxMjUyNDsmIzEyNDczOyYjMjYzNTY7JiMyNjAzMjsmIzM4MjgzOyYjMjI5ODc7PC90ZXh0PjwvZz48IS0tbGluayA/Pz8/Pz8gdG8gPz8/Pz8/Pz8tLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iJiMxMjUxMzsmIzEyNTQwOyYjMTI1MjM7JiMyNjM1NjsmIzI2MDMyOyYjMjAwMTM7IiBkYXRhLWVudGl0eS0yPSImIzEyNDk2OyYjMTI1MjI7JiMxMjQ4NzsmIzEyNTQwOyYjMTI0NzE7JiMxMjUxOTsmIzEyNTMxOyYjMjAwMTM7IiBkYXRhLXNvdXJjZS1saW5lPSIxNSIgZGF0YS11aWQ9ImxuazIwIiBpZD0ibGlua18mIzEyNTEzOyYjMTI1NDA7JiMxMjUyMzsmIzI2MzU2OyYjMjYwMzI7JiMyMDAxMztfJiMxMjQ5NjsmIzEyNTIyOyYjMTI0ODc7JiMxMjU0MDsmIzEyNDcxOyYjMTI1MTk7JiMxMjUzMTsmIzIwMDEzOyI+PHBhdGggZD0iTTM1NS44ODM1LDYyMC4xIEMzMzYuMTczNSw2MTEuOCAzMTUuNTUzNSw1OTkuMzMgMzAzLjEzMzUsNTgxIEMyMzguNzUzNSw0ODUuOTggMjU1Ljc3MzcsMzQzLjgzNTcgMjY2LjEzMzcsMjg2LjEwNTciIGZpbGw9Im5vbmUiIGlkPSImIzEyNTEzOyYjMTI1NDA7JiMxMjUyMzsmIzI2MzU2OyYjMjYwMzI7JiMyMDAxMzstdG8tJiMxMjQ5NjsmIzEyNTIyOyYjMTI0ODc7JiMxMjU0MDsmIzEyNDcxOyYjMTI1MTk7JiMxMjUzMTsmIzIwMDEzOyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMjY3LjE5MzUsMjgwLjIsMjYxLjY2NjcsMjg4LjM1MiwyNjYuMzEwNCwyODUuMTIxNCwyNjkuNTQwOSwyODkuNzY1LDI2Ny4xOTM1LDI4MC4yIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iOTEuMDAwMSIgeD0iMjYwLjEzMzUiIHk9IjQ1MC4wNjY5Ij4mIzEyNTEzOyYjMTI1NDA7JiMxMjUyMzsmIzI0NzczOyYjMjI1Nzc7JiMyNjM1NjsmIzI2MDMyOzwvdGV4dD48L2c+PCEtLWxpbmsgPz8/PyB0byA/Pz8tLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iJiMzMDMzMTsmIzM3NjgyOyYjMjgxNjg7JiMxMjQxNTsiIGRhdGEtZW50aXR5LTI9IiYjMjEwNjY7JiMzODUwMDsmIzIwMDEzOyIgZGF0YS1zb3VyY2UtbGluZT0iMTciIGRhdGEtdWlkPSJsbmsyMiIgaWQ9ImxpbmtfJiMzMDMzMTsmIzM3NjgyOyYjMjgxNjg7JiMxMjQxNTtfJiMyMTA2NjsmIzM4NTAwOyYjMjAwMTM7Ij48cGF0aCBkPSJNNDg4LjU3MzUsNTEzLjk2IEM1MjAuMTIzNSw1MTkuNDYgNTYyLjk0MzUsNTMyLjYxIDU4NC4xMzM1LDU2NCBDNTkzLjI1MzUsNTc3LjUxIDU5My4yNzM2LDU5MC4xMTg1IDU4OS44MjM2LDYwNC44Mjg1IiBmaWxsPSJub25lIiBpZD0iJiMzMDMzMTsmIzM3NjgyOyYjMjgxNjg7JiMxMjQxNTstdG8tJiMyMTA2NjsmIzM4NTAwOyYjMjAwMTM7IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI1ODguNDUzNSw2MTAuNjcsNTk0LjQwMjksNjAyLjgyMTEsNTg5LjU5NTIsNjA1LjgwMjEsNTg2LjYxNDMsNjAwLjk5NDQsNTg4LjQ1MzUsNjEwLjY3IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iNTIuMDAwMSIgeD0iNTkxLjEzMzUiIHk9IjU3Ny4wNjY5Ij4mIzIxMDY2OyYjMzg1MDA7JiMzODI4MzsmIzIyOTg3OzwvdGV4dD48L2c+PCEtLWxpbmsgPz8/IHRvID8/Pz8tLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iJiMyMTA2NjsmIzM4NTAwOyYjMjAwMTM7IiBkYXRhLWVudGl0eS0yPSImIzIxMDY2OyYjMzg1MDA7JiMyODE2ODsmIzEyNDE1OyIgZGF0YS1zb3VyY2UtbGluZT0iMTgiIGRhdGEtdWlkPSJsbmsyNCIgaWQ9ImxpbmtfJiMyMTA2NjsmIzM4NTAwOyYjMjAwMTM7XyYjMjEwNjY7JiMzODUwMDsmIzI4MTY4OyYjMTI0MTU7Ij48cGF0aCBkPSJNNTQ4Ljk5MzUsNjUzLjA5IEM1MDQuODIzNSw2NzUuOSA0MjkuMzg0Niw3MTQuODY2OCAzODEuNjU0Niw3MzkuNTE2OCIgZmlsbD0ibm9uZSIgaWQ9IiYjMjEwNjY7JiMzODUwMDsmIzIwMDEzOy10by0mIzIxMDY2OyYjMzg1MDA7JiMyODE2ODsmIzEyNDE1OyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMzc2LjMyMzUsNzQyLjI3LDM4Ni4xNTU1LDc0MS42OTQyLDM4MC43NjYxLDczOS45NzU3LDM4Mi40ODQ2LDczNC41ODYyLDM3Ni4zMjM1LDc0Mi4yNyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjExNy4wMDAxIiB4PSI0NzQuMTMzNSIgeT0iNzA0LjA2NjkiPiYjMTI0Nzc7JiMxMjUwMTsmIzEyNDg4OyYjMTI0ODc7JiMxMjUyMjsmIzEyNTQwOyYjMTI0ODg7JiMyNTEwNDsmIzIxMTUxOzwvdGV4dD48L2c+PCEtLWxpbmsgPz8/PyB0byAqZW5kKi0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSImIzIxMDY2OyYjMzg1MDA7JiMyODE2ODsmIzEyNDE1OyIgZGF0YS1lbnRpdHktMj0iKmVuZCoiIGRhdGEtc291cmNlLWxpbmU9IjE5IiBkYXRhLXVpZD0ibG5rMjUiIGlkPSJsaW5rXyYjMjEwNjY7JiMzODUwMDsmIzI4MTY4OyYjMTI0MTU7XyplbmQqIj48cGF0aCBkPSJNMjk5Ljg3MzUsNzc1LjY1IEMyMjguMjgzNSw3OTcuNDUgODMuMzEzNSw4NDEuNTkyOSA0Mi4zNDM1LDg1NC4wNjI5IiBmaWxsPSJub25lIiBpZD0iJiMyMTA2NjsmIzM4NTAwOyYjMjgxNjg7JiMxMjQxNTstdG8tKmVuZCoiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjM2LjYwMzUsODU1LjgxLDQ2LjM3ODMsODU3LjAxNjEsNDEuMzg2OSw4NTQuMzU0MSw0NC4wNDg4LDg0OS4zNjI3LDM2LjYwMzUsODU1LjgxIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PC9nPjwhLS1TUkM9W1hQQlRKaTkwNDhObC1uSXpEazQ1a0YxNVlFeVlFd2NxMU04Sjh2Nld5THlLaEY0bDRLNzJtdnBFSWpfMl9Zb3hqQWRxUlpGcGRKY3BQeFVyVHMwdDZsanNqM29OUlgzREdoamZveTdoLWs2T0V0Qy1RUXlGZFJtTDN4ZXl4Ymc2SXJNakhEcktNZVdHVDBsd1c1WTBmWUtJNTgwY2UweGUxLThCRDR4OHQ0dVJJTkJ1d2VzVFVfUDdfREFCdmFVTXpRLWtsN0diMkY0OFVhZWdETkRNNW5vVXhQWUprQjFfUUxhNkJEbGQ3VUROOTctN1l4WnRCY1Nrc1lpRFJ1T01jWWRER1AtemxYbno5Vy1YOGpnZ2c4U2VHdEtYdnRZTVMyd2dDMFBUZnFnUVJkbGg4aUdEbzBDekd0bU5MZ2NHck1uWjVCaU5PaS1GWHRWZzFqYnZTdGxUQzlZRTVzODlFV012Y1ZTYVN0OUxzV0xLVlU0X10tLT48L2c+PC9zdmc+" class="uml" alt="uml diagram" title="" /></p>
+<h2 id="2">2. 実装ステップ<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<p>以下は出品者管理機能の実装ステップの概要を表すフロー図です：</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkFDVElWSVRZIiBoZWlnaHQ9IjY1MnB4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6MTA0NnB4O2hlaWdodDo2NTJweDtiYWNrZ3JvdW5kOiNGRkZGRkY7IiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDQ2IDY1MiIgd2lkdGg9IjEwNDZweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PGRlZnMvPjxnPjxyZWN0IGZpbGw9Im5vbmUiIGhlaWdodD0iMjAuOTUzMSIgc3R5bGU9InN0cm9rZTpub25lO3N0cm9rZS13aWR0aDoxOyIgd2lkdGg9IjEwMTMuMTIyNCIgeD0iMTUiIHk9IjEyLjc0NTEiLz48ZWxsaXBzZSBjeD0iMTY0LjYzMjgiIGN5PSI0OC42OTgyIiBmaWxsPSIjMjIyMjIyIiByeD0iMTAiIHJ5PSIxMCIgc3R5bGU9InN0cm9rZTojMjIyMjIyO3N0cm9rZS13aWR0aDoxOyIvPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMzMuOTY4OCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxNzkuMjY0OCIgeD0iNzUuMDAwNCIgeT0iNzguNjk4MiIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjE1OS4yNjQ4IiB4PSI4NS4wMDA0IiB5PSI5OS44MzY5Ij4xLiAmIzIwOTg2OyYjMjE2OTc7JiMzMjc3MzsmIzEyNDU2OyYjMTI1MzE7JiMxMjQ4NjsmIzEyNDUxOyYjMTI0ODY7JiMxMjQ1MTsmIzEyMzk4OyYjMjAzMTY7JiMyNTEwNDs8L3RleHQ+PHJlY3QgZmlsbD0iI0YxRjFGMSIgaGVpZ2h0PSIzMy45Njg4IiByeD0iMTIuNSIgcnk9IjEyLjUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjI4Ny4yNjU2IiB4PSIyMSIgeT0iMTMyLjY2NyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjI2Ny4yNjU2IiB4PSIzMSIgeT0iMTUzLjgwNTciPjIuICYjMTI0OTY7JiMxMjUyMjsmIzEyNDg3OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7JiMyODE2ODsmIzEyNDE1OyYjMjA5ODY7JiMyMTY5NzsmIzMyNzczOyYjMTI0NTY7JiMxMjUzMTsmIzEyNDg2OyYjMTI0NTE7JiMxMjQ4NjsmIzEyNDUxOyYjMTIzOTg7JiMyMDMxNjsmIzI1MTA0OzwvdGV4dD48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjMzLjk2ODgiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMjYzLjI2NTQiIHg9IjMzLjAwMDEiIHk9IjE4Ni42MzU3Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMjQzLjI2NTQiIHg9IjQzLjAwMDEiIHk9IjIwNy43NzQ0Ij4zLiAmIzIwOTg2OyYjMjE2OTc7JiMzMjc3MzsmIzEyNTIyOyYjMTI1MDk7JiMxMjQ3MjsmIzEyNDg4OyYjMTI1MjI7JiMxMjQ1MjsmIzEyNTMxOyYjMTI0Nzk7JiMxMjU0MDsmIzEyNTAxOyYjMTI0NTU7JiMxMjU0MDsmIzEyNDczOyYjMTIzOTg7JiMyMzQ1MDsmIzMyNjgxOzwvdGV4dD48bGluZSBzdHlsZT0ic3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjEuNTsiIHgxPSIxNSIgeDI9IjE1IiB5MT0iMTIuNzQ1MSIgeTI9IjY0MC4zODU3Ii8+PHJlY3QgZmlsbD0iI0YxRjFGMSIgaGVpZ2h0PSIzMy45Njg4IiByeD0iMTIuNSIgcnk9IjEyLjUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjE1NS4yNjQ2IiB4PSIzNDguNjMyNyIgeT0iMjQwLjYwNDUiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxMzUuMjY0NiIgeD0iMzU4LjYzMjciIHk9IjI2MS43NDMyIj40LiAmIzIwOTg2OyYjMjE2OTc7JiMzMjc3MzsmIzEyNDY3OyYjMTI1MTA7JiMxMjUzMTsmIzEyNDg5OyYjMTIzOTg7JiMyMDMxNjsmIzI1MTA0OzwvdGV4dD48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjMzLjk2ODgiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMTQzLjI2NDUiIHg9IjM1NC42MzI3IiB5PSIyOTQuNTczMiIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjEyMy4yNjQ1IiB4PSIzNjQuNjMyNyIgeT0iMzE1LjcxMTkiPjUuICYjMjA5ODY7JiMyMTY5NzsmIzMyNzczOyYjMTI0NjM7JiMxMjQ1NjsmIzEyNTIyOyYjMTIzOTg7JiMyMDMxNjsmIzI1MTA0OzwvdGV4dD48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjMzLjk2ODgiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMTU1LjI2NDYiIHg9IjM0OC42MzI3IiB5PSIzNDguNTQyIi8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTM1LjI2NDYiIHg9IjM1OC42MzI3IiB5PSIzNjkuNjgwNyI+Ni4gJiMyMDk4NjsmIzIxNjk3OyYjMzI3NzM7JiMxMjQ2OTsmIzEyNTQwOyYjMTI0OTk7JiMxMjQ3MzsmIzEyMzk4OyYjMjM0NTU7JiMzNTAxMzs8L3RleHQ+PGxpbmUgc3R5bGU9InN0cm9rZTojMDAwMDAwO3N0cm9rZS13aWR0aDoxLjU7IiB4MT0iMzEyLjI2NTYiIHgyPSIzMTIuMjY1NiIgeTE9IjEyLjc0NTEiIHkyPSI2NDAuMzg1NyIvPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMzMuOTY4OCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxNjcuMjY0NyIgeD0iNTg2LjYzMTIiIHk9IjQwMi41MTA3Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTQ3LjI2NDciIHg9IjU5Ni42MzEyIiB5PSI0MjMuNjQ5NCI+Ny4gJiMyMDk4NjsmIzIxNjk3OyYjMzI3NzM7JiMxMjUyMjsmIzEyNTA5OyYjMTI0NzI7JiMxMjQ4ODsmIzEyNTIyOyYjMTIzOTg7JiMyMzQ1NTsmIzM1MDEzOzwvdGV4dD48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjMzLjk2ODgiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMTU1LjI2NDYiIHg9IjU5Mi42MzEzIiB5PSI0NTYuNDc5NSIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjEzNS4yNjQ2IiB4PSI2MDIuNjMxMyIgeT0iNDc3LjYxODIiPjguICYjMjA5ODY7JiMyMTY5NzsmIzMyNzczOyYjMTI1MTA7JiMxMjQ4MzsmIzEyNDk3OyYjMTI1NDA7JiMxMjM5ODsmIzIzNDU1OyYjMzUwMTM7PC90ZXh0PjxsaW5lIHN0eWxlPSJzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MS41OyIgeDE9IjUzOC4yNjQzIiB4Mj0iNTM4LjI2NDMiIHkxPSIxMi43NDUxIiB5Mj0iNjQwLjM4NTciLz48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjMzLjk2ODgiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMTkxLjI2NDkiIHg9IjgxOC42Mjk3IiB5PSI1MTAuNDQ4MiIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjE3MS4yNjQ5IiB4PSI4MjguNjI5NyIgeT0iNTMxLjU4NjkiPjkuICYjMjA5ODY7JiMyMTY5NzsmIzMyNzczOyYjMTI0Njc7JiMxMjUzMTsmIzEyNDg4OyYjMTI1MjU7JiMxMjU0MDsmIzEyNTIxOyYjMTI1NDA7JiMxMjM5ODsmIzIzNDU1OyYjMzUwMTM7PC90ZXh0PjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMzMuOTY4OCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxODEuODgzNyIgeD0iODIzLjMyMDMiIHk9IjU2NC40MTciLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxNjEuODgzNyIgeD0iODMzLjMyMDMiIHk9IjU4NS41NTU3Ij4xMC4gQVBJJiMxMjQ1NjsmIzEyNTMxOyYjMTI0ODk7JiMxMjUwOTsmIzEyNDUyOyYjMTI1MzE7JiMxMjQ4ODsmIzEyMzk4OyYjMzUzNzM7JiMyMzQ1MDs8L3RleHQ+PGVsbGlwc2UgY3g9IjkxNC4yNjIyIiBjeT0iNjI5LjM4NTciIGZpbGw9Im5vbmUiIHJ4PSIxMSIgcnk9IjExIiBzdHlsZT0ic3Ryb2tlOiMyMjIyMjI7c3Ryb2tlLXdpZHRoOjE7Ii8+PGVsbGlwc2UgY3g9IjkxNC4yNjIyIiBjeT0iNjI5LjM4NTciIGZpbGw9IiMyMjIyMjIiIHJ4PSI2IiByeT0iNiIgc3R5bGU9InN0cm9rZTojMjIyMjIyO3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MS41OyIgeDE9IjgwMC4yNjI4IiB4Mj0iODAwLjI2MjgiIHkxPSIxMi43NDUxIiB5Mj0iNjQwLjM4NTciLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjEuNTsiIHgxPSIxMDI2LjI2MTUiIHgyPSIxMDI2LjI2MTUiIHkxPSIxMi43NDUxIiB5Mj0iNjQwLjM4NTciLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iMTY0LjYzMjgiIHgyPSIxNjQuNjMyOCIgeTE9IjU4LjY5ODIiIHkyPSI3OC42OTgyIi8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSIxNjAuNjMyOCw2OC42OTgyLDE2NC42MzI4LDc4LjY5ODIsMTY4LjYzMjgsNjguNjk4MiwxNjQuNjMyOCw3Mi42OTgyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjE2NC42MzI4IiB4Mj0iMTY0LjYzMjgiIHkxPSIxMTIuNjY3IiB5Mj0iMTMyLjY2NyIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMTYwLjYzMjgsMTIyLjY2NywxNjQuNjMyOCwxMzIuNjY3LDE2OC42MzI4LDEyMi42NjcsMTY0LjYzMjgsMTI2LjY2NyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSIxNjQuNjMyOCIgeDI9IjE2NC42MzI4IiB5MT0iMTY2LjYzNTciIHkyPSIxODYuNjM1NyIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMTYwLjYzMjgsMTc2LjYzNTcsMTY0LjYzMjgsMTg2LjYzNTcsMTY4LjYzMjgsMTc2LjYzNTcsMTY0LjYzMjgsMTgwLjYzNTciIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNDI2LjI2NSIgeDI9IjQyNi4yNjUiIHkxPSIyNzQuNTczMiIgeTI9IjI5NC41NzMyIi8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI0MjIuMjY1LDI4NC41NzMyLDQyNi4yNjUsMjk0LjU3MzIsNDMwLjI2NSwyODQuNTczMiw0MjYuMjY1LDI4OC41NzMyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjQyNi4yNjUiIHgyPSI0MjYuMjY1IiB5MT0iMzI4LjU0MiIgeTI9IjM0OC41NDIiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjQyMi4yNjUsMzM4LjU0Miw0MjYuMjY1LDM0OC41NDIsNDMwLjI2NSwzMzguNTQyLDQyNi4yNjUsMzQyLjU0MiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSI2NzAuMjYzNiIgeDI9IjY3MC4yNjM2IiB5MT0iNDM2LjQ3OTUiIHkyPSI0NTYuNDc5NSIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iNjY2LjI2MzYsNDQ2LjQ3OTUsNjcwLjI2MzYsNDU2LjQ3OTUsNjc0LjI2MzYsNDQ2LjQ3OTUsNjcwLjI2MzYsNDUwLjQ3OTUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iOTE0LjI2MjIiIHgyPSI5MTQuMjYyMiIgeTE9IjU0NC40MTciIHkyPSI1NjQuNDE3Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI5MTAuMjYyMiw1NTQuNDE3LDkxNC4yNjIyLDU2NC40MTcsOTE4LjI2MjIsNTU0LjQxNyw5MTQuMjYyMiw1NTguNDE3IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjkxNC4yNjIyIiB4Mj0iOTE0LjI2MjIiIHkxPSI1OTguMzg1NyIgeTI9IjYxOC4zODU3Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI5MTAuMjYyMiw2MDguMzg1Nyw5MTQuMjYyMiw2MTguMzg1Nyw5MTguMjYyMiw2MDguMzg1Nyw5MTQuMjYyMiw2MTIuMzg1NyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSIxNjQuNjMyOCIgeDI9IjE2NC42MzI4IiB5MT0iMjIwLjYwNDUiIHkyPSIyMjUuNjA0NSIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSIxNjQuNjMyOCIgeDI9IjQyNi4yNjUiIHkxPSIyMjUuNjA0NSIgeTI9IjIyNS42MDQ1Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjQyNi4yNjUiIHgyPSI0MjYuMjY1IiB5MT0iMjI1LjYwNDUiIHkyPSIyNDAuNjA0NSIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iNDIyLjI2NSwyMzAuNjA0NSw0MjYuMjY1LDI0MC42MDQ1LDQzMC4yNjUsMjMwLjYwNDUsNDI2LjI2NSwyMzQuNjA0NSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSI0MjYuMjY1IiB4Mj0iNDI2LjI2NSIgeTE9IjM4Mi41MTA3IiB5Mj0iMzg3LjUxMDciLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNDI2LjI2NSIgeDI9IjY3MC4yNjM2IiB5MT0iMzg3LjUxMDciIHkyPSIzODcuNTEwNyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSI2NzAuMjYzNiIgeDI9IjY3MC4yNjM2IiB5MT0iMzg3LjUxMDciIHkyPSI0MDIuNTEwNyIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iNjY2LjI2MzYsMzkyLjUxMDcsNjcwLjI2MzYsNDAyLjUxMDcsNjc0LjI2MzYsMzkyLjUxMDcsNjcwLjI2MzYsMzk2LjUxMDciIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNjcwLjI2MzYiIHgyPSI2NzAuMjYzNiIgeTE9IjQ5MC40NDgyIiB5Mj0iNDk1LjQ0ODIiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNjcwLjI2MzYiIHgyPSI5MTQuMjYyMiIgeTE9IjQ5NS40NDgyIiB5Mj0iNDk1LjQ0ODIiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iOTE0LjI2MjIiIHgyPSI5MTQuMjYyMiIgeTE9IjQ5NS40NDgyIiB5Mj0iNTEwLjQ0ODIiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjkxMC4yNjIyLDUwMC40NDgyLDkxNC4yNjIyLDUxMC40NDgyLDkxOC4yNjIyLDUwMC40NDgyLDkxNC4yNjIyLDUwNC40NDgyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTQzLjk5OTEiIHg9IjkxLjYzMzIiIHk9IjI5LjQ1MzEiPiYjMTI0ODk7JiMxMjUxMzsmIzEyNDUyOyYjMTI1MzE7JiMxMjUyNDsmIzEyNDUyOyYjMTI1MTY7JiMxMjU0MDs8L3RleHQ+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMjE1Ljk5ODciIHg9IjMxNy4yNjU2IiB5PSIyOS40NTMxIj4mIzEyNDUwOyYjMTI1MDM7JiMxMjUyMjsmIzEyNDY1OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7JiMxMjUyNDsmIzEyNDUyOyYjMTI1MTY7JiMxMjU0MDs8L3RleHQ+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMjUxLjk5ODUiIHg9IjU0My4yNjQzIiB5PSIyOS40NTMxIj4mIzEyNDUyOyYjMTI1MzE7JiMxMjUwMTsmIzEyNTIxOyYjMTI0NzM7JiMxMjQ4ODsmIzEyNTIxOyYjMTI0NjM7JiMxMjQ4MTsmIzEyNTE1OyYjMTI1MjQ7JiMxMjQ1MjsmIzEyNTE2OyYjMTI1NDA7PC90ZXh0Pjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjIxNS45OTg3IiB4PSI4MDUuMjYyOCIgeT0iMjkuNDUzMSI+JiMxMjQ1MjsmIzEyNTMxOyYjMTI0Nzk7JiMxMjU0MDsmIzEyNTAxOyYjMTI0NTU7JiMxMjU0MDsmIzEyNDczOyYjMTI1MjQ7JiMxMjQ1MjsmIzEyNTE2OyYjMTI1NDA7PC90ZXh0PjwhLS1TUkM9W1pQQlZJVzkxNUNSbHpvZHMyUFJpVnhETk5OaE5BX0c0SE5jdjV5cVNwRHF4R29JOEw2bTVOU2NEYUNZWXljNC1yX09uY1phZ3hJWDRDMG0zeXZ0bC12cXA0dTBZSzFVZzFuZzM3bGNXcnFWV041UEVCb2dFQTdia0xkbEY2WkFfZ2E4RE03T0Q1SXp0Y1N1LXgtVFh0TlY0amtVMndnMFhnQU9UZTV2MVZRc1ZKcUI4d0p6RFRlZm5uZ2U1REc2NXZobzBMNURaSmFzZUZnVXl3VjhpbFZsLUlkbWRXN2UwdFJCdWtTWFdqb1BzaFFScVJQaXJLUDVhcHo4eUNWUW1BRFl0MTJ6Q3JMWm5URkF1b1pvQm1KUDFZUmFvWklKNlpJR2VOZ0N3LUFGdE5xem5RQ2FxRU81a0pGZmN4a1FpeENJWnpKY0NFTXg0TE9kakFLZlJkZGp5S2J3ek55SHlsTU1ESkZGMUkzLTNoX19Ec1ZhRl0tLT48L2c+PC9zdmc+" class="uml" alt="uml diagram" title="" /></p>
+<h3 id="21">2.1 ドメインレイヤーの実装<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<h4 id="211">2.1.1 出品者エンティティの作成<a class="headerlink" href="#211" title="Permanent link">&para;</a></h4>
+<ol>
+<li><code>internal/domain/entities/seller.go</code> に出品者エンティティを定義します。</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">entities</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;time&quot;</span>
+<span class="w">    </span><span class="s">&quot;errors&quot;</span>
+<span class="w">    </span><span class="s">&quot;regexp&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">Seller</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Id</span><span class="w">        </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Name</span><span class="w">      </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Email</span><span class="w">     </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">CreatedAt</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>
+<span class="w">    </span><span class="nx">UpdatedAt</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>
+<span class="w">    </span><span class="nx">DeletedAt</span><span class="w"> </span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="nx">Validate</span><span class="p">()</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">Name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;seller name cannot be empty&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">Email</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;seller email cannot be empty&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// メールアドレスの簡易バリデーション</span>
+<span class="w">    </span><span class="nx">emailRegex</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">regexp</span><span class="p">.</span><span class="nx">MustCompile</span><span class="p">(</span><span class="s">`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">emailRegex</span><span class="p">.</span><span class="nx">MatchString</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">Email</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;invalid email format&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="nx">UpdateName</span><span class="p">(</span><span class="nx">name</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;seller name cannot be empty&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">s</span><span class="p">.</span><span class="nx">Name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">name</span>
+<span class="w">    </span><span class="nx">s</span><span class="p">.</span><span class="nx">UpdatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">()</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="nx">UpdateEmail</span><span class="p">(</span><span class="nx">email</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">email</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;seller email cannot be empty&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// メールアドレスの簡易バリデーション</span>
+<span class="w">    </span><span class="nx">emailRegex</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">regexp</span><span class="p">.</span><span class="nx">MustCompile</span><span class="p">(</span><span class="s">`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">emailRegex</span><span class="p">.</span><span class="nx">MatchString</span><span class="p">(</span><span class="nx">email</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;invalid email format&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">s</span><span class="p">.</span><span class="nx">Email</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">email</span>
+<span class="w">    </span><span class="nx">s</span><span class="p">.</span><span class="nx">UpdatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">()</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="nx">SoftDelete</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">now</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">()</span>
+<span class="w">    </span><span class="nx">s</span><span class="p">.</span><span class="nx">DeletedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">now</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="nx">IsDeleted</span><span class="p">()</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">DeletedAt</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="212">2.1.2 バリデーション済み出品者エンティティの作成<a class="headerlink" href="#212" title="Permanent link">&para;</a></h4>
+<ol>
+<li><code>internal/domain/entities/validated_seller.go</code> にバリデーション済み出品者エンティティを定義します。</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">entities</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">ValidatedSeller</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Seller</span><span class="w"> </span><span class="nx">Seller</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">NewValidatedSeller</span><span class="p">(</span><span class="nx">seller</span><span class="w"> </span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">ValidatedSeller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">seller</span><span class="p">.</span><span class="nx">Validate</span><span class="p">();</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">ValidatedSeller</span><span class="p">{</span><span class="nx">Seller</span><span class="p">:</span><span class="w"> </span><span class="nx">seller</span><span class="p">},</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="213">2.1.3 出品者リポジトリインターフェースの定義<a class="headerlink" href="#213" title="Permanent link">&para;</a></h4>
+<ol>
+<li><code>internal/domain/repositories/seller_repository.go</code> に出品者リポジトリインターフェースを定義します。</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">repositories</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/domain/entities&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">SellerRepository</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Save</span><span class="p">(</span><span class="nx">seller</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span>
+<span class="w">    </span><span class="nx">FindAll</span><span class="p">()</span><span class="w"> </span><span class="p">([]</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">ById</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">Update</span><span class="p">(</span><span class="nx">seller</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span>
+<span class="w">    </span><span class="nx">Delete</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="22">2.2 アプリケーションレイヤーの実装<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<h4 id="221">2.2.1 出品者コマンドの作成<a class="headerlink" href="#221" title="Permanent link">&para;</a></h4>
+<ol>
+<li><code>internal/application/command/seller_commands.go</code> に出品者コマンドを定義します。</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">command</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">CreateSellerCommand</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Name</span><span class="w">  </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Email</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">UpdateSellerNameCommand</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Id</span><span class="w">   </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Name</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">UpdateSellerEmailCommand</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Id</span><span class="w">    </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Email</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">DeleteSellerCommand</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Id</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="222">2.2.2 出品者クエリの作成<a class="headerlink" href="#222" title="Permanent link">&para;</a></h4>
+<ol>
+<li><code>internal/application/query/seller_queries.go</code> に出品者クエリを定義します。</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">query</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">FindAllSellersQuery</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">FindSellerByIdQuery</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Id</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="223">2.2.3 出品者サービスの実装<a class="headerlink" href="#223" title="Permanent link">&para;</a></h4>
+<ol>
+<li><code>internal/application/services/seller_service.go</code> に出品者サービスを実装します。</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">services</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;errors&quot;</span>
+<span class="w">    </span><span class="s">&quot;time&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/google/uuid&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/application/command&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/domain/entities&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/domain/repositories&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">SellerService</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">sellerRepo</span><span class="w"> </span><span class="nx">repositories</span><span class="p">.</span><span class="nx">SellerRepository</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">NewSellerService</span><span class="p">(</span><span class="nx">sellerRepo</span><span class="w"> </span><span class="nx">repositories</span><span class="p">.</span><span class="nx">SellerRepository</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">SellerService</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">SellerService</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">sellerRepo</span><span class="p">:</span><span class="w"> </span><span class="nx">sellerRepo</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">SellerService</span><span class="p">)</span><span class="w"> </span><span class="nx">Create</span><span class="p">(</span><span class="nx">cmd</span><span class="w"> </span><span class="nx">command</span><span class="p">.</span><span class="nx">CreateSellerCommand</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 出品者エンティティの作成</span>
+<span class="w">    </span><span class="nx">now</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">()</span>
+<span class="w">    </span><span class="nx">seller</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">Id</span><span class="p">:</span><span class="w">        </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">New</span><span class="p">().</span><span class="nx">String</span><span class="p">(),</span>
+<span class="w">        </span><span class="nx">Name</span><span class="p">:</span><span class="w">      </span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Email</span><span class="p">:</span><span class="w">     </span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Email</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">CreatedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">now</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">UpdatedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">now</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// バリデーション</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">NewValidatedSeller</span><span class="p">(</span><span class="nx">seller</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 保存</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">sellerRepo</span><span class="p">.</span><span class="nx">Save</span><span class="p">(</span><span class="nx">seller</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">seller</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">SellerService</span><span class="p">)</span><span class="w"> </span><span class="nx">FindAll</span><span class="p">()</span><span class="w"> </span><span class="p">([]</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">sellerRepo</span><span class="p">.</span><span class="nx">FindAll</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">SellerService</span><span class="p">)</span><span class="w"> </span><span class="nx">ById</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">sellerRepo</span><span class="p">.</span><span class="nx">ById</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">SellerService</span><span class="p">)</span><span class="w"> </span><span class="nx">UpdateName</span><span class="p">(</span><span class="nx">cmd</span><span class="w"> </span><span class="nx">command</span><span class="p">.</span><span class="nx">UpdateSellerNameCommand</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 既存の出品者を取得</span>
+<span class="w">    </span><span class="nx">seller</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">sellerRepo</span><span class="p">.</span><span class="nx">ById</span><span class="p">(</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Id</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 名前を更新</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">seller</span><span class="p">.</span><span class="nx">UpdateName</span><span class="p">(</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Name</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// バリデーション</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">NewValidatedSeller</span><span class="p">(</span><span class="nx">seller</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 保存</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">sellerRepo</span><span class="p">.</span><span class="nx">Update</span><span class="p">(</span><span class="nx">seller</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">seller</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">SellerService</span><span class="p">)</span><span class="w"> </span><span class="nx">UpdateEmail</span><span class="p">(</span><span class="nx">cmd</span><span class="w"> </span><span class="nx">command</span><span class="p">.</span><span class="nx">UpdateSellerEmailCommand</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 既存の出品者を取得</span>
+<span class="w">    </span><span class="nx">seller</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">sellerRepo</span><span class="p">.</span><span class="nx">ById</span><span class="p">(</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Id</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// メールアドレスを更新</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">seller</span><span class="p">.</span><span class="nx">UpdateEmail</span><span class="p">(</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Email</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// バリデーション</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">NewValidatedSeller</span><span class="p">(</span><span class="nx">seller</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 保存</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">sellerRepo</span><span class="p">.</span><span class="nx">Update</span><span class="p">(</span><span class="nx">seller</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">seller</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">SellerService</span><span class="p">)</span><span class="w"> </span><span class="nx">Delete</span><span class="p">(</span><span class="nx">cmd</span><span class="w"> </span><span class="nx">command</span><span class="p">.</span><span class="nx">DeleteSellerCommand</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 既存の出品者を取得して存在確認</span>
+<span class="w">    </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">sellerRepo</span><span class="p">.</span><span class="nx">ById</span><span class="p">(</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Id</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;seller not found&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 削除</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">sellerRepo</span><span class="p">.</span><span class="nx">Delete</span><span class="p">(</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Id</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="23">2.3 インフラストラクチャレイヤーの実装<a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
+<h4 id="231-postgresql">2.3.1 出品者リポジトリの実装（PostgreSQL）<a class="headerlink" href="#231-postgresql" title="Permanent link">&para;</a></h4>
+<ol>
+<li><code>internal/infrastructure/db/postgres/seller_repository.go</code> に出品者リポジトリの実装を作成します。</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">postgres</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;errors&quot;</span>
+<span class="w">    </span><span class="s">&quot;gorm.io/gorm&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/domain/entities&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">GormSellerRepository</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">db</span><span class="w"> </span><span class="o">*</span><span class="nx">gorm</span><span class="p">.</span><span class="nx">DB</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">NewGormSellerRepository</span><span class="p">(</span><span class="nx">db</span><span class="w"> </span><span class="o">*</span><span class="nx">gorm</span><span class="p">.</span><span class="nx">DB</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">GormSellerRepository</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">GormSellerRepository</span><span class="p">{</span><span class="nx">db</span><span class="p">:</span><span class="w"> </span><span class="nx">db</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">GormSellerRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">Save</span><span class="p">(</span><span class="nx">seller</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">dbSeller</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">toDBSeller</span><span class="p">(</span><span class="nx">seller</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">result</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">db</span><span class="p">.</span><span class="nx">Create</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dbSeller</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Error</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">GormSellerRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">FindAll</span><span class="p">()</span><span class="w"> </span><span class="p">([]</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">dbSellers</span><span class="w"> </span><span class="p">[]</span><span class="nx">DBSeller</span>
+<span class="w">    </span><span class="nx">result</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">db</span><span class="p">.</span><span class="nx">Find</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dbSellers</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Error</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">sellers</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">([]</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">dbSellers</span><span class="p">))</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">dbSeller</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">dbSellers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">sellers</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">toDomainSeller</span><span class="p">(</span><span class="nx">dbSeller</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">sellers</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">GormSellerRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">ById</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">dbSeller</span><span class="w"> </span><span class="nx">DBSeller</span>
+<span class="w">    </span><span class="nx">result</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">db</span><span class="p">.</span><span class="nx">First</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dbSeller</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id = ?&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Is</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">Error</span><span class="p">,</span><span class="w"> </span><span class="nx">gorm</span><span class="p">.</span><span class="nx">ErrRecordNotFound</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;seller not found&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{},</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Error</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">toDomainSeller</span><span class="p">(</span><span class="nx">dbSeller</span><span class="p">),</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">GormSellerRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">Update</span><span class="p">(</span><span class="nx">seller</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">dbSeller</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">toDBSeller</span><span class="p">(</span><span class="nx">seller</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">result</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">db</span><span class="p">.</span><span class="nx">Save</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dbSeller</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Error</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">GormSellerRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">Delete</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ソフトデリート</span>
+<span class="w">    </span><span class="nx">result</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">db</span><span class="p">.</span><span class="nx">Delete</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">DBSeller</span><span class="p">{},</span><span class="w"> </span><span class="s">&quot;id = ?&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Error</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="232">2.3.2 出品者マッパーの実装<a class="headerlink" href="#232" title="Permanent link">&para;</a></h4>
+<ol>
+<li><code>internal/infrastructure/db/postgres/seller_mapper.go</code> に出品者マッパーを実装します。</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">postgres</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;time&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/domain/entities&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">DBSeller</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ID</span><span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="s">`gorm:&quot;primaryKey&quot;`</span>
+<span class="w">    </span><span class="nx">Name</span><span class="w">      </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">Email</span><span class="w">     </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">CreatedAt</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>
+<span class="w">    </span><span class="nx">UpdatedAt</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>
+<span class="w">    </span><span class="nx">DeletedAt</span><span class="w"> </span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w"> </span><span class="s">`gorm:&quot;index&quot;`</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">DBSeller</span><span class="p">)</span><span class="w"> </span><span class="nx">TableName</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;sellers&quot;</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">toDBSeller</span><span class="p">(</span><span class="nx">seller</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">)</span><span class="w"> </span><span class="nx">DBSeller</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">DBSeller</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">ID</span><span class="p">:</span><span class="w">        </span><span class="nx">seller</span><span class="p">.</span><span class="nx">Id</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Name</span><span class="p">:</span><span class="w">      </span><span class="nx">seller</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Email</span><span class="p">:</span><span class="w">     </span><span class="nx">seller</span><span class="p">.</span><span class="nx">Email</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">CreatedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">seller</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">UpdatedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">seller</span><span class="p">.</span><span class="nx">UpdatedAt</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">DeletedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">seller</span><span class="p">.</span><span class="nx">DeletedAt</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">toDomainSeller</span><span class="p">(</span><span class="nx">dbSeller</span><span class="w"> </span><span class="nx">DBSeller</span><span class="p">)</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">entities</span><span class="p">.</span><span class="nx">Seller</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">Id</span><span class="p">:</span><span class="w">        </span><span class="nx">dbSeller</span><span class="p">.</span><span class="nx">ID</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Name</span><span class="p">:</span><span class="w">      </span><span class="nx">dbSeller</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Email</span><span class="p">:</span><span class="w">     </span><span class="nx">dbSeller</span><span class="p">.</span><span class="nx">Email</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">CreatedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">dbSeller</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">UpdatedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">dbSeller</span><span class="p">.</span><span class="nx">UpdatedAt</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">DeletedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">dbSeller</span><span class="p">.</span><span class="nx">DeletedAt</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="24">2.4 インターフェースレイヤーの実装<a class="headerlink" href="#24" title="Permanent link">&para;</a></h3>
+<h4 id="241">2.4.1 出品者コントローラーの実装<a class="headerlink" href="#241" title="Permanent link">&para;</a></h4>
+<ol>
+<li><code>internal/interface/api/rest/seller_controller.go</code> に出品者コントローラーを実装します。</li>
+</ol>
+<p>```go
+package rest</p>
+<p>import (
+    "net/http"
+    "time"
+    "github.com/labstack/echo/v4"
+    "github.com/sklinkert/go-ddd/internal/application/command"
+    "github.com/sklinkert/go-ddd/internal/application/services"
+)</p>
+<p>type SellerController struct {
+    sellerService *services.SellerService
+}</p>
+<p>func NewSellerController(e <em>echo.Echo, sellerService </em>services.SellerService) {
+    controller := &amp;SellerController{
+        sellerService: sellerService,
+    }</p>
+<div class="highlight"><pre><span></span><code>api := e.Group(&quot;/api/v1&quot;)
+api.POST(&quot;/sellers&quot;, controller.Create)
+api.GET(&quot;/sellers&quot;, controller.FindAll)
+api.GET(&quot;/sellers/:id&quot;, controller.ById)
+api.PUT(&quot;/sellers/:id/name&quot;, controller.UpdateName)
+api.PUT(&quot;/sellers/:id/email&quot;, controller.UpdateEmail)
+api.DELETE(&quot;/sellers/:id&quot;, controller.Delete)
+</code></pre></div>
+<p>}</p>
+<p>type CreateSellerRequest struct {
+    Name  string <code>json:"name"</code>
+    Email string <code>json:"email"</code>
+}</p>
+<p>type UpdateSellerNameRequest struct {
+    Name string <code>json:"name"</code>
+}</p>
+<p>type UpdateSellerEmailRequest struct {
+    Email string <code>json:"email"</code>
+}</p>
+<p>type SellerResponse struct {
+    Id        string  <code>json:"id"</code>
+    Name      string  <code>json:"name"</code>
+    Email     string  <code>json:"email"</code>
+    CreatedAt string  <code>json:"createdAt"</code>
+    UpdatedAt string  <code>json:"updatedAt"</code>
+    DeletedAt *string <code>json:"deletedAt,omitempty"</code>
+}</p>
+<p>func (ctrl *SellerController) Create(c echo.Context) error {
+    var req CreateSellerRequest
+    if err := c.Bind(&amp;req); err != nil {
+        return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+    }</p>
+<div class="highlight"><pre><span></span><code>cmd := command.CreateSellerCommand{
+    Name:  req.Name,
+    Email: req.Email,
+}
+
+seller, err := ctrl.sellerService.Create(cmd)
+if err != nil {
+    return c.JSON(http.StatusBadRequest, map[string]string{&quot;error&quot;: err.Error()})
+}
+
+resp := toSellerResponse(seller)
+return c.JSON(http.StatusCreated, resp)
+</code></pre></div>
+<p>}</p>
+<p>func (ctrl *SellerController) FindAll(c echo.Context) error {
+    sellers, err := ctrl.sellerService.FindAll()
+    if err != nil {
+        return c.JSON(http</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/yourusername/go-ddd" target="_blank" rel="noopener" title="GitHub Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+        <script src="../wiki/assets/js/extra.js"></script>
+      
+    
+  </body>
+</html>
