@@ -55,17 +55,20 @@ plugins:
 
 nav:
   - Home: home.md
-  - Architecture: architecture.md
   - Features: feature_list.md
   - User Stories: user_stories.md
   - Planning:
     - Release Plan: release_plan.md
     - Iteration Plan: iteration_plan.md
+  - Architecture: architecture.md
   - Implementation:
     - System: system_implementation.md
     - Product: product_implementation.md
     - Seller: seller_implementation.md
+    - Modules Explanation: modules_explanation.md
     - ORM Mapper: orm_mapper_implementation.md
+    - Echo Framework: echo_framework_implementation.md
+    - Echo JWT Authentication: echo_jwt_authentication.md
   - Setup:
     - Setup Guide: setup_guide.md
     - Setup Guide (Mermaid): setup_guide_mermaid.md
