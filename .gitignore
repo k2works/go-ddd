@@ -32,3 +32,5 @@ ops/docker/schemaspy/output
 ops/docker/mssql/log
 ops/docker/mssql/data
 app/backend/cmd/marketplace/marketplace
+
+vendor
