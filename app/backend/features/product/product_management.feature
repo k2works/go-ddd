@@ -1,26 +1,26 @@
 # language: ja
-フィーチャ: Product Management
-  In order to manage products in the system
-  As a user
-  I need to be able to create, read, update, and delete products
+フィーチャ: 商品管理
+  システム内の商品を管理するために
+  ユーザーとして
+  商品の作成、読み取り、更新、削除ができる必要があります
 
-  シナリオ: Create a new product
-    前提 I have product details
-      | name        | price |
-      | Test Product| 10.99 |
-    かつ I have a seller
-    もし I create a new product
-    ならば the product should be saved in the system
-    かつ I should be able to retrieve the product by ID
+  シナリオ: 新しい商品を作成する
+    前提 商品の詳細を持っています
+      | 名前        | 価格  |
+      | テスト商品  | 10.99 |
+    かつ 出品者を持っています
+    もし 新しい商品を作成します
+    ならば 商品がシステムに保存されるべきです
+    かつ IDで商品を取得できるべきです
 
-  シナリオ: Update an existing product
-    前提 I have an existing product
-    もし I update the product details
-      | name           | price |
-      | Updated Product| 15.99 |
-    ならば the product details should be updated in the system
+  シナリオ: 既存の商品を更新する
+    前提 既存の商品を持っています
+    もし 商品の詳細を更新します
+      | 名前           | 価格  |
+      | 更新された商品 | 15.99 |
+    ならば 商品の詳細がシステムで更新されるべきです
 
-  シナリオ: Delete a product
-    前提 I have an existing product
-    もし I delete the product
-    ならば the product should be removed from the system
+  シナリオ: 商品を削除する
+    前提 既存の商品を持っています
+    もし 商品を削除します
+    ならば 商品がシステムから削除されるべきです

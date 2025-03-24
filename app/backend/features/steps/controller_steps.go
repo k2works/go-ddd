@@ -37,6 +37,18 @@ func NewControllerContext() *ControllerContext {
 
 // RegisterSteps registers the controller steps with the godog suite
 func (c *ControllerContext) RegisterSteps(ctx *godog.ScenarioContext) {
+	// Japanese step definitions
+	ctx.Step(`^APIのための商品詳細を持っています$`, c.iHaveProductDetailsForAPI)
+	ctx.Step(`^商品詳細を含めて"([^"]*)"にPOSTリクエストを送信します$`, c.iSendAPOSTRequestToWithTheProductDetails)
+	ctx.Step(`^レスポンスステータスコードは(\d+)であるべきです$`, c.theResponseStatusCodeShouldBe)
+	ctx.Step(`^レスポンスは作成された商品詳細を含むべきです$`, c.theResponseShouldContainTheCreatedProductDetails)
+	ctx.Step(`^システムに商品があります$`, c.thereAreProductsInTheSystem)
+	ctx.Step(`^"([^"]*)"にGETリクエストを送信します$`, c.iSendAGETRequestTo)
+	ctx.Step(`^レスポンスは商品のリストを含むべきです$`, c.theResponseShouldContainAListOfProducts)
+	ctx.Step(`^システムにID "([^"]*)"の商品があります$`, c.thereIsAProductWithIDInTheSystem)
+	ctx.Step(`^レスポンスは商品詳細を含むべきです$`, c.theResponseShouldContainTheProductDetails)
+
+	// Keep English step definitions for backward compatibility
 	ctx.Step(`^I have product details for API$`, c.iHaveProductDetailsForAPI)
 	ctx.Step(`^I send a POST request to "([^"]*)" with the product details$`, c.iSendAPOSTRequestToWithTheProductDetails)
 	ctx.Step(`^the response status code should be (\d+)$`, c.theResponseStatusCodeShouldBe)
@@ -76,16 +88,16 @@ func (c *ControllerContext) iHaveProductDetailsForAPI(table *godog.Table) error 
 			header := table.Rows[0].Cells[j].Value
 			// Use proper JSON field names with capitalized first letter
 			switch header {
-			case "name":
+			case "name", "名前":
 				c.requestBody["Name"] = cell.Value
-			case "price":
+			case "price", "価格":
 				// Convert price to float64
 				price, err := strconv.ParseFloat(cell.Value, 64)
 				if err != nil {
 					return fmt.Errorf("failed to parse price: %w", err)
 				}
 				c.requestBody["Price"] = price
-			case "sellerId":
+			case "sellerId", "出品者ID":
 				c.requestBody["SellerId"] = cell.Value
 			default:
 				c.requestBody[header] = cell.Value

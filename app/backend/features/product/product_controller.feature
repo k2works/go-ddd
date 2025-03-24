@@ -1,25 +1,25 @@
 # language: ja
-フィーチャ: Product Controller API
-  In order to manage products through the API
-  As a client
-  I need to be able to create, read, update, and delete products via HTTP requests
+フィーチャ: 商品コントローラーAPI
+  APIを通じて商品を管理するために
+  クライアントとして
+  HTTPリクエストを介して商品の作成、読み取り、更新、削除ができる必要があります
 
-  シナリオ: Create a new product via API
-    前提 I have product details for API
-      | name        | price | sellerId                             |
-      | Test Product| 10.99 | 00000000-0000-0000-0000-000000000001 |
-    もし I send a POST request to "/api/v1/products" with the product details
-    ならば the response status code should be 201
-    かつ the response should contain the created product details
+  シナリオ: APIを介して新しい商品を作成する
+    前提 APIのための商品詳細を持っています
+      | 名前        | 価格  | 出品者ID                             |
+      | テスト商品  | 10.99 | 00000000-0000-0000-0000-000000000001 |
+    もし 商品詳細を含めて"/api/v1/products"にPOSTリクエストを送信します
+    ならば レスポンスステータスコードは201であるべきです
+    かつ レスポンスは作成された商品詳細を含むべきです
 
-  シナリオ: Get all products via API
-    前提 there are products in the system
-    もし I send a GET request to "/api/v1/products"
-    ならば the response status code should be 200
-    かつ the response should contain a list of products
+  シナリオ: APIを介してすべての商品を取得する
+    前提 システムに商品があります
+    もし "/api/v1/products"にGETリクエストを送信します
+    ならば レスポンスステータスコードは200であるべきです
+    かつ レスポンスは商品のリストを含むべきです
 
-  シナリオ: Get a product by ID via API
-    前提 there is a product with ID "00000000-0000-0000-0000-000000000001" in the system
-    もし I send a GET request to "/api/v1/products/00000000-0000-0000-0000-000000000001"
-    ならば the response status code should be 200
-    かつ the response should contain the product details
+  シナリオ: APIを介してIDで商品を取得する
+    前提 システムにID "00000000-0000-0000-0000-000000000001"の商品があります
+    もし "/api/v1/products/00000000-0000-0000-0000-000000000001"にGETリクエストを送信します
+    ならば レスポンスステータスコードは200であるべきです
+    かつ レスポンスは商品詳細を含むべきです

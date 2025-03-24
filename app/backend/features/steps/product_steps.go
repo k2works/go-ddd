@@ -24,6 +24,19 @@ func NewProductContext() *ProductContext {
 
 // RegisterSteps registers the product steps with the godog suite
 func (p *ProductContext) RegisterSteps(ctx *godog.ScenarioContext) {
+	// Japanese step definitions
+	ctx.Step(`^商品の詳細を持っています$`, p.iHaveProductDetails)
+	ctx.Step(`^出品者を持っています$`, p.iHaveASeller)
+	ctx.Step(`^新しい商品を作成します$`, p.iCreateANewProduct)
+	ctx.Step(`^商品がシステムに保存されるべきです$`, p.theProductShouldBeSavedInTheSystem)
+	ctx.Step(`^IDで商品を取得できるべきです$`, p.iShouldBeAbleToRetrieveTheProductByID)
+	ctx.Step(`^既存の商品を持っています$`, p.iHaveAnExistingProduct)
+	ctx.Step(`^商品の詳細を更新します$`, p.iUpdateTheProductDetails)
+	ctx.Step(`^商品の詳細がシステムで更新されるべきです$`, p.theProductDetailsShouldBeUpdatedInTheSystem)
+	ctx.Step(`^商品を削除します$`, p.iDeleteTheProduct)
+	ctx.Step(`^商品がシステムから削除されるべきです$`, p.theProductShouldBeRemovedFromTheSystem)
+
+	// Keep English step definitions for backward compatibility
 	ctx.Step(`^I have product details$`, p.iHaveProductDetails)
 	ctx.Step(`^I have a seller$`, p.iHaveASeller)
 	ctx.Step(`^I create a new product$`, p.iCreateANewProduct)
@@ -44,7 +57,15 @@ func (p *ProductContext) iHaveProductDetails(table *godog.Table) error {
 		row := table.Rows[i]
 		for j, cell := range row.Cells {
 			header := table.Rows[0].Cells[j].Value
-			p.productDetails[header] = cell.Value
+			// Map Japanese headers to English
+			switch header {
+			case "名前":
+				p.productDetails["name"] = cell.Value
+			case "価格":
+				p.productDetails["price"] = cell.Value
+			default:
+				p.productDetails[header] = cell.Value
+			}
 		}
 	}
 
@@ -121,7 +142,15 @@ func (p *ProductContext) iUpdateTheProductDetails(table *godog.Table) error {
 		row := table.Rows[i]
 		for j, cell := range row.Cells {
 			header := table.Rows[0].Cells[j].Value
-			p.productDetails[header] = cell.Value
+			// Map Japanese headers to English
+			switch header {
+			case "名前":
+				p.productDetails["name"] = cell.Value
+			case "価格":
+				p.productDetails["price"] = cell.Value
+			default:
+				p.productDetails[header] = cell.Value
+			}
 		}
 	}
 
