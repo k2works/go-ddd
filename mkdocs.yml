@@ -67,6 +67,7 @@ nav:
     - Seller: seller_implementation.md
     - Modules Explanation: modules_explanation.md
     - ORM Mapper: orm_mapper_implementation.md
+    - Gen Implementation: gen_implementation.md
     - Echo Framework: echo_framework_implementation.md
     - Echo JWT Authentication: echo_jwt_authentication.md
     - Environment Variables: environment_variable_management.md

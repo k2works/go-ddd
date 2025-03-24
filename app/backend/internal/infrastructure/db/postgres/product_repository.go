@@ -7,14 +7,17 @@ import (
 	"gorm.io/gorm"
 )
 
+// GormProductRepository implements the ProductRepository interface using GORM v2
 type GormProductRepository struct {
 	db *gorm.DB
 }
 
+// NewGormProductRepository creates a new GormProductRepository
 func NewGormProductRepository(db *gorm.DB) repositories.ProductRepository {
 	return &GormProductRepository{db: db}
 }
 
+// Create creates a new product
 func (repo *GormProductRepository) Create(product *entities.ValidatedProduct) (*entities.Product, error) {
 	// Map domain entity to DB model
 	dbProduct := toDBProduct(product)
@@ -27,6 +30,7 @@ func (repo *GormProductRepository) Create(product *entities.ValidatedProduct) (*
 	return repo.FindById(dbProduct.Id)
 }
 
+// FindById finds a product by ID
 func (repo *GormProductRepository) FindById(id uuid.UUID) (*entities.Product, error) {
 	var dbProduct Product
 	if err := repo.db.Preload("Seller").First(&dbProduct, id).Error; err != nil {
@@ -37,6 +41,7 @@ func (repo *GormProductRepository) FindById(id uuid.UUID) (*entities.Product, er
 	return fromDBProduct(&dbProduct), nil
 }
 
+// FindAll finds all products
 func (repo *GormProductRepository) FindAll() ([]*entities.Product, error) {
 	var dbProducts []Product
 
@@ -51,6 +56,7 @@ func (repo *GormProductRepository) FindAll() ([]*entities.Product, error) {
 	return products, nil
 }
 
+// Update updates a product
 func (repo *GormProductRepository) Update(product *entities.ValidatedProduct) (*entities.Product, error) {
 	dbProduct := toDBProduct(product)
 	err := repo.db.Model(&Product{}).Where("id = ?", dbProduct.Id).Updates(dbProduct).Error
@@ -62,6 +68,7 @@ func (repo *GormProductRepository) Update(product *entities.ValidatedProduct) (*
 	return repo.FindById(dbProduct.Id)
 }
 
+// Delete deletes a product
 func (repo *GormProductRepository) Delete(id uuid.UUID) error {
 	return repo.db.Delete(&Product{}, id).Error
 }
