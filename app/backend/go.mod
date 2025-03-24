@@ -3,6 +3,7 @@ module github.com/sklinkert/go-ddd
 go 1.20
 
 require (
+	github.com/cucumber/godog v0.15.0
 	github.com/google/uuid v1.6.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/labstack/echo/v4 v4.13.3
@@ -14,7 +15,6 @@ require (
 
 require (
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
-	github.com/cucumber/godog v0.15.0 // indirect
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
