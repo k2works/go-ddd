@@ -117,12 +117,12 @@ flowchart TD
     start([開始]) --> platform{プラットフォームは?}
     platform -->|macOS| mac[Docker Desktop for Macをインストール]
     platform -->|Linux| linux1[apt-get update]
-    linux1 --> linux2[apt-get install docker.io docker-compose]
+    linux1 --> linux2[apt-get install docker.io]
     platform -->|Windows| win[Docker Desktop for Windowsをインストール]
     mac --> check1[docker --version でインストールを確認]
     linux2 --> check1
     win --> check1
-    check1 --> check2[docker-compose --version でインストールを確認]
+    check1 --> check2[docker compose --version でインストールを確認]
     check2 --> stop([終了])
 ```
 
@@ -132,13 +132,13 @@ flowchart TD
 **Linux (Ubuntu/Debian)**:
 ```bash
 sudo apt-get update
-sudo apt-get install docker.io docker-compose
+sudo apt-get install docker.io
 ```
 
 インストールを確認:
 ```bash
 docker --version
-docker-compose --version
+docker compose --version
 ```
 
 #### 3.1.3 Node.js のインストール
@@ -213,15 +213,15 @@ npm install
 Go の依存関係をダウンロードします：
 
 ```bash
-go mod download
+cd app/backend && go mod download
 ```
 
 ### 3.4 開発環境の起動
 
 ```mermaid
 flowchart TD
-    start([開始]) --> docker[docker-compose up -d]
-    docker --> check[docker-compose ps で起動確認]
+    start([開始]) --> docker[docker compose up -d]
+    docker --> check[docker compose ps で起動確認]
     check --> stop([終了])
     docker -.-> note["データベース、Wiki、PlantUMLサーバーを起動"]
 ```
@@ -229,13 +229,13 @@ flowchart TD
 Docker Compose を使用して、開発環境を起動します：
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 起動したサービスを確認します：
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 以下のサービスが起動します：
@@ -268,21 +268,26 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    start([開始]) --> build[go build -o app/backend/cmd/marketplace/marketplace app/backend/cmd/marketplace/main.go]
-    build --> stop([終了])
+    start([開始]) --> cd[cd app/backend]
+    cd --> build[go build -o cmd/marketplace/marketplace cmd/marketplace/main.go]
+    build --> cd_back[cd ../..]
+    cd_back --> stop([終了])
 ```
 
 アプリケーションをビルドします：
 
 ```bash
-go build -o app/backend/cmd/marketplace/marketplace app/backend/cmd/marketplace/main.go
+cd app/backend && go build -o cmd/marketplace/marketplace cmd/marketplace/main.go && cd ../..
 ```
+
+> **注意**: アプリケーションは `app/backend` ディレクトリから構築する必要があります。これは、内部パッケージの使用とモジュール構造によるものです。
 
 ### 3.7 アプリケーションの実行
 
 ```mermaid
 flowchart TD
-    start([開始]) --> run[./app/backend/cmd/marketplace/marketplace]
+    start([開始]) --> cd[cd app/backend]
+    cd --> run[./cmd/marketplace/marketplace]
     run --> access[ブラウザで http://localhost:9090/api/v1/health にアクセス]
     access --> stop([終了])
     run -.-> note["アプリケーションがポート9090で起動"]
@@ -291,7 +296,7 @@ flowchart TD
 ビルドしたアプリケーションを実行します：
 
 ```bash
-./app/backend/cmd/marketplace/marketplace
+cd app/backend && ./cmd/marketplace/marketplace
 ```
 
 アプリケーションはデフォルトでポート9090で起動します。ヘルスチェックエンドポイントにアクセスして、アプリケーションが正常に動作していることを確認します：
@@ -486,9 +491,9 @@ flowchart TD
 **症状**: アプリケーション起動時に「Failed to connect to database」などのエラーが表示される
 
 **解決策**:
-1. Docker Composeが起動しているか確認: `docker-compose ps`
+1. Docker Composeが起動しているか確認: `docker compose ps`
 2. データベース接続情報が正しいか確認
-3. データベースコンテナに直接接続してみる: `docker-compose exec db_postgresql psql -U root -d mydb`
+3. データベースコンテナに直接接続してみる: `docker compose exec db_postgresql psql -U root -d mydb`
 
 #### ビルドエラー
 
@@ -498,6 +503,8 @@ flowchart TD
 1. Go依存関係が正しくインストールされているか確認: `go mod download`
 2. 依存関係を整理: `go mod tidy`
 3. Goのバージョンが1.23以上であることを確認: `go version`
+4. 正しいディレクトリからビルドしているか確認: アプリケーションは `app/backend` ディレクトリから構築する必要があります
+5. 内部パッケージのインポートエラーが発生する場合: `cd app/backend && go build -o cmd/marketplace/marketplace cmd/marketplace/main.go`
 
 #### 実行時エラー
 
