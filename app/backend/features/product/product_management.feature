@@ -1,25 +1,26 @@
-Feature: Product Management
+# language: ja
+フィーチャ: Product Management
   In order to manage products in the system
   As a user
   I need to be able to create, read, update, and delete products
 
-  Scenario: Create a new product
-    Given I have product details
+  シナリオ: Create a new product
+    前提 I have product details
       | name        | price |
       | Test Product| 10.99 |
-    And I have a seller
-    When I create a new product
-    Then the product should be saved in the system
-    And I should be able to retrieve the product by ID
+    かつ I have a seller
+    もし I create a new product
+    ならば the product should be saved in the system
+    かつ I should be able to retrieve the product by ID
 
-  Scenario: Update an existing product
-    Given I have an existing product
-    When I update the product details
+  シナリオ: Update an existing product
+    前提 I have an existing product
+    もし I update the product details
       | name           | price |
       | Updated Product| 15.99 |
-    Then the product details should be updated in the system
+    ならば the product details should be updated in the system
 
-  Scenario: Delete a product
-    Given I have an existing product
-    When I delete the product
-    Then the product should be removed from the system
+  シナリオ: Delete a product
+    前提 I have an existing product
+    もし I delete the product
+    ならば the product should be removed from the system
