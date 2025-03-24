@@ -69,6 +69,7 @@ nav:
     - ORM Mapper: orm_mapper_implementation.md
     - Echo Framework: echo_framework_implementation.md
     - Echo JWT Authentication: echo_jwt_authentication.md
+    - Environment Variables: environment_variable_management.md
   - Setup:
     - Setup Guide: setup_guide.md
     - Setup Guide (Mermaid): setup_guide_mermaid.md
