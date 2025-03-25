@@ -2,37 +2,104 @@ package steps
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/cucumber/godog"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/sklinkert/go-ddd/internal/application/command"
-	"github.com/sklinkert/go-ddd/internal/application/common"
 	"github.com/sklinkert/go-ddd/internal/application/interfaces"
-	"github.com/sklinkert/go-ddd/internal/application/query"
+	"github.com/sklinkert/go-ddd/internal/application/services"
 	"github.com/sklinkert/go-ddd/internal/domain/entities"
+	"github.com/sklinkert/go-ddd/internal/infrastructure/db/postgres"
 	"github.com/sklinkert/go-ddd/internal/interface/api/rest"
 	"github.com/sklinkert/go-ddd/internal/interface/api/rest/dto/response"
+	"github.com/testcontainers/testcontainers-go"
+	"github.com/testcontainers/testcontainers-go/wait"
+	pgdriver "gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
+	"strings"
 	"time"
 )
 
 // ControllerContext holds the state for controller-related steps
 type ControllerContext struct {
 	productService    interfaces.ProductService
+	sellerService     interfaces.SellerService
 	echoInstance      *echo.Echo
 	productController *rest.ProductController
 	requestBody       map[string]interface{}
 	response          *httptest.ResponseRecorder
 	products          []*entities.Product
+	db                *gorm.DB
+	container         testcontainers.Container
+	ctx               context.Context
 }
 
 // NewControllerContext creates a new ControllerContext
 func NewControllerContext() *ControllerContext {
-	return &ControllerContext{}
+	return &ControllerContext{
+		ctx: context.Background(),
+	}
+}
+
+// setupTestDatabase sets up a test database using TestContainers
+func (c *ControllerContext) setupTestDatabase() error {
+	// Define PostgreSQL container
+	pgReq := testcontainers.ContainerRequest{
+		Image:        "postgres:13",
+		ExposedPorts: []string{"5432/tcp"},
+		Env: map[string]string{
+			"POSTGRES_USER":     "testuser",
+			"POSTGRES_PASSWORD": "testpass",
+			"POSTGRES_DB":       "testdb",
+		},
+		WaitingFor: wait.ForLog("database system is ready to accept connections").
+			WithOccurrence(2).WithStartupTimeout(5 * time.Second),
+	}
+
+	// Start PostgreSQL container
+	container, err := testcontainers.GenericContainer(c.ctx, testcontainers.GenericContainerRequest{
+		ContainerRequest: pgReq,
+		Started:          true,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to start PostgreSQL container: %w", err)
+	}
+	c.container = container
+
+	// Get container host and port
+	host, err := container.Host(c.ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get PostgreSQL container host: %w", err)
+	}
+
+	port, err := container.MappedPort(c.ctx, "5432")
+	if err != nil {
+		return fmt.Errorf("failed to get PostgreSQL container port: %w", err)
+	}
+
+	// Create connection string
+	dsn := fmt.Sprintf("host=%s port=%s user=testuser password=testpass dbname=testdb sslmode=disable", host, port.Port())
+
+	// Connect to the PostgreSQL database
+	db, err := gorm.Open(pgdriver.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return fmt.Errorf("failed to connect to database: %w", err)
+	}
+	c.db = db
+
+	// AutoMigrate our models
+	err = db.AutoMigrate(&postgres.Product{}, &postgres.Seller{})
+	if err != nil {
+		return fmt.Errorf("failed to migrate database: %w", err)
+	}
+
+	return nil
 }
 
 // RegisterSteps registers the controller steps with the godog suite
@@ -60,13 +127,40 @@ func (c *ControllerContext) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^the response should contain the product details$`, c.theResponseShouldContainTheProductDetails)
 
 	ctx.BeforeScenario(func(*godog.Scenario) {
-		c.setupController()
+		if err := c.setupController(); err != nil {
+			panic(fmt.Sprintf("Failed to setup controller: %v", err))
+		}
+	})
+
+	ctx.AfterScenario(func(*godog.Scenario, error) {
+		// Clean up database
+		if c.db != nil {
+			c.db.Exec("DELETE FROM products")
+			c.db.Exec("DELETE FROM sellers")
+		}
+
+		// Stop and remove PostgreSQL container
+		if c.container != nil {
+			if err := c.container.Terminate(c.ctx); err != nil {
+				fmt.Printf("Failed to terminate container: %v\n", err)
+			}
+		}
 	})
 }
 
-func (c *ControllerContext) setupController() {
-	// Create a mock product service
-	c.productService = &MockProductService{}
+func (c *ControllerContext) setupController() error {
+	// Setup test database with TestContainers
+	if err := c.setupTestDatabase(); err != nil {
+		return err
+	}
+
+	// Create repositories
+	productRepo := postgres.NewGormProductRepository(c.db)
+	sellerRepo := postgres.NewGormSellerRepository(c.db)
+
+	// Create services
+	c.productService = services.NewProductService(productRepo, sellerRepo)
+	c.sellerService = services.NewSellerService(sellerRepo)
 
 	// Create a new Echo instance
 	c.echoInstance = echo.New()
@@ -76,6 +170,8 @@ func (c *ControllerContext) setupController() {
 
 	// Initialize the response recorder
 	c.response = httptest.NewRecorder()
+
+	return nil
 }
 
 func (c *ControllerContext) iHaveProductDetailsForAPI(table *godog.Table) error {
@@ -109,6 +205,21 @@ func (c *ControllerContext) iHaveProductDetailsForAPI(table *godog.Table) error 
 }
 
 func (c *ControllerContext) iSendAPOSTRequestToWithTheProductDetails(path string) error {
+	// Create a seller first if the request body contains a seller ID
+	if sellerID, ok := c.requestBody["SellerId"].(string); ok && sellerID == "00000000-0000-0000-0000-000000000001" {
+		// Create a seller
+		sellerName := "Test Seller " + uuid.New().String()
+		sellerResult, err := c.sellerService.CreateSeller(&command.CreateSellerCommand{
+			Name: sellerName,
+		})
+		if err != nil {
+			return fmt.Errorf("failed to create seller: %w", err)
+		}
+
+		// Update the seller ID in the request body
+		c.requestBody["SellerId"] = sellerResult.Result.Id.String()
+	}
+
 	// Convert request body to JSON
 	jsonBody, err := json.Marshal(c.requestBody)
 	if err != nil {
@@ -155,26 +266,40 @@ func (c *ControllerContext) theResponseShouldContainTheCreatedProductDetails() e
 }
 
 func (c *ControllerContext) thereAreProductsInTheSystem() error {
-	// Create some sample products
-	seller := entities.NewSeller("Test Seller")
-	validatedSeller, err := entities.NewValidatedSeller(seller)
+	// Create a seller first
+	sellerName := "Test Seller " + uuid.New().String()
+	sellerResult, err := c.sellerService.CreateSeller(&command.CreateSellerCommand{
+		Name: sellerName,
+	})
 	if err != nil {
-		return fmt.Errorf("failed to validate seller: %w", err)
+		return fmt.Errorf("failed to create seller: %w", err)
 	}
 
-	product1 := entities.NewProduct("Product 1", 10.99, *validatedSeller)
-	product2 := entities.NewProduct("Product 2", 20.99, *validatedSeller)
+	// Create multiple products
+	for i := 1; i <= 2; i++ {
+		productName := fmt.Sprintf("Product %d", i)
+		productPrice := float64(i*10) + 0.99
+		createProductCmd := &command.CreateProductCommand{
+			Name:     productName,
+			Price:    productPrice,
+			SellerId: sellerResult.Result.Id,
+		}
 
-	c.products = []*entities.Product{product1, product2}
-
-	// Set up the mock product service to return these products
-	mockService := c.productService.(*MockProductService)
-	mockService.Products = c.products
+		_, err := c.productService.CreateProduct(createProductCmd)
+		if err != nil {
+			return fmt.Errorf("failed to create product: %w", err)
+		}
+	}
 
 	return nil
 }
 
 func (c *ControllerContext) iSendAGETRequestTo(path string) error {
+	// If the path contains a product ID placeholder, replace it with the actual product ID
+	if c.products != nil && len(c.products) > 0 && strings.Contains(path, "00000000-0000-0000-0000-000000000001") {
+		path = strings.Replace(path, "00000000-0000-0000-0000-000000000001", c.products[0].Id.String(), 1)
+	}
+
 	// Create a new HTTP request
 	req := httptest.NewRequest(http.MethodGet, path, nil)
 
@@ -188,6 +313,7 @@ func (c *ControllerContext) iSendAGETRequestTo(path string) error {
 }
 
 func (c *ControllerContext) theResponseShouldContainAListOfProducts() error {
+	c.products = make([]*entities.Product, 2)
 	var listResponse response.ListProductsResponse
 	if err := json.Unmarshal(c.response.Body.Bytes(), &listResponse); err != nil {
 		return fmt.Errorf("failed to unmarshal response body: %w", err)
@@ -202,25 +328,43 @@ func (c *ControllerContext) theResponseShouldContainAListOfProducts() error {
 }
 
 func (c *ControllerContext) thereIsAProductWithIDInTheSystem(id string) error {
-	// Parse the ID
-	productID, err := uuid.Parse(id)
+	// For BDD tests with TestContainers, we need to create a product and use its actual ID
+	// instead of trying to use a fixed ID from the feature file
+
+	// Create a seller first
+	sellerName := "Test Seller " + uuid.New().String()
+	sellerResult, err := c.sellerService.CreateSeller(&command.CreateSellerCommand{
+		Name: sellerName,
+	})
 	if err != nil {
-		return fmt.Errorf("failed to parse product ID: %w", err)
+		return fmt.Errorf("failed to create seller: %w", err)
 	}
 
-	// Create a sample product with the given ID
-	seller := entities.NewSeller("Test Seller")
-	validatedSeller, err := entities.NewValidatedSeller(seller)
-	if err != nil {
-		return fmt.Errorf("failed to validate seller: %w", err)
+	// Create a product
+	productName := "Test Product"
+	productPrice := 10.99
+	createProductCmd := &command.CreateProductCommand{
+		Name:     productName,
+		Price:    productPrice,
+		SellerId: sellerResult.Result.Id,
 	}
 
-	product := entities.NewProduct("Test Product", 10.99, *validatedSeller)
-	product.Id = productID
+	createResult, err := c.productService.CreateProduct(createProductCmd)
+	if err != nil {
+		return fmt.Errorf("failed to create product: %w", err)
+	}
 
-	// Set up the mock product service to return this product
-	mockService := c.productService.(*MockProductService)
-	mockService.Product = product
+	// Store the created product ID for later use
+	createdID := createResult.Result.Id
+
+	// Modify the path in the next step to use the actual created product ID
+	c.products = []*entities.Product{
+		{
+			Id:    createdID,
+			Name:  productName,
+			Price: productPrice,
+		},
+	}
 
 	return nil
 }
@@ -239,87 +383,4 @@ func (c *ControllerContext) theResponseShouldContainTheProductDetails() error {
 	return nil
 }
 
-// MockProductService is a mock implementation of the ProductService interface
-type MockProductService struct {
-	Product  *entities.Product
-	Products []*entities.Product
-}
-
-// CreateProduct mocks the CreateProduct method
-func (m *MockProductService) CreateProduct(productCommand *command.CreateProductCommand) (*command.CreateProductCommandResult, error) {
-	// Create a sample product
-	seller := entities.NewSeller("Test Seller")
-	validatedSeller, _ := entities.NewValidatedSeller(seller)
-
-	product := entities.NewProduct(productCommand.Name, productCommand.Price, *validatedSeller)
-
-	// Convert to ProductResult
-	productResult := &common.ProductResult{
-		Id:    product.Id,
-		Name:  product.Name,
-		Price: product.Price,
-		Seller: &common.SellerResult{
-			Id:        validatedSeller.Id,
-			Name:      validatedSeller.Name,
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-		},
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
-
-	return &command.CreateProductCommandResult{
-		Result: productResult,
-	}, nil
-}
-
-// FindAllProducts mocks the FindAllProducts method
-func (m *MockProductService) FindAllProducts() (*query.ProductQueryListResult, error) {
-	// Convert products to ProductResult slice
-	productResults := make([]*common.ProductResult, len(m.Products))
-	for i, product := range m.Products {
-		productResults[i] = &common.ProductResult{
-			Id:    product.Id,
-			Name:  product.Name,
-			Price: product.Price,
-			Seller: &common.SellerResult{
-				Id:        product.Seller.Id,
-				Name:      product.Seller.Name,
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-			},
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-		}
-	}
-
-	return &query.ProductQueryListResult{
-		Result: productResults,
-	}, nil
-}
-
-// FindProductById mocks the FindProductById method
-func (m *MockProductService) FindProductById(id uuid.UUID) (*query.ProductQueryResult, error) {
-	if m.Product != nil && m.Product.Id == id {
-		// Convert to ProductResult
-		productResult := &common.ProductResult{
-			Id:    m.Product.Id,
-			Name:  m.Product.Name,
-			Price: m.Product.Price,
-			Seller: &common.SellerResult{
-				Id:        m.Product.Seller.Id,
-				Name:      m.Product.Seller.Name,
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-			},
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-		}
-
-		return &query.ProductQueryResult{
-			Result: productResult,
-		}, nil
-	}
-
-	return nil, nil
-}
+// MockProductService has been replaced with a real ProductService using TestContainers

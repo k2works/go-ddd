@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/sklinkert/go-ddd/internal/application/command"
@@ -20,54 +21,67 @@ import (
 func setupTestDatabase(t *testing.T) (*gorm.DB, func()) {
 	ctx := context.Background()
 
-	// PostgreSQLコンテナを起動
-	container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
-		ContainerRequest: testcontainers.ContainerRequest{
-			Image:        "postgres:13",
-			ExposedPorts: []string{"5432/tcp"},
-			Env: map[string]string{
-				"POSTGRES_USER":     "testuser",
-				"POSTGRES_PASSWORD": "testpass",
-				"POSTGRES_DB":       "testdb",
-			},
-			WaitingFor: wait.ForLog("database system is ready to accept connections"),
+	// Define PostgreSQL container
+	pgReq := testcontainers.ContainerRequest{
+		Image:        "postgres:15-alpine",
+		ExposedPorts: []string{"5432/tcp"},
+		Env: map[string]string{
+			"POSTGRES_USER":     "postgres",
+			"POSTGRES_PASSWORD": "postgres",
+			"POSTGRES_DB":       "testdb",
 		},
-		Started: true,
+		WaitingFor: wait.ForLog("database system is ready to accept connections").
+			WithOccurrence(2).WithStartupTimeout(5 * time.Second),
+	}
+
+	// Start PostgreSQL container
+	pgContainer, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+		ContainerRequest: pgReq,
+		Started:          true,
 	})
 	if err != nil {
-		t.Fatalf("Failed to start container: %v", err)
+		t.Fatalf("Failed to start PostgreSQL container: %s", err)
 	}
 
-	// コンテナのホストとポートを取得
-	host, err := container.Host(ctx)
+	// Get container host and port
+	host, err := pgContainer.Host(ctx)
 	if err != nil {
-		t.Fatalf("Failed to get container host: %v", err)
+		t.Fatalf("Failed to get PostgreSQL container host: %s", err)
 	}
 
-	port, err := container.MappedPort(ctx, "5432")
+	port, err := pgContainer.MappedPort(ctx, "5432")
 	if err != nil {
-		t.Fatalf("Failed to get container port: %v", err)
+		t.Fatalf("Failed to get PostgreSQL container port: %s", err)
 	}
 
-	// データベース接続
-	dsn := fmt.Sprintf("host=%s port=%s user=testuser password=testpass dbname=testdb sslmode=disable", host, port.Port())
-	db, err := gorm.Open(pgdriver.Open(dsn), &gorm.Config{})
+	// Create connection string
+	dsn := fmt.Sprintf("host=%s port=%s user=postgres password=postgres dbname=testdb sslmode=disable", host, port.Port())
+
+	// Connect to the PostgreSQL database
+	database, err := gorm.Open(pgdriver.Open(dsn), &gorm.Config{})
 	if err != nil {
-		t.Fatalf("Failed to connect to database: %v", err)
+		t.Fatalf("Failed to connect to database: %s", err)
 	}
 
-	// テーブルを作成
-	err = db.AutoMigrate(&postgres.Product{}, &postgres.Seller{})
+	// AutoMigrate our models
+	err = database.AutoMigrate(&postgres.Product{}, &postgres.Seller{})
 	if err != nil {
-		t.Fatalf("Failed to migrate database: %v", err)
+		t.Fatalf("Failed to migrate database: %s", err)
 	}
 
-	// クリーンアップ関数を返す
+	// Cleanup function
 	cleanup := func() {
-		container.Terminate(ctx)
+		// Clean up database
+		database.Exec("DELETE FROM sellers")
+		database.Exec("DELETE FROM products")
+
+		// Stop and remove PostgreSQL container
+		if err := pgContainer.Terminate(ctx); err != nil {
+			t.Fatalf("Failed to terminate container: %s", err)
+		}
 	}
 
-	return db, cleanup
+	return database, cleanup
 }
 
 func createTestSeller(t *testing.T, sellerService interfaces.SellerService) *common.SellerResult {
