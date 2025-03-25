@@ -27,6 +27,15 @@ func NewProductController(e *echo.Echo, service interfaces.ProductService) *Prod
 	return controller
 }
 
+// CreateProductController @Summary Create a new product
+// @Description Create a new product with the provided details
+// @Tags products
+// @Accept json
+// @Produce json
+// @Success 201 {object} response.ProductResponse
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /products [post]
 func (pc *ProductController) CreateProductController(c echo.Context) error {
 	var createProductRequest request.CreateProductRequest
 
@@ -55,6 +64,14 @@ func (pc *ProductController) CreateProductController(c echo.Context) error {
 	return c.JSON(http.StatusCreated, response)
 }
 
+// GetAllProductsController @Summary Get all products
+// @Description Get a list of all products
+// @Tags products
+// @Accept json
+// @Produce json
+// @Success 200 {array} response.ProductResponse
+// @Failure 500 {object} map[string]string
+// @Router /products [get]
 func (pc *ProductController) GetAllProductsController(c echo.Context) error {
 	products, err := pc.service.FindAllProducts()
 	if err != nil {
@@ -68,6 +85,17 @@ func (pc *ProductController) GetAllProductsController(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+// GetProductByIdController @Summary Get a product by ID
+// @Description Get a product by its ID
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param id path string true "Product ID"
+// @Success 200 {object} response.ProductResponse
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /products/{id} [get]
 func (pc *ProductController) GetProductByIdController(c echo.Context) error {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {

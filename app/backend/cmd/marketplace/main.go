@@ -1,11 +1,18 @@
+// @title Marketplace API
+// @version 1.0
+// @description This is a marketplace API server.
+// @host localhost:9090
+// @BasePath /api/v1
 package main
 
 import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo/v4"
+	_ "github.com/sklinkert/go-ddd/docs" // Swaggerドキュメントのインポート
 	"github.com/sklinkert/go-ddd/internal/application/services"
 	postgres2 "github.com/sklinkert/go-ddd/internal/infrastructure/db/postgres"
 	"github.com/sklinkert/go-ddd/internal/interface/api/rest"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
@@ -32,6 +39,9 @@ func main() {
 	sellerService := services.NewSellerService(sellerRepo)
 
 	e := echo.New()
+	// Swagger UIのエンドポイントを設定
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
 	rest.NewProductController(e, productService)
 	rest.NewSellerController(e, sellerService)
 

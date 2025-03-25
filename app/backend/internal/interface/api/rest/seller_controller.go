@@ -27,6 +27,15 @@ func NewSellerController(e *echo.Echo, service interfaces.SellerService) *Seller
 	return controller
 }
 
+// @Summary Create a new seller
+// @Description Create a new seller with the provided details
+// @Tags sellers
+// @Accept json
+// @Produce json
+// @Success 201 {object} response.SellerResponse
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /sellers [post]
 func (sc *SellerController) CreateSellerController(c echo.Context) error {
 	var createSellerRequest request.CreateSellerRequest
 
@@ -55,6 +64,14 @@ func (sc *SellerController) CreateSellerController(c echo.Context) error {
 	return c.JSON(http.StatusCreated, response)
 }
 
+// @Summary Get all sellers
+// @Description Get a list of all sellers
+// @Tags sellers
+// @Accept json
+// @Produce json
+// @Success 200 {array} response.SellerResponse
+// @Failure 500 {object} map[string]string
+// @Router /sellers [get]
 func (sc *SellerController) GetAllSellersController(c echo.Context) error {
 	sellers, err := sc.service.FindAllSellers()
 	if err != nil {
@@ -68,6 +85,17 @@ func (sc *SellerController) GetAllSellersController(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+// @Summary Get a seller by ID
+// @Description Get a seller by its ID
+// @Tags sellers
+// @Accept json
+// @Produce json
+// @Param id path string true "Seller ID"
+// @Success 200 {object} response.SellerResponse
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /sellers/{id} [get]
 func (sc *SellerController) GetSellerByIdController(c echo.Context) error {
 	// Hack: split the Id from the URL
 	// For some reason c.Param("id") doesn't work here
@@ -98,6 +126,16 @@ func (sc *SellerController) GetSellerByIdController(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+// @Summary Update a seller
+// @Description Update a seller with the provided details
+// @Tags sellers
+// @Accept json
+// @Produce json
+// @Param seller body request.UpdateSellerRequest true "Updated seller"
+// @Success 200 {object} response.SellerResponse
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /sellers [put]
 func (sc *SellerController) PutSellerController(c echo.Context) error {
 	var updateSellerRequest request.UpdateSellerRequest
 
@@ -126,6 +164,16 @@ func (sc *SellerController) PutSellerController(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+// @Summary Delete a seller
+// @Description Delete a seller by its ID
+// @Tags sellers
+// @Accept json
+// @Produce json
+// @Param id path string true "Seller ID"
+// @Success 204 {string} string "No Content"
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /sellers/{id} [delete]
 func (sc *SellerController) DeleteSellerController(c echo.Context) error {
 	// Hack: split the Id from the URL
 	// For some reason c.Param("id") doesn't work here

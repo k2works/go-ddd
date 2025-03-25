@@ -74,6 +74,7 @@ nav:
     - Acceptance Tests: go_cucumber_setup.md
     - Japanese Cucumber Support: cucumber_japanese_support.md
     - Testcontainer: testcontainer_implementation.md
+    - Swagger: swagger_implementation.md
   - Setup:
     - Setup Guide: setup_guide.md
     - Setup Guide (Mermaid): setup_guide_mermaid.md
