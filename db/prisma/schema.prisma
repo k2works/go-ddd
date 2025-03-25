@@ -1,0 +1,713 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  deptCode   String    @map("部門コード") @db.VarChar(6)
+  startDate  DateTime  @default(dbgenerated("CURRENT_DATE")) @map("開始日") @db.Timestamp(6)
+  endDate    DateTime? @default(dbgenerated("'2100-12-31 00:00:00'::timestamp without time zone")) @map("終了日") @db.Timestamp(6)
+  name       String?   @map("部門名") @db.VarChar(40)
+  layer      Int       @default(0) @map("組織階層")
+  psth       String    @map("部門パス") @db.VarChar(100)
+  lowestType Int       @default(0) @map("最下層区分")
+  slitYn     Int       @default(1) @map("伝票入力可否")
+  createDate DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator    String?   @map("作成者名") @db.VarChar(12)
+  updateDate DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater    String?   @map("更新者名") @db.VarChar(12)
+
+  warehouseDepartments WarehouseDepartment[]
+
+  @@id([deptCode, startDate], map: "pk_department")
+  @@map("部門マスタ")
+}
+
+model Employee {
+  empCode       String   @id(map: "pk_employee") @map("社員コード") @db.VarChar(10)
+  name          String?  @map("社員名") @db.VarChar(20)
+  kana          String?  @map("社員名カナ") @db.VarChar(40)
+  loginPassword String?  @map("パスワード") @db.VarChar(8)
+  tel           String?  @map("電話番号") @db.VarChar(13)
+  fax           String?  @map("FAX番号") @db.VarChar(13)
+  deptCode      String   @map("部門コード") @db.VarChar(6)
+  startDate     DateTime @default(dbgenerated("CURRENT_DATE")) @map("開始日") @db.Timestamp(6)
+  occuCode      String   @map("職種コード") @db.VarChar(2)
+  approvalCode  String   @map("承認権限コード") @db.VarChar(2)
+  createDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator       String?  @map("作成者名") @db.VarChar(12)
+  updateDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater       String?  @map("更新者名") @db.VarChar(12)
+
+  @@map("社員マスタ")
+}
+
+model ProductCategory {
+  categoryCode String   @id(map: "pk_product_category") @map("商品分類コード") @db.VarChar(8)
+  name         String?  @map("商品分類名") @db.VarChar(30)
+  layer        Int      @default(0) @map("商品分類階層")
+  path         String?  @map("商品分類パス") @db.VarChar(100)
+  lowestType   Int?     @default(0) @map("最下層区分")
+  createDate   DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator      String?  @map("作成者名") @db.VarChar(12)
+  updateDate   DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater      String?  @map("更新者名") @db.VarChar(12)
+
+  @@map("商品分類マスタ")
+}
+
+model Product {
+  prodCode          String             @id(map: "pk_products") @map("商品コード") @db.VarChar(16)
+  fullname          String             @map("商品正式名") @db.VarChar(40)
+  name              String             @map("商品略称") @db.VarChar(10)
+  kana              String             @map("商品名カナ") @db.VarChar(20)
+  prodType          String?            @map("商品区分") @db.VarChar(1)
+  serialNo          String?            @map("製品型番") @db.VarChar(40)
+  unitprice         Int                @default(0) @map("販売単価")
+  poPrice           Int?               @default(0) @map("仕入単価")
+  primeCost         Int                @default(0) @map("売上原価")
+  taxType           Int                @default(1) @map("税区分")
+  categoryCode      String?            @map("商品分類コード") @db.VarChar(8)
+  wideUseType       Int?               @map("雑区分")
+  stockManageType   Int?               @default(1) @map("在庫管理対象区分")
+  stockReserveType  Int?               @map("在庫引当区分")
+  supCode           String             @map("仕入先コード") @db.VarChar(8)
+  supSubNo          Int?               @map("仕入先枝番")
+  createDate        DateTime           @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator           String?            @map("作成者名") @db.VarChar(12)
+  updateDate        DateTime           @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater           String?            @map("更新者名") @db.VarChar(12)
+  pricebycustomers  PriceByCustomer[]
+  alternateProducts AlternateProduct[]
+  boms              Bom[]
+
+  @@map("商品マスタ")
+}
+
+model Bom {
+  prodCode   String   @map("商品コード") @db.VarChar(16)
+  bomCode    String   @map("部品コード") @db.VarChar(16)
+  quantity   Int      @default(1) @map("部品数量")
+  createDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator    String?  @map("作成者名") @db.VarChar(12)
+  updateDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater    String?  @map("更新者名") @db.VarChar(12)
+
+  product Product @relation(fields: [prodCode], references: [prodCode])
+
+  @@id([prodCode, bomCode], map: "pk_bom")
+  @@map("部品表")
+}
+
+model PriceByCustomer {
+  prodCode   String   @map("商品コード") @db.VarChar(16)
+  compCode   String   @map("取引先コード") @db.VarChar(8)
+  unitprice  Int      @default(0) @map("販売単価")
+  createDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator    String?  @map("作成者名") @db.VarChar(12)
+  updateDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater    String?  @map("更新者名") @db.VarChar(12)
+  products   Product? @relation(fields: [prodCode], references: [prodCode])
+
+  @@id([prodCode, compCode], map: "pk_pricebycustomer")
+  @@map("顧客別販売単価")
+}
+
+model AlternateProduct {
+  prodCode    String   @map("商品コード") @db.VarChar(16)
+  altProdCode String   @map("代替商品コード") @db.VarChar(16)
+  priority    Int?     @default(1) @map("優先順位")
+  createDate  DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator     String?  @map("作成者名") @db.VarChar(12)
+  updateDate  DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater     String?  @map("更新者名") @db.VarChar(12)
+  products    Product? @relation(fields: [prodCode], references: [prodCode])
+
+  @@id([prodCode, altProdCode], map: "pk_alternate_products")
+  @@map("代替商品")
+}
+
+model Company {
+  compCode      String   @id(map: "pk_companys_mst") @map("取引先コード") @db.VarChar(8)
+  name          String   @map("取引先名") @db.VarChar(40)
+  kana          String?  @map("取引先名カナ") @db.VarChar(40)
+  supType       Int?     @default(0) @map("仕入先区分")
+  zipCode       String?  @map("郵便番号") @db.Char(8)
+  state         String?  @map("都道府県") @db.VarChar(4)
+  address1      String?  @map("住所１") @db.VarChar(40)
+  address2      String?  @map("住所２") @db.VarChar(40)
+  noSalesFlg    Int?     @default(0) @map("取引禁止フラグ")
+  wideUseType   Int?     @default(0) @map("雑区分")
+  compGroupCode String   @map("取引先グループコード") @db.VarChar(4)
+  maxCredit     Int?     @default(0) @map("与信限度額")
+  tempCreditUp  Int?     @default(0) @map("与信一時増加枠")
+  createDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator       String?  @map("作成者名") @db.VarChar(12)
+  updateDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater       String?  @map("更新者名") @db.VarChar(12)
+
+  customers             Customer[]
+  suppliers             Supplier[]
+  companyCategoryGroups CompanyCategoryGroup[]
+
+  @@map("取引先マスタ")
+}
+
+model Customer {
+  custCode        String        @map("顧客コード") @db.VarChar(8)
+  custSubNo       Int           @map("顧客枝番")
+  custType        Int?          @default(0) @map("顧客区分")
+  arCode          String        @map("請求先コード") @db.VarChar(8)
+  arSubNo         Int?          @map("請求先枝番")
+  payerCode       String        @map("回収先コード") @db.VarChar(8)
+  payerSubNo      Int?          @map("回収先枝番")
+  name            String        @map("顧客名") @db.VarChar(40)
+  kana            String?       @map("顧客名カナ") @db.VarChar(40)
+  empCode         String        @map("自社担当者コード") @db.VarChar(10)
+  custUserName    String?       @map("顧客担当者名") @db.VarChar(20)
+  custUserDepName String?       @map("顧客部門名") @db.VarChar(40)
+  custZipCode     String?       @map("顧客郵便番号") @db.Char(8)
+  custState       String?       @map("顧客都道府県") @db.VarChar(4)
+  custAddress1    String?       @map("顧客住所１") @db.VarChar(40)
+  custAddress2    String?       @map("顧客住所２") @db.VarChar(40)
+  custTel         String?       @map("顧客電話番号") @db.VarChar(13)
+  custFax         String?       @map("顧客ＦＡＸ番号") @db.VarChar(13)
+  custEmail       String?       @map("顧客メールアドレス") @db.VarChar(100)
+  custArType      Int?          @default(0) @map("顧客請求区分")
+  custCloseDate1  Int           @map("顧客締日１")
+  custPayMonths1  Int?          @default(1) @map("顧客支払月１")
+  custPayDates1   Int?          @map("顧客支払日１")
+  custPayMethod1  Int?          @default(1) @map("顧客支払方法１")
+  custCloseDate2  Int           @map("顧客締日２")
+  custPayMonths2  Int?          @default(1) @map("顧客支払月２")
+  custPayDates2   Int?          @map("顧客支払日２")
+  custPayMethod2  Int?          @default(1) @map("顧客支払方法２")
+  createDate      DateTime      @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator         String?       @map("作成者名") @db.VarChar(12)
+  updateDate      DateTime      @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater         String?       @map("更新者名") @db.VarChar(12)
+  company         Company       @relation(fields: [custCode], references: [compCode])
+  destinations    Destination[]
+
+  @@id([custCode, custSubNo], map: "pk_customer")
+  @@map("顧客マスタ")
+}
+
+model Destination {
+  custCode   String    @map("顧客コード") @db.VarChar(8)
+  custSubNo  Int       @map("顧客枝番")
+  distNo     Int       @map("出荷先番号")
+  distName   String    @map("出荷先名") @db.VarChar(40)
+  areaCode   String    @map("地域コード") @db.VarChar(10)
+  zipCode    String?   @map("出荷先郵便番号") @db.Char(8)
+  address1   String?   @map("出荷先住所１") @db.VarChar(40)
+  address2   String?   @map("出荷先住所２") @db.VarChar(40)
+  createDate DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator    String?   @map("作成者名") @db.VarChar(12)
+  updateDate DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater    String?   @map("更新者名") @db.VarChar(12)
+  customer   Customer? @relation(fields: [custCode, custSubNo], references: [custCode, custSubNo])
+
+  @@id([custCode, distNo, custSubNo], map: "pk_destinations")
+  @@map("出荷先マスタ")
+}
+
+model Area {
+  areaCode   String   @id(map: "pk_area") @map("地域コード") @db.VarChar(10)
+  areaName   String?  @map("地域名") @db.VarChar(20)
+  createDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator    String?  @map("作成者名") @db.VarChar(12)
+  updateDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater    String?  @map("更新者名") @db.VarChar(12)
+
+  @@map("地域マスタ")
+}
+
+model Supplier {
+  supCode       String   @map("仕入先コード") @db.VarChar(8)
+  supSubNo      Int      @map("仕入先枝番")
+  name          String   @map("仕入先名") @db.VarChar(40)
+  kana          String?  @map("仕入先名カナ") @db.VarChar(40)
+  supEmpName    String?  @map("仕入先担当者名") @db.VarChar(20)
+  supDepName    String?  @map("仕入先部門名") @db.VarChar(40)
+  supZipCode    String?  @map("仕入先郵便番号") @db.Char(8)
+  supState      String?  @map("仕入先都道府県") @db.VarChar(4)
+  supAddress1   String?  @map("仕入先住所１") @db.VarChar(40)
+  supAddress2   String?  @map("仕入先住所２") @db.VarChar(40)
+  supTel        String?  @map("仕入先電話番号") @db.VarChar(13)
+  supFax        String?  @map("仕入先ＦＡＸ番号") @db.VarChar(13)
+  supEmail      String?  @map("仕入先メールアドレス") @db.VarChar(100)
+  supCloseDate  Int      @map("仕入先締日")
+  supPayMonths  Int?     @default(1) @map("仕入先支払月")
+  supPayDates   Int?     @map("仕入先支払日")
+  payMethodType Int?     @default(1) @map("仕入先支払方法")
+  createDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator       String?  @map("作成者名") @db.VarChar(12)
+  updateDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater       String?  @map("更新者名") @db.VarChar(12)
+
+  company Company @relation(fields: [supCode], references: [compCode])
+
+  @@id([supCode, supSubNo], map: "pk_supplier")
+  @@map("仕入先マスタ")
+}
+
+model CompanyGroup {
+  compGroupCode String   @id(map: "pk_company_group_mst") @map("取引先グループコード") @db.VarChar(4)
+  groupName     String?  @map("取引先グループ名") @db.VarChar(40)
+  createDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator       String?  @map("作成者名") @db.VarChar(12)
+  updateDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater       String?  @map("更新者名") @db.VarChar(12)
+
+  @@map("取引先グループマスタ")
+}
+
+model CategoryType {
+  categoryTypeCode  String            @id(map: "pk_category_type") @map("取引先分類種別コード") @db.VarChar(2)
+  categoryTypeName  String?           @map("取引先分類種別名") @db.VarChar(20)
+  createDate        DateTime          @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator           String?           @map("作成者名") @db.VarChar(12)
+  updateDate        DateTime          @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater           String?           @map("更新者名") @db.VarChar(12)
+  companyCategories CompanyCategory[]
+
+  @@map("取引先分類種別マスタ")
+}
+
+model CompanyCategory {
+  categoryTypeCode      String                 @map("取引先分類種別コード") @db.VarChar(2)
+  compCateCode          String                 @map("取引先分類コード") @db.VarChar(8)
+  compCateName          String?                @map("取引先分類名") @db.VarChar(30)
+  createDate            DateTime               @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator               String?                @map("作成者名") @db.VarChar(12)
+  updateDate            DateTime               @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater               String?                @map("更新者名") @db.VarChar(12)
+  companyCategoryGroups CompanyCategoryGroup[]
+  categoryType          CategoryType?          @relation(fields: [categoryTypeCode], references: [categoryTypeCode])
+
+  @@id([categoryTypeCode, compCateCode], map: "pk_company_category")
+  @@map("取引先分類マスタ")
+}
+
+model CompanyCategoryGroup {
+  categoryTypeCode String   @map("取引先分類種別コード") @db.VarChar(2)
+  compCateCode     String   @map("取引先分類コード") @db.VarChar(8)
+  compCode         String   @map("取引先コード") @db.VarChar(8)
+  createDate       DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator          String?  @map("作成者名") @db.VarChar(12)
+  updateDate       DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater          String?  @map("更新者名") @db.VarChar(12)
+
+  companyCategory CompanyCategory @relation(fields: [compCateCode, categoryTypeCode], references: [compCateCode, categoryTypeCode])
+  company         Company?        @relation(fields: [compCode], references: [compCode])
+
+  @@id([categoryTypeCode, compCode, compCateCode], map: "pk_company_category_group")
+  @@map("取引先分類所属マスタ")
+}
+
+model Order {
+  orderNo      String        @id(map: "pk_orders") @map("受注番号") @db.VarChar(10)
+  orderDate    DateTime      @default(dbgenerated("CURRENT_DATE")) @map("受注日") @db.Timestamp(6)
+  deptCode     String        @map("部門コード") @db.VarChar(6)
+  startDate    DateTime      @default(dbgenerated("CURRENT_DATE")) @map("部門開始日") @db.Timestamp(6)
+  custCode     String        @map("顧客コード") @db.VarChar(8)
+  custSubNo    Int?          @map("顧客枝番")
+  empCode      String        @map("社員コード") @db.VarChar(10)
+  requiredDate DateTime?     @map("希望納期") @db.Timestamp(6)
+  custorderNo  String?       @map("客先注文番号") @db.VarChar(20)
+  whCode       String        @map("倉庫コード") @db.VarChar(3)
+  orderAmnt    Int           @default(0) @map("受注金額合計")
+  cmpTax       Int           @default(0) @map("消費税合計")
+  slipComment  String?       @map("備考") @db.VarChar(1000)
+  createDate   DateTime      @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator      String?       @map("作成者名") @db.VarChar(12)
+  updateDate   DateTime      @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater      String?       @map("更新者名") @db.VarChar(12)
+  orderDetails OrderDetail[]
+
+  @@map("受注データ")
+}
+
+model OrderDetail {
+  orderNo          String    @map("受注番号") @db.VarChar(10)
+  soRowNo          Int       @map("受注行番号")
+  prodCode         String    @map("商品コード") @db.VarChar(16)
+  prodName         String    @map("商品名") @db.VarChar(10)
+  unitprice        Int       @default(0) @map("販売単価")
+  quantity         Int       @default(1) @map("受注数量")
+  cmpTaxRate       Int?      @default(0) @map("消費税率")
+  reserveQty       Int?      @default(0) @map("引当数量")
+  deliveryOrderQty Int?      @default(0) @map("出荷指示数量")
+  deliveredQty     Int?      @default(0) @map("出荷済数量")
+  completeFlg      Int       @default(0) @map("完了フラグ")
+  discount         Int       @default(0) @map("値引金額")
+  deliveryDate     DateTime? @map("納期") @db.Timestamp(6)
+  createDate       DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator          String?   @map("作成者名") @db.VarChar(12)
+  updateDate       DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater          String?   @map("更新者名") @db.VarChar(12)
+  order            Order     @relation(fields: [orderNo], references: [orderNo])
+
+  @@id([orderNo, soRowNo])
+  @@map("受注データ明細")
+}
+
+model Sales {
+  salesNo     String   @id(map: "pk_sales") @map("売上番号") @db.VarChar(10)
+  orderNo     String   @map("受注番号") @db.VarChar(10)
+  salesDate   DateTime @default(dbgenerated("CURRENT_DATE")) @map("売上日") @db.Timestamp(6)
+  salesType   Int?     @default(1) @map("売上区分")
+  deptCode    String   @map("部門コード") @db.VarChar(6)
+  startDate   DateTime @default(dbgenerated("CURRENT_DATE")) @map("部門開始日") @db.Timestamp(6)
+  compCode    String   @map("取引先コード") @db.VarChar(8)
+  empCode     String   @map("社員コード") @db.VarChar(10)
+  salesAmnt   Int      @default(0) @map("売上金額合計")
+  cmpTax      Int      @default(0) @map("消費税合計")
+  slipComment String?  @map("備考") @db.VarChar(1000)
+  updatedNo   Int?     @map("赤黒伝票番号")
+  orgnlNo     String?  @map("元伝票番号") @db.VarChar(10)
+  createDate  DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator     String?  @map("作成者名") @db.VarChar(12)
+  updateDate  DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater     String?  @map("更新者名") @db.VarChar(12)
+
+  salesDetails SalesDetail[]
+
+  @@map("売上データ")
+}
+
+model SalesDetail {
+  salesNo          String          @map("売上番号") @db.VarChar(10)
+  rowNo            Int             @map("売上行番号")
+  prodCode         String          @map("商品コード") @db.VarChar(16)
+  prodName         String          @map("商品名") @db.VarChar(10)
+  unitprice        Int             @default(0) @map("販売単価")
+  deliveredQty     Int?            @default(0) @map("出荷数量")
+  quantity         Int             @default(1) @map("売上数量")
+  discount         Int             @default(0) @map("値引金額")
+  invoicedDate     DateTime?       @map("請求日") @db.Timestamp(6)
+  invoiceNo        String?         @map("請求番号") @db.VarChar(10)
+  invoiceDelayType Int?            @map("請求遅延区分")
+  autoJournalDate  DateTime?       @map("自動仕訳日") @db.Timestamp(6)
+  createDate       DateTime        @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator          String?         @map("作成者名") @db.VarChar(12)
+  updateDate       DateTime        @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater          String?         @map("更新者名") @db.VarChar(12)
+  sales            Sales?          @relation(fields: [salesNo], references: [salesNo])
+  invoices         InvoiceDetail[]
+
+  @@id([salesNo, rowNo], map: "pk_sales_details")
+  @@map("売上データ明細")
+}
+
+model Invoice {
+  invoiceNo       String    @id(map: "pk_invoice") @map("請求番号") @db.VarChar(10)
+  invoicedDate    DateTime? @map("請求日") @db.Timestamp(6)
+  compCode        String    @map("取引先コード") @db.VarChar(8)
+  custSubNo       Int?      @default(0) @map("顧客枝番")
+  lastReceived    Int?      @default(0) @map("前回入金額")
+  monthSales      Int?      @default(0) @map("当月売上額")
+  monthReceived   Int?      @default(0) @map("当月入金額")
+  monthInvoice    Int?      @default(0) @map("当月請求額")
+  cmpTax          Int       @default(0) @map("消費税金額")
+  invoiceReceived Int?      @default(0) @map("請求消込金額")
+  createDate      DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator         String?   @map("作成者名") @db.VarChar(12)
+  updateDate      DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater         String?   @map("更新者名") @db.VarChar(12)
+
+  invoiceDetails InvoiceDetail[]
+
+  @@map("請求データ")
+}
+
+model InvoiceDetail {
+  invoiceNo  String   @map("請求番号") @db.VarChar(10)
+  salesNo    String   @map("売上番号") @db.VarChar(10)
+  rowNo      Int      @map("売上行番号")
+  createDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator    String?  @map("作成者名") @db.VarChar(12)
+  updateDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater    String?  @map("更新者名") @db.VarChar(12)
+
+  invoice     Invoice?     @relation(fields: [invoiceNo], references: [invoiceNo])
+  salesDetail SalesDetail? @relation(fields: [salesNo, rowNo], references: [salesNo, rowNo])
+
+  @@id([invoiceNo, salesNo, rowNo], map: "pk_invoice_details")
+  @@map("請求データ明細")
+}
+
+model BankAccount {
+  bankAcutCode      String    @id(map: "pk_bank_acut_mst") @map("入金口座コード") @db.VarChar(8)
+  reciveActName     String?   @map("入金口座名") @db.VarChar(30)
+  applStartDate     DateTime  @default(dbgenerated("CURRENT_DATE")) @map("適用開始日") @db.Timestamp(6)
+  applEndDate       DateTime? @default(dbgenerated("'2100-12-31 00:00:00'::timestamp without time zone")) @map("適用終了日") @db.Timestamp(6)
+  startActName      String?   @map("適用開始後入金口座名") @db.VarChar(30)
+  reciveBankActType String?   @map("入金口座区分") @db.VarChar(1)
+  reciveActNo       String?   @map("入金口座番号") @db.VarChar(12)
+  bankActType       String?   @map("銀行口座種別") @db.VarChar(1)
+  actName           String?   @map("口座名義人") @db.VarChar(20)
+  deptCode          String    @map("部門コード") @db.VarChar(6)
+  startDate         DateTime  @default(dbgenerated("CURRENT_DATE")) @map("部門開始日") @db.Timestamp(6)
+  aBankCode         String?   @map("全銀協銀行コード") @db.VarChar(4)
+  aBankBlncCode     String?   @map("全銀協支店コード") @db.VarChar(3)
+  createDate        DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator           String?   @map("作成者名") @db.VarChar(12)
+  updateDate        DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater           String?   @map("更新者名") @db.VarChar(12)
+  updatePlgDate     DateTime? @default(dbgenerated("CURRENT_DATE")) @map("プログラム更新日時") @db.Timestamp(6)
+  updatePgm         String?   @map("更新プログラム名") @db.VarChar(50)
+
+  @@map("入金口座マスタ")
+}
+
+model Credit {
+  creditNo      String    @id(map: "pk_credit") @map("入金番号") @db.VarChar(10)
+  creditDate    DateTime? @map("入金日") @db.Timestamp(6)
+  deptCode      String    @map("部門コード") @db.VarChar(6)
+  startDate     DateTime  @default(dbgenerated("CURRENT_DATE")) @map("開始日") @db.Timestamp(6)
+  custCode      String    @map("顧客コード") @db.VarChar(8)
+  custSubNo     Int?      @default(0) @map("顧客枝番")
+  payMethodType Int?      @default(1) @map("支払方法区分")
+  bankAcutCode  String?   @map("入金口座コード") @db.VarChar(8)
+  receivedAmnt  Int?      @default(0) @map("入金金額")
+  received      Int?      @default(0) @map("消込金額")
+  createDate    DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator       String?   @map("作成者名") @db.VarChar(12)
+  updateDate    DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater       String?   @map("更新者名") @db.VarChar(12)
+  updatePlgDate DateTime? @default(dbgenerated("CURRENT_DATE")) @map("プログラム更新日時") @db.Timestamp(6)
+  updatePgm     String?   @map("更新プログラム名") @db.VarChar(50)
+
+  @@map("入金データ")
+}
+
+model PurchaseOrder {
+  poNo        String    @id(map: "pk_purchase_orders") @map("発注番号") @db.VarChar(10)
+  poDate      DateTime? @map("発注日") @db.Timestamp(6)
+  orderNo     String    @map("受注番号") @db.VarChar(10)
+  supCode     String    @map("仕入先コード") @db.VarChar(8)
+  supSubNo    Int?      @default(0) @map("仕入先枝番")
+  empCode     String    @map("発注担当者コード") @db.VarChar(10)
+  dueDate     DateTime? @map("指定納期") @db.Timestamp(6)
+  whCode      String    @map("倉庫コード") @db.VarChar(3)
+  poAmnt      Int?      @default(0) @map("発注金額合計")
+  cmpTax      Int       @default(0) @map("消費税合計")
+  slipComment String?   @map("備考") @db.VarChar(1000)
+  createDate  DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator     String?   @map("作成者名") @db.VarChar(12)
+  updateDate  DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater     String?   @map("更新者名") @db.VarChar(12)
+
+  purchaseOrderDetails PurchaseOrderDetail[]
+
+  @@map("発注データ")
+}
+
+model PurchaseOrderDetail {
+  poNo        String   @map("発注番号") @db.VarChar(10)
+  poRowNo     Int      @map("発注行番号")
+  poRowDspNo  Int      @map("発注行表示番号")
+  orderNo     String   @map("受注番号") @db.VarChar(10)
+  soRowNo     Int      @map("受注行番号")
+  prodCode    String   @map("商品コード") @db.VarChar(16)
+  prodName    String   @map("商品名") @db.VarChar(10)
+  poPrice     Int?     @default(0) @map("発注単価")
+  poQt        Int      @default(1) @map("発注数量")
+  recivedQt   Int      @default(1) @map("入荷数量")
+  completeFlg Int      @default(0) @map("完了フラグ")
+  createDate  DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator     String?  @map("作成者名") @db.VarChar(12)
+  updateDate  DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater     String?  @map("更新者名") @db.VarChar(12)
+
+  PurchaseOrder PurchaseOrder? @relation(fields: [poNo], references: [poNo])
+
+  @@id([poRowNo, poNo], map: "pk_purchase_order_details")
+  @@map("発注データ明細")
+}
+
+model WarehouseDepartment {
+  whCode     String   @map("倉庫コード") @db.VarChar(3)
+  deptCode   String   @map("部門コード") @db.VarChar(6)
+  startDate  DateTime @default(dbgenerated("CURRENT_DATE")) @map("開始日") @db.Timestamp(6)
+  createDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator    String?  @map("作成者名") @db.VarChar(12)
+  updateDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater    String?  @map("更新者名") @db.VarChar(12)
+
+  warehouse  Warehouse?  @relation(fields: [whCode], references: [whCode])
+  department Department? @relation(fields: [deptCode, startDate], references: [deptCode, startDate])
+
+  @@id([whCode, deptCode, startDate], map: "pk_wh_dept_mst")
+  @@map("倉庫部門マスタ")
+}
+
+model Warehouse {
+  whCode     String   @id(map: "pk_wh_mst") @map("倉庫コード") @db.VarChar(3)
+  whName     String?  @map("倉庫名") @db.VarChar(20)
+  whType     String?  @default("N") @map("倉庫区分") @db.VarChar(1)
+  zipCode    String?  @map("郵便番号") @db.Char(8)
+  state      String?  @map("都道府県") @db.VarChar(4)
+  address1   String?  @map("住所１") @db.VarChar(40)
+  address2   String?  @map("住所２") @db.VarChar(40)
+  createDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator    String?  @map("作成者名") @db.VarChar(12)
+  updateDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater    String?  @map("更新者名") @db.VarChar(12)
+
+  warehouseDepartments WarehouseDepartment[]
+  stocks               Stock[]
+  locations            Location[]
+
+  @@map("倉庫マスタ")
+}
+
+model Location {
+  whCode       String   @map("倉庫コード") @db.VarChar(3)
+  locationCode String   @map("棚番コード") @db.VarChar(4)
+  prodCode     String   @map("商品コード") @db.VarChar(16)
+  createDate   DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator      String?  @map("作成者名") @db.VarChar(12)
+  updateDate   DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater      String?  @map("更新者名") @db.VarChar(12)
+
+  warehouse Warehouse? @relation(fields: [whCode], references: [whCode])
+
+  @@id([whCode, locationCode, prodCode], map: "pk_location_mst")
+  @@map("棚番マスタ")
+}
+
+model Stock {
+  whCode           String    @map("倉庫コード") @db.VarChar(3)
+  prodCode         String    @map("商品コード") @db.VarChar(16)
+  rotNo            String    @map("ロット番号") @db.VarChar(20)
+  stockType        String    @default("1") @map("在庫区分") @db.VarChar(1)
+  qualityType      String    @default("G") @map("良品区分") @db.VarChar(1)
+  actual           Int       @default(1) @map("実在庫数")
+  valid            Int       @default(1) @map("有効在庫数")
+  lastDeliveryDate DateTime? @map("最終出荷日") @db.Timestamp(6)
+  createDate       DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator          String?   @map("作成者名") @db.VarChar(12)
+  updateDate       DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater          String?   @map("更新者名") @db.VarChar(12)
+
+  warehouse Warehouse? @relation(fields: [whCode], references: [whCode])
+
+  @@id([whCode, prodCode, rotNo, stockType, qualityType], map: "pk_stock")
+  @@map("在庫データ")
+}
+
+model Purchase {
+  puNo        String    @id(map: "pk_pu") @map("仕入番号") @db.VarChar(10)
+  puDate      DateTime? @default(dbgenerated("CURRENT_DATE")) @map("仕入日") @db.Timestamp(6)
+  supCode     String    @map("仕入先コード") @db.VarChar(8)
+  supSubNo    Int?      @default(0) @map("仕入先枝番")
+  empCode     String    @map("仕入担当者コード") @db.VarChar(10)
+  startDate   DateTime  @default(dbgenerated("CURRENT_DATE")) @map("開始日") @db.Timestamp(6)
+  poNo        String?   @map("発注番号") @db.VarChar(10)
+  deptCode    String    @map("部門コード") @db.VarChar(6)
+  puAmmount   Int?      @default(0) @map("仕入金額合計")
+  cmpTax      Int       @default(0) @map("消費税合計")
+  slipComment String?   @map("備考") @db.VarChar(1000)
+  createDate  DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator     String?   @map("作成者名") @db.VarChar(12)
+  updateDate  DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater     String?   @db.VarChar(12)
+
+  purchaseDetails PurchaseDetail[]
+
+  @@map("仕入データ")
+}
+
+model PurchaseDetail {
+  puNo       String   @map("仕入番号") @db.VarChar(10)
+  puRowNo    Int      @map("仕入行番号")
+  puRowDspNo Int      @map("仕入行表示番号")
+  poRowNo    Int      @map("発注行番号")
+  prodCode   String   @map("商品コード") @db.VarChar(16)
+  whCode     String   @map("倉庫コード") @db.VarChar(3)
+  prodName   String   @map("商品名") @db.VarChar(10)
+  poPrice    Int?     @default(0) @map("仕入単価")
+  puQuantity Int      @default(1) @map("仕入数量")
+  createDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator    String?  @map("作成者名") @db.VarChar(12)
+  updateDate DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater    String?  @map("更新者名") @db.VarChar(12)
+
+  Purchase Purchase? @relation(fields: [puNo], references: [puNo])
+
+  @@id([puRowNo, puNo], map: "pk_pu_details")
+  @@map("仕入データ明細")
+}
+
+model Payment {
+  payNo         String   @id(map: "pk_pay") @map("支払番号") @db.VarChar(10)
+  payDate       Int?     @default(0) @map("支払日")
+  deptCode      String   @map("部門コード") @db.VarChar(6)
+  startDate     DateTime @default(dbgenerated("CURRENT_DATE")) @map("部門開始日") @db.Timestamp(6)
+  supCode       String   @map("仕入先コード") @db.VarChar(8)
+  supSubNo      Int?     @default(0) @map("仕入先枝番")
+  payMethodType Int?     @default(1) @map("支払方法区分")
+  payAmnt       Int?     @default(0) @map("支払金額")
+  cmpTax        Int      @default(0) @map("消費税合計")
+  completeFlg   Int      @default(0) @map("支払完了フラグ")
+  createDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator       String?  @map("作成者名") @db.VarChar(12)
+  updateDate    DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater       String?  @map("更新者名") @db.VarChar(12)
+
+  @@map("支払データ")
+}
+
+model CreditBalance {
+  compCode     String   @id(map: "pk_credit_balance") @map("取引先コード") @db.VarChar(8)
+  orderBalance Int?     @default(0) @map("受注残高")
+  recBalance   Int?     @default(0) @map("債権残高")
+  payBalance   Int?     @default(0) @map("債務残高")
+  createDate   DateTime @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator      String?  @map("作成者名") @db.VarChar(12)
+  updateDate   DateTime @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater      String?  @map("更新者名") @db.VarChar(12)
+
+  @@map("与信残高データ")
+}
+
+model Consumer {
+  consumerCode   String    @id(map: "customer_pk") @map("個人客コード") @db.VarChar(16)
+  lastName       String    @map("姓") @db.VarChar(20)
+  firstName      String    @map("名") @db.VarChar(20)
+  lastNameKana   String    @map("姓カナ") @db.VarChar(40)
+  firstNameKana  String    @map("名カナ") @db.VarChar(40)
+  loginId        String    @map("ログインＩＤ") @db.VarChar(256)
+  email          String    @map("メールアドレス") @db.VarChar(256)
+  pwd            String    @map("パスワード") @db.VarChar(16)
+  birthDate      DateTime  @map("生年月日") @db.Timestamp(6)
+  sex            Int       @map("性別")
+  loginDatetime  DateTime? @map("ログイン日時") @db.Timestamp(6)
+  restPoint      Int?      @map("ポイント残高")
+  withdrawalDate DateTime? @map("退会日") @db.Timestamp(6)
+  createDate     DateTime  @default(dbgenerated("CURRENT_DATE")) @map("作成日時") @db.Timestamp(6)
+  creator        String?   @map("作成者名") @db.VarChar(12)
+  updateDate     DateTime  @default(dbgenerated("CURRENT_DATE")) @map("更新日時") @db.Timestamp(6)
+  updater        String?   @map("更新者名") @db.VarChar(12)
+
+  @@map("個人客マスタ")
+}
+
+model autoNumber {
+  slipType   String   @map("伝票種別コード") @db.VarChar(2)
+  yearmonth  DateTime @map("年月") @db.Timestamp(6)
+  lastSilpNo Int      @default(0) @map("最終伝票番号")
+
+  @@id([slipType, yearmonth])
+  @@map("自動採番マスタ")
+}
