@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 )
 
 func main() {
@@ -39,24 +40,66 @@ func main() {
 	log.Printf("Generate swagger docs....")
 	log.Printf("Generate general API Info, search dir:%s", backendDir)
 
-	// Create a temporary shell script to run swag
-	scriptPath := filepath.Join(os.TempDir(), "run_swag.sh")
-	scriptContent := `#!/bin/bash
+	isWindows := runtime.GOOS == "windows"
+	var cmd *exec.Cmd
+	var scriptPath string
+
+	if isWindows {
+		// Create a temporary PowerShell script for Windows
+		scriptPath = filepath.Join(os.TempDir(), "run_swag.ps1")
+		scriptContent := `
+$env:PATH = "$env:PATH;$(go env GOPATH)\bin"
+go install github.com/swaggo/swag/cmd/swag@latest
+swag init -g cmd/marketplace/main.go -o docs
+`
+		err = os.WriteFile(scriptPath, []byte(scriptContent), 0755)
+		if err != nil {
+			log.Fatalf("Failed to create temporary script: %v", err)
+		}
+		defer func(name string) {
+			err := os.Remove(name)
+			if err != nil {
+				log.Println("Failed to remove temporary script: %v", err)
+			}
+		}(scriptPath)
+
+		// Run the PowerShell script
+		cmd = exec.Command("powershell", "-ExecutionPolicy", "Bypass", "-File", scriptPath)
+	} else {
+		// Create a temporary shell script for Unix systems
+		scriptPath = filepath.Join(os.TempDir(), "run_swag.sh")
+		scriptContent := `#!/bin/bash
 export PATH=$PATH:$(go env GOPATH)/bin
 go install github.com/swaggo/swag/cmd/swag@latest
 swag init -g cmd/marketplace/main.go -o docs
 `
-	err = os.WriteFile(scriptPath, []byte(scriptContent), 0755)
-	if err != nil {
-		log.Fatalf("Failed to create temporary script: %v", err)
-	}
-	defer os.Remove(scriptPath)
+		err = os.WriteFile(scriptPath, []byte(scriptContent), 0755)
+		if err != nil {
+			log.Fatalf("Failed to create temporary script: %v", err)
+		}
+		defer func(name string) {
+			err := os.Remove(name)
+			if err != nil {
+				log.Println("Failed to remove temporary script: %v", err)
+			}
+		}(scriptPath)
 
-	// Run the shell script
-	cmd := exec.Command("/bin/bash", scriptPath)
+		// Run the shell script
+		cmd = exec.Command("/bin/bash", scriptPath)
+	}
+
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	cmd.Env = append(os.Environ(), fmt.Sprintf("PATH=%s:%s", os.Getenv("PATH"), filepath.Join(os.Getenv("HOME"), "go", "bin")))
+
+	// Set PATH environment variable appropriately for the OS
+	goPath := filepath.Join(os.Getenv("HOME"), "go", "bin")
+	if isWindows {
+		// For Windows, use semicolon as path separator
+		cmd.Env = append(os.Environ(), fmt.Sprintf("PATH=%s;%s", os.Getenv("PATH"), goPath))
+	} else {
+		// For Unix, use colon as path separator
+		cmd.Env = append(os.Environ(), fmt.Sprintf("PATH=%s:%s", os.Getenv("PATH"), goPath))
+	}
 
 	log.Println("Generating Swagger documentation...")
 	err = cmd.Run()
