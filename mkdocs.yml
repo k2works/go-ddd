@@ -62,6 +62,7 @@ nav:
     - Iteration Plan: iteration_plan.md
   - Architecture: architecture.md
   - Implementation:
+    - Application: go_application_setup.md
     - System: system_implementation.md
     - Product: product_implementation.md
     - Seller: seller_implementation.md
