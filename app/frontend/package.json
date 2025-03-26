@@ -9,6 +9,7 @@
     "dev:webpack": "webpack --config webpack.config.js --watch",
     "dev:electron": "wait-on dist/main.js && electron .",
     "build": "webpack --config webpack.config.js",
+    "release": "electron-packager . --overwrite",
     "generate-api": "openapi-generator-cli generate -i ../backend/docs/swagger.json -g typescript-axios -o src/api",
     "generate-api:gulp": "gulp generateApi"
   },
@@ -20,6 +21,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@electron/packager": "^18.3.6",
     "@openapitools/openapi-generator-cli": "^2.7.0",
     "@types/electron": "^1.6.10",
     "@types/react": "^18.2.37",
