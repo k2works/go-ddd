@@ -18,14 +18,13 @@ npm install
 2. Swagger仕様からAPIクライアントを生成：
 
 ```bash
-# スクリプトを実行可能にする
-chmod +x generate-api.sh
-
-# スクリプトを実行
-./generate-api.sh
+# Gulpタスクを使用してAPIクライアントを生成（Windows/Mac/Linux対応）
+npm run generate-api
 ```
 
 これにより、バックエンドのSwagger仕様に基づいて`src/api`ディレクトリにAPIクライアントコードが生成されます。
+
+> **注意**: 以前は`generate-api.sh`シェルスクリプトを使用していましたが、クロスプラットフォーム対応のためGulpタスクに置き換えられました。
 
 ## 開発
 
@@ -107,3 +106,15 @@ APIに変更があった後にAPIクライアントを再生成するには：
 ```bash
 npm run generate-api
 ```
+
+### APIクライアント生成の仕組み
+
+APIクライアントの生成には、Gulpタスクを使用しています。このタスクは以下の処理を行います：
+
+1. OpenAPI Generator CLIがインストールされていない場合は自動的にインストール
+2. バックエンドのSwagger仕様（`../backend/docs/swagger.json`）からTypeScript Axiosクライアントを生成
+3. 生成されたコードを`src/api`ディレクトリに配置
+
+このGulpタスクは、Windows、Mac、Linuxなど、すべてのプラットフォームで動作します。
+
+詳細は`gulpfile.js`を参照してください。

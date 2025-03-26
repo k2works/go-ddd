@@ -9,7 +9,8 @@
     "dev:webpack": "webpack --config webpack.config.js --watch",
     "dev:electron": "wait-on dist/main.js && electron .",
     "build": "webpack --config webpack.config.js",
-    "generate-api": "openapi-generator-cli generate -i ../backend/docs/swagger.json -g typescript-axios -o src/api"
+    "generate-api": "openapi-generator-cli generate -i ../backend/docs/swagger.json -g typescript-axios -o src/api",
+    "generate-api:gulp": "gulp generateApi"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +27,8 @@
     "concurrently": "^8.2.2",
     "css-loader": "^6.8.1",
     "electron": "^27.1.0",
+    "gulp": "^5.0.0",
+    "gulp-cli": "^3.0.0",
     "html-webpack-plugin": "^5.5.3",
     "style-loader": "^3.3.3",
     "ts-loader": "^9.5.1",
