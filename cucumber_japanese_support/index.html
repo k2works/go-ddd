@@ -6,17 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Go-DDDプロジェクトのドキュメンテーション作業の概要">
+        <meta name="description" content="Go-DDDプロジェクトでのCucumber日本語サポートの実装方法">
       
       
         <meta name="author" content="Project Team">
       
       
       
-        <link rel="prev" href="../setup_guide_mermaid/">
+        <link rel="prev" href="../go_cucumber_setup/">
       
       
-        <link rel="next" href="../revision_summary/">
+        <link rel="next" href="../testcontainer_implementation/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>ドキュメンテーション概要 - Go-DDD Wiki</title>
+        <title>Cucumber日本語サポート - Go-DDD Wiki</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#cucumber" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ドキュメンテーション概要
+              Cucumber日本語サポート
             
           </span>
         </div>
@@ -277,10 +277,12 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../go_application_setup/" class="md-tabs__link">
           
   
@@ -313,13 +315,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../documentation_summary/" class="md-tabs__link">
           
   
   Documentation
@@ -557,25 +557,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -587,7 +592,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Implementation
@@ -840,10 +845,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../cucumber_japanese_support/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Japanese Cucumber Support
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -853,6 +879,71 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      概要
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gherkin" class="md-nav__link">
+    <span class="md-ellipsis">
+      日本語Gherkinキーワード
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      例
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      日本語で新しいフィーチャファイルを追加する方法
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      注意事項
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1005,30 +1096,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
         
           
-          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1040,7 +1126,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             Documentation
@@ -1051,31 +1137,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Documentation Summary
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../documentation_summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1085,140 +1150,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. ドキュメンテーション構造
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. 主要ドキュメント
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. 主要ドキュメント">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#21" class="md-nav__link">
-    <span class="md-ellipsis">
-      2.1 アーキテクチャドキュメント
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#22" class="md-nav__link">
-    <span class="md-ellipsis">
-      2.2 実装ガイド
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#23" class="md-nav__link">
-    <span class="md-ellipsis">
-      2.3 セットアップガイド
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#24" class="md-nav__link">
-    <span class="md-ellipsis">
-      2.4 計画ドキュメント
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#25" class="md-nav__link">
-    <span class="md-ellipsis">
-      2.5 技術ドキュメント
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. ドキュメンテーション技術
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4" class="md-nav__link">
-    <span class="md-ellipsis">
-      4. 最近のドキュメント更新
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5" class="md-nav__link">
-    <span class="md-ellipsis">
-      5. ドキュメンテーションの特徴
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6" class="md-nav__link">
-    <span class="md-ellipsis">
-      6. 今後の計画
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7" class="md-nav__link">
-    <span class="md-ellipsis">
-      7. まとめ
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1272,86 +1203,80 @@
   
 
 
-<h1 id="_1">ドキュメンテーション作業概要<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>このドキュメントは、Go-DDDプロジェクトで実施したドキュメンテーション作業の概要をまとめたものです。プレゼンテーションや報告書作成の際に参照してください。</p>
-<h2 id="1">1. ドキュメンテーション構造<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
-<p>Go-DDDプロジェクトのドキュメンテーションは以下の構造で整理されています：</p>
-<div class="highlight"><pre><span></span><code>docs/
-├── adr/                 # アーキテクチャ決定記録
-├── images/              # ドキュメント用画像
-├── slides/              # プレゼンテーション資料
-└── wiki/                # プロジェクトWiki
-    ├── architecture.md  # アーキテクチャ説明
-    ├── feature_list.md  # 機能一覧
-    ├── home.md          # ホームページ
-    ├── ...              # その他のドキュメント
+<h1 id="cucumber">Cucumber日本語サポート<a class="headerlink" href="#cucumber" title="Permanent link">&para;</a></h1>
+<p>このドキュメントでは、このプロジェクトでCucumberフィーチャを日本語で記述する方法について説明します。</p>
+<h2 id="_1">概要<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>Cucumberはフィーチャファイルを記述するための複数の言語をサポートしています。日本語サポートを有効にするために、以下の変更を行いました：</p>
+<ol>
+<li>各フィーチャファイルの先頭に <code># language: ja</code> を追加</li>
+<li>英語のGherkinキーワードを日本語の同等のものに置き換え</li>
+</ol>
+<h2 id="gherkin">日本語Gherkinキーワード<a class="headerlink" href="#gherkin" title="Permanent link">&para;</a></h2>
+<p>このプロジェクトで使用されるGherkinキーワードの日本語の同等語は以下の通りです：</p>
+<table>
+<thead>
+<tr>
+<th>英語</th>
+<th>日本語</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Feature</td>
+<td>フィーチャ</td>
+</tr>
+<tr>
+<td>Scenario</td>
+<td>シナリオ</td>
+</tr>
+<tr>
+<td>Given</td>
+<td>前提</td>
+</tr>
+<tr>
+<td>When</td>
+<td>もし</td>
+</tr>
+<tr>
+<td>Then</td>
+<td>ならば</td>
+</tr>
+<tr>
+<td>And</td>
+<td>かつ</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2">例<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c"># language: ja</span>
+<span class="k">フィーチャ:</span><span class="nf"> 商品管理</span>
+<span class="nf">  システム内の商品を管理するために</span>
+<span class="nf">  ユーザーとして</span>
+<span class="nf">  商品の作成、読み取り、更新、削除ができる必要があります</span>
+
+<span class="nf">  </span><span class="k">シナリオ:</span><span class="nf"> 新しい商品を作成する</span>
+<span class="k">    前提</span><span class="nf"> 商品の詳細を持っています</span>
+<span class="k">      |</span><span class="s"> 名前</span><span class="k">        |</span><span class="s"> 価格</span><span class="k">  |</span>
+<span class="k">      |</span><span class="s"> テスト商品</span><span class="k">  |</span><span class="s"> 10.99</span><span class="k"> |</span>
+<span class="nf">    </span><span class="k">かつ</span><span class="nf"> 出品者を持っています</span>
+<span class="nf">    </span><span class="k">もし</span><span class="nf"> 新しい商品を作成します</span>
+<span class="nf">    </span><span class="k">ならば</span><span class="nf"> 商品がシステムに保存されるべきです</span>
+<span class="nf">    </span><span class="k">かつ</span><span class="nf"> IDで商品を取得できるべきです</span>
 </code></pre></div>
-<h2 id="2">2. 主要ドキュメント<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
-<h3 id="21">2.1 アーキテクチャドキュメント<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
-<p>アーキテクチャドキュメント（<code>architecture.md</code>）では、Go-DDDプロジェクトのドメイン駆動設計アプローチについて詳細に説明しています。主な内容：</p>
-<ul>
-<li>オニオンアーキテクチャの採用と実装方法</li>
-<li>ドメイン層、アプリケーション層、インフラストラクチャ層の分離</li>
-<li>依存関係の方向性と依存性注入の実践</li>
-</ul>
-<h3 id="22">2.2 実装ガイド<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
-<p>実装関連のドキュメントでは、各コンポーネントの実装詳細を説明しています：</p>
-<ul>
-<li><code>system_implementation.md</code> - システム全体の実装概要</li>
-<li><code>product_implementation.md</code> - 商品関連機能の実装</li>
-<li><code>seller_implementation.md</code> - 出品者関連機能の実装</li>
-<li><code>orm_mapper_implementation.md</code> - ORMマッパーの実装</li>
-</ul>
-<h3 id="23">2.3 セットアップガイド<a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
-<p>セットアップガイド（<code>setup_guide.md</code>、<code>setup_guide_mermaid.md</code>）では、開発環境の構築手順を詳細に説明しています。Mermaidを使用した図解付きバージョンも用意されています。</p>
-<h3 id="24">2.4 計画ドキュメント<a class="headerlink" href="#24" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>release_plan.md</code> - リリース計画</li>
-<li><code>iteration_plan.md</code> - イテレーション計画</li>
-<li><code>user_stories.md</code> - ユーザーストーリー</li>
-</ul>
-<h3 id="25">2.5 技術ドキュメント<a class="headerlink" href="#25" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>modules_explanation.md</code> - 使用モジュールの解説</li>
-<li><code>echo_jwt_authentication.md</code> - EchoフレームワークでのJWT認証実装</li>
-</ul>
-<h2 id="3">3. ドキュメンテーション技術<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
-<p>Go-DDDプロジェクトでは、以下の技術を活用してドキュメントを作成・管理しています：</p>
-<ul>
-<li><strong>MkDocs</strong> - ドキュメントサイト生成</li>
-<li><strong>Material for MkDocs</strong> - モダンなテーマとUI</li>
-<li><strong>Mermaid</strong> - フローチャートやシーケンス図の作成</li>
-<li><strong>PlantUML</strong> - UML図の作成</li>
-<li><strong>Markdown</strong> - 基本的なドキュメント形式</li>
-</ul>
-<h2 id="4">4. 最近のドキュメント更新<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
-<p>2023年8月から2024年10月にかけて、以下のドキュメント更新が行われました：</p>
-<ul>
-<li><strong>2024年4月25日</strong>: README.mdにベストプラクティスセクションを追加</li>
-<li><strong>2024年4月26日</strong>: README.mdに「find vs get」の説明を追加</li>
-<li><strong>2024年4月27日</strong>: README.mdにソフトデリートについての説明を追加</li>
-<li><strong>2024年5月4日</strong>: README.mdにアーキテクチャ図を追加</li>
-<li><strong>2024年5月4日</strong>: README.mdの図を更新</li>
-<li><strong>2024年9月3日</strong>: README.mdの全体的な更新</li>
-</ul>
-<h2 id="5">5. ドキュメンテーションの特徴<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
-<p>Go-DDDプロジェクトのドキュメンテーションには以下の特徴があります：</p>
+<h2 id="_3">日本語で新しいフィーチャファイルを追加する方法<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>日本語で新しいフィーチャファイルを作成するには：</p>
 <ol>
-<li><strong>視覚的説明</strong> - Mermaid、PlantUMLを活用した図解</li>
-<li><strong>多言語対応</strong> - 日本語と英語のドキュメントを提供</li>
-<li><strong>コード連携</strong> - 実装コードとドキュメントの整合性を維持</li>
-<li><strong>変更履歴管理</strong> - 詳細な変更履歴を<code>revision_summary.md</code>で管理</li>
+<li><code>.feature</code> 拡張子で新しいファイルを作成します</li>
+<li>ファイルの最初の行として <code># language: ja</code> を追加します</li>
+<li>日本語のGherkinキーワード（フィーチャ, シナリオ, 前提, もし, ならば, かつ）を使用します</li>
+<li>ステップの実装は英語（またはステップ定義でサポートされている任意の言語）で記述します</li>
 </ol>
-<h2 id="6">6. 今後の計画<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
-<p>ドキュメンテーションに関する今後の計画：</p>
-<ol>
-<li>API仕様書の自動生成機能の追加</li>
-<li>ユーザーマニュアルの拡充</li>
-<li>チュートリアルビデオの作成</li>
-<li>ドキュメントの継続的な更新と改善</li>
-</ol>
-<h2 id="7">7. まとめ<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
-<p>Go-DDDプロジェクトでは、ドメイン駆動設計の原則に基づいたアプリケーション開発を支援するための包括的なドキュメンテーションを提供しています。MkDocsとMarkdownを基盤とし、Mermaid、PlantUMLなどの視覚化ツールを活用することで、理解しやすく維持管理が容易なドキュメントを実現しています。</p>
+<h2 id="_4">注意事項<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Gherkinキーワードのみが日本語である必要があります。ステップの実装と説明は任意の言語で記述できます。</li>
+<li>コード内のステップ定義は、ステップ内の英語のテキストと一致するため、変更する必要はありません。</li>
+<li>テーブルのヘッダーも日本語に翻訳できますが、その場合はステップ定義関数内でヘッダー名のマッピングを追加する必要があります。</li>
+</ul>
 
 
 

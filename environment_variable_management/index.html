@@ -1,0 +1,1770 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for the Go-DDD project">
+      
+      
+        <meta name="author" content="Project Team">
+      
+      
+      
+        <link rel="prev" href="../echo_jwt_authentication/">
+      
+      
+        <link rel="next" href="../go_cucumber_setup/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
+    
+    
+      
+        <title>環境変数管理（godotenv） - Go-DDD Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../wiki/assets/css/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#go-ddd" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Go-DDD Wiki" class="md-header__button md-logo" aria-label="Go-DDD Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go-DDD Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              環境変数管理（godotenv）
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/yourusername/go-ddd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    go-ddd
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../home/" class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../feature_list/" class="md-tabs__link">
+        
+  
+    
+  
+  Features
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../user_stories/" class="md-tabs__link">
+        
+  
+    
+  
+  User Stories
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../release_plan/" class="md-tabs__link">
+          
+  
+  Planning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../architecture/" class="md-tabs__link">
+        
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../go_application_setup/" class="md-tabs__link">
+          
+  
+  Implementation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../setup_guide/" class="md-tabs__link">
+          
+  
+  Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../documentation_summary/" class="md-tabs__link">
+          
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Go-DDD Wiki" class="md-nav__button md-logo" aria-label="Go-DDD Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Go-DDD Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/yourusername/go-ddd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    go-ddd
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../home/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../feature_list/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user_stories/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    User Stories
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Planning
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Planning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release Plan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iteration_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration Plan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Implementation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Implementation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../go_application_setup/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Product
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../seller_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Seller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules_explanation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modules Explanation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm_mapper_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ORM Mapper
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gen_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Gen Implementation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../echo_framework_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Echo Framework
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../echo_jwt_authentication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Echo JWT Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Environment Variables
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Environment Variables
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 概要
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-godotenv" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. godotenvとは
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. インストール方法
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. 基本的な使用方法
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 基本的な使用方法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-env" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 .envファイルの作成
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 環境変数の読み込み
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 複数の環境に対応
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-go-ddd" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Go-DDDマーケットプレイスでの実装
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Go-DDDマーケットプレイスでの実装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 設定管理パッケージの作成
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 メイン関数での使用
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. テスト環境での使用
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. ベストプラクティス
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. ベストプラクティス">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-env" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1 .envファイルのテンプレート
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.2 環境変数の検証
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.3 機密情報の管理
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-gitignore" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.4 .gitignoreの設定
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. まとめ
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../go_cucumber_setup/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Acceptance Tests
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cucumber_japanese_support/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Japanese Cucumber Support
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testcontainer_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testcontainer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../swagger_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Swagger
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Setup
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setup Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_guide_mermaid/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setup Guide (Mermaid)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation_summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Documentation Summary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../revision_summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Revision Summary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="go-ddd">Go-DDDマーケットプレイスアプリケーション 環境変数管理<a class="headerlink" href="#go-ddd" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概要<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>この文書では、Go-DDDマーケットプレイスアプリケーションにおける環境変数管理の実装方法について説明します。環境変数は、アプリケーションの設定を外部化し、異なる環境（開発、テスト、本番など）で異なる設定を使用できるようにするために重要です。</p>
+<p>本プロジェクトでは、<a href="https://github.com/joho/godotenv">godotenv</a>ライブラリを使用して、<code>.env</code>ファイルから環境変数を読み込む方法を採用しています。</p>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkRFU0NSSVBUSU9OIiBoZWlnaHQ9IjMzMnB4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6MzYwcHg7aGVpZ2h0OjMzMnB4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDM2MCAzMzIiIHdpZHRoPSIzNjBweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PGRlZnMvPjxnPjwhLS1jbHVzdGVyID8/Pz8/Pz8/LS0+PGcgaWQ9ImNsdXN0ZXJfJiMxMjQ1MDsmIzEyNTAzOyYjMTI1MjI7JiMxMjQ2NTsmIzEyNTQwOyYjMTI0NzE7JiMxMjUxOTsmIzEyNTMxOyI+PHBhdGggZD0iTTE4Ljg0LDEwNS4zIEwxMzEuODM5NSwxMDUuMyBBMy43NSwzLjc1IDAgMCAxIDEzNC4zMzk1LDEwNy44IEwxNDEuMzM5NSwxMjcuNTk2OSBMMzUwLjg0LDEyNy41OTY5IEEyLjUsMi41IDAgMCAxIDM1My4zNCwxMzAuMDk2OSBMMzUzLjM0LDMyMy4zOSBBMi41LDIuNSAwIDAgMSAzNTAuODQsMzI1Ljg5IEwxOC44NCwzMjUuODkgQTIuNSwyLjUgMCAwIDEgMTYuMzQsMzIzLjM5IEwxNi4zNCwxMDcuOCBBMi41LDIuNSAwIDAgMSAxOC44NCwxMDUuMyAiIGZpbGw9InRyYW5zcGFyZW50IiBzdHlsZT0ic3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjEuNTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjEuNTsiIHgxPSIxNi4zNCIgeDI9IjE0MS4zMzk1IiB5MT0iMTI3LjU5NjkiIHkyPSIxMjcuNTk2OSIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxMTEuOTk5NSIgeD0iMjAuMzQiIHk9IjEyMC4yOTUxIj4mIzEyNDUwOyYjMTI1MDM7JiMxMjUyMjsmIzEyNDY1OyYjMTI1NDA7JiMxMjQ3MTsmIzEyNTE5OyYjMTI1MzE7PC90ZXh0PjwvZz48IS0tZW50aXR5IENvbmZpZy0tPjxnIGlkPSJlbGVtX0NvbmZpZyI+PHJlY3QgZmlsbD0iI0YxRjFGMSIgaGVpZ2h0PSI0Ni4yOTY5IiByeD0iMi41IiByeT0iMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSI5NS45OTk4IiB4PSI5Ny4zNCIgeT0iMTQwLjMiLz48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjEwIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxNSIgeD0iMTczLjMzOTgiIHk9IjE0NS4zIi8+PHJlY3QgZmlsbD0iI0YxRjFGMSIgaGVpZ2h0PSIyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSI0IiB4PSIxNzEuMzM5OCIgeT0iMTQ3LjMiLz48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjIiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjQiIHg9IjE3MS4zMzk4IiB5PSIxNTEuMyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjU1Ljk5OTgiIHg9IjExMi4zNCIgeT0iMTczLjI5NTEiPiYjMzUzNzM7JiMyMzQ1MDsmIzMxNjQ5OyYjMjk3MDI7PC90ZXh0PjwvZz48IS0tZW50aXR5IERCLS0+PGcgaWQ9ImVsZW1fREIiPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iNDYuMjk2OSIgcng9IjIuNSIgcnk9IjIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMTUxLjk5OTUiIHg9IjMyLjM0IiB5PSIyNjMuNTkiLz48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjEwIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxNSIgeD0iMTY0LjMzOTUiIHk9IjI2OC41OSIvPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iNCIgeD0iMTYyLjMzOTUiIHk9IjI3MC41OSIvPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iNCIgeD0iMTYyLjMzOTUiIHk9IjI3NC41OSIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjExMS45OTk1IiB4PSI0Ny4zNCIgeT0iMjk2LjU4NTEiPiYjMTI0ODc7JiMxMjU0MDsmIzEyNDc5OyYjMTI1MDU7JiMxMjU0MDsmIzEyNDczOyYjMjU1MDk7JiMzMjE1NDs8L3RleHQ+PC9nPjwhLS1lbnRpdHkgQVBJLS0+PGcgaWQ9ImVsZW1fQVBJIj48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjQ2LjI5NjkiIHJ4PSIyLjUiIHJ5PSIyLjUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjExOC4xNDgyIiB4PSIyMTkuMjciIHk9IjI2My41OSIvPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMTAiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjE1IiB4PSIzMTcuNDE4MiIgeT0iMjY4LjU5Ii8+PHJlY3QgZmlsbD0iI0YxRjFGMSIgaGVpZ2h0PSIyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSI0IiB4PSIzMTUuNDE4MiIgeT0iMjcwLjU5Ii8+PHJlY3QgZmlsbD0iI0YxRjFGMSIgaGVpZ2h0PSIyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSI0IiB4PSIzMTUuNDE4MiIgeT0iMjc0LjU5Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iNzguMTQ4MiIgeD0iMjM0LjI3IiB5PSIyOTYuNTg1MSI+QVBJJiMxMjQ2OTsmIzEyNTQwOyYjMTI0OTY7JiMxMjU0MDs8L3RleHQ+PC9nPjwhLS1lbnRpdHkgRW52RmlsZS0tPjxnIGlkPSJlbGVtX0VudkZpbGUiPjxwYXRoIGQ9Ik02LDguNSBMNiwzOS43OTY5IEEyLjUsMi41IDAgMCAwIDguNSw0Mi4yOTY5IEwxMTQuMTcxNiw0Mi4yOTY5IEEyLjUsMi41IDAgMCAwIDExNi42NzE2LDM5Ljc5NjkgTDExNi42NzE2LDE2IEwxMDYuNjcxNiw2IEw4LjUsNiBBMi41LDIuNSAwIDAgMCA2LDguNSAiIGZpbGw9IiNGMUYxRjEiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjxwYXRoIGQ9Ik0xMDYuNjcxNiw2IEwxMDYuNjcxNiwxMy41IEEyLjUsMi41IDAgMCAwIDEwOS4xNzE2LDE2IEwxMTYuNjcxNiwxNiAiIGZpbGw9IiNGMUYxRjEiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjkwLjY3MTYiIHg9IjE2IiB5PSIyOC45OTUxIj4uZW52ICYjMTI1MDE7JiMxMjQ0OTsmIzEyNDUyOyYjMTI1MjM7PC90ZXh0PjwvZz48IS0tZW50aXR5IE9TRW52LS0+PGcgaWQ9ImVsZW1fT1NFbnYiPjxwYXRoIGQ9Ik0xODEuMzksOC41IEwxODEuMzksMzkuNzk2OSBBMi41LDIuNSAwIDAgMCAxODMuODksNDIuMjk2OSBMMjc0Ljc5Niw0Mi4yOTY5IEEyLjUsMi41IDAgMCAwIDI3Ny4yOTYsMzkuNzk2OSBMMjc3LjI5NiwxNiBMMjY3LjI5Niw2IEwxODMuODksNiBBMi41LDIuNSAwIDAgMCAxODEuMzksOC41ICIgZmlsbD0iI0YxRjFGMSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7Ii8+PHBhdGggZD0iTTI2Ny4yOTYsNiBMMjY3LjI5NiwxMy41IEEyLjUsMi41IDAgMCAwIDI2OS43OTYsMTYgTDI3Ny4yOTYsMTYgIiBmaWxsPSIjRjFGMUYxIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSI3NS45MDYiIHg9IjE5MS4zOSIgeT0iMjguOTk1MSI+T1MmIzI5ODcyOyYjMjI2NTk7JiMyMjc5MzsmIzI1OTY4OzwvdGV4dD48L2c+PCEtLWxpbmsgRW52RmlsZSB0byBDb25maWctLT48ZyBpZD0ibGlua19FbnZGaWxlX0NvbmZpZyI+PHBhdGggZD0iTTU2LjI5LDQyLjYgQzUzLjM4LDU2LjAxIDUxLjUyLDc0LjY0IDU4LjM0LDg5LjMgQzY4LjE3LDExMC40IDgyLjQ4NjUsMTI0LjE4NTIgMTAwLjM4NjUsMTM2LjU3NTIgIiBmaWxsPSJ0cmFuc3BhcmVudCIgaWQ9IkVudkZpbGUtdG8tQ29uZmlnIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSIxMDUuMzIsMTM5Ljk5LDEwMC4xOTY0LDEzMS41Nzg4LDEwMS4yMDg4LDEzNy4xNDQzLDk1LjY0MzMsMTM4LjE1NjcsMTA1LjMyLDEzOS45OSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjEyNi40MzkiIHg9IjU5LjM0IiB5PSI4NS4zNjY5Ij5nb2RvdGVudiYjMTIzOTE7JiMzNTUwMTsmIzEyNDE1OyYjMzY3OTY7JiMxMjQxNTs8L3RleHQ+PC9nPjwhLS1saW5rIE9TRW52IHRvIENvbmZpZy0tPjxnIGlkPSJsaW5rX09TRW52X0NvbmZpZyI+PHBhdGggZD0iTTIxOC43Nyw0Mi41OSBDMjEwLjk0LDU1LjUgMjAwLDczLjUxIDE5MC4zNCw4OS4zIEMxNzkuOTIsMTA2LjM0IDE3MS4yMjg1LDEyMC40NzI1IDE2Mi4zMDg1LDEzNC45NDI1ICIgZmlsbD0idHJhbnNwYXJlbnQiIGlkPSJPU0Vudi10by1Db25maWciIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjE1OS4xNiwxNDAuMDUsMTY3LjI4NzgsMTM0LjQ4NzcsMTYxLjc4MzgsMTM1Ljc5MzcsMTYwLjQ3NzgsMTMwLjI4OTcsMTU5LjE2LDE0MC4wNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9Ijc4LjAwMDEiIHg9IjIwMSIgeT0iODUuMzY2OSI+JiMzMDQ1MjsmIzI1NTA5OyYjMzU1MDE7JiMxMjQxNTsmIzM2Nzk2OyYjMTI0MTU7PC90ZXh0PjwvZz48IS0tbGluayBDb25maWcgdG8gREItLT48ZyBpZD0ibGlua19Db25maWdfREIiPjxwYXRoIGQ9Ik05OC40LDE4Ni45IEM4Ny4xOSwxOTQuNjUgNzYuNjYsMjA0LjUxIDcwLjM0LDIxNi41OSBDNjIuMTUsMjMyLjI1IDY3Ljk0MTcsMjQ1LjE1NDggNzkuNTkxNywyNTguNjA0OCAiIGZpbGw9InRyYW5zcGFyZW50IiBpZD0iQ29uZmlnLXRvLURCIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI4My41MiwyNjMuMTQsODAuNjUxLDI1My43MTgzLDgwLjI0NjQsMjU5LjM2MDYsNzQuNjA0MSwyNTguOTU2LDgzLjUyLDI2My4xNCIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9Ijk2LjkyODgiIHg9IjcxLjM0IiB5PSIyMjkuNjU2OSI+REImIzI1NTA5OyYjMzIxNTQ7JiMyNDc3MzsmIzIyNTc3OyYjMjU1NTI7JiMyMDM3OTs8L3RleHQ+PC9nPjwhLS1saW5rIENvbmZpZyB0byBBUEktLT48ZyBpZD0ibGlua19Db25maWdfQVBJIj48cGF0aCBkPSJNMTcwLjA0LDE4Ni45OCBDMTkzLjkzLDIwOC43NiAyMjUuNDg1NywyMzcuNTQ4IDI0OS4zMzU3LDI1OS4yODggIiBmaWxsPSJ0cmFuc3BhcmVudCIgaWQ9IkNvbmZpZy10by1BUEkiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjI1My43NywyNjMuMzMsMjQ5LjgxMzMsMjU0LjMxMDksMjUwLjA3NDgsMjU5Ljk2MTcsMjQ0LjQyNCwyNjAuMjIzMiwyNTMuNzcsMjYzLjMzIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTI0LjU2NjUiIHg9IjIyMC44IiB5PSIyMjkuNjU2OSI+QVBJJiMxMjQ2OTsmIzEyNTQwOyYjMTI0OTY7JiMxMjU0MDsmIzM1MzczOyYjMjM0NTA7JiMyNTU1MjsmIzIwMzc5OzwvdGV4dD48L2c+PCEtLVNSQz1bQXFYQ3BhdkNKckxHVWpvcXc3N3B6Q1ZEZ251dFJOcFNsRVRucV9SN3BTaVZEc3pNS2daY1lkd25Pa3RKVFJFVWhybHVWNDlSaDQ5WWlPOXBWYnZRUFpmTnpFRmNUaDNZX08tUlB1OFBFdl9yQk5zLVJIUE9hT2lKTHhIWldFVlpmZ3FXZ1VPOUcxOGkzWEpaZ2tOWUlpbEMwVGdoYnZmTmZsMnVVVWhaZmVNRmN2T3lSYndqMTVCWWNiVmMxZkk2Z2w0RlZadmZtekQ1cEstTlQzd1JrVzZpbTN5T2c4SUIyd2ZFR0xWTjNrZWMxSWs1ekZvS18xQVdpT3lSYnh6T2pWUG51X3VOLV9PMElJd203YklicHNUbDBKZU9ISEtOTDFBYXBpSzlnQ1I1MlVBZFB5c2pKblRpVkRPX3VTYy1zU1lBV0R1MWdhQnBBMko0ODhlMV0tLT48L2c+PC9zdmc+" class="uml" alt="uml diagram" title="" /></p>
+<h2 id="2-godotenv">2. godotenvとは<a class="headerlink" href="#2-godotenv" title="Permanent link">&para;</a></h2>
+<p>godotenvは、Goアプリケーションで<code>.env</code>ファイルから環境変数を読み込むためのライブラリです。これにより、以下のメリットが得られます：</p>
+<ol>
+<li><strong>設定の外部化</strong>: アプリケーションコードから設定を分離</li>
+<li><strong>環境ごとの設定</strong>: 開発、テスト、本番など異なる環境で異なる設定を使用可能</li>
+<li><strong>機密情報の保護</strong>: APIキーやデータベースパスワードなどの機密情報をコードから分離</li>
+<li><strong>デプロイの簡素化</strong>: 環境変数を変更するだけで、アプリケーションの再ビルドなしに設定を変更可能</li>
+</ol>
+<h2 id="3">3. インストール方法<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<p>godotenvは以下のコマンドでインストールできます：</p>
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span>get<span class="w"> </span>github.com/joho/godotenv
+</code></pre></div>
+<h2 id="4">4. 基本的な使用方法<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41-env">4.1 <code>.env</code>ファイルの作成<a class="headerlink" href="#41-env" title="Permanent link">&para;</a></h3>
+<p>プロジェクトのルートディレクトリに<code>.env</code>ファイルを作成します：</p>
+<div class="highlight"><pre><span></span><code># データベース設定
+DB_HOST=localhost
+DB_PORT=9920
+DB_USER=root
+DB_PASSWORD=password
+DB_NAME=mydb
+DB_SSL_MODE=disable
+
+# APIサーバー設定
+API_PORT=9090
+API_SECRET=your_secret_key
+
+# JWT設定
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRATION=24h
+</code></pre></div>
+<blockquote>
+<p><strong>注意</strong>: <code>.env</code>ファイルはGitリポジトリにコミットしないでください。<code>.gitignore</code>ファイルに<code>.env</code>を追加して、機密情報が公開されないようにしてください。</p>
+</blockquote>
+<h3 id="42">4.2 環境変数の読み込み<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<p>アプリケーションの起動時に<code>.env</code>ファイルから環境変数を読み込みます：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;log&quot;</span>
+<span class="w">    </span><span class="s">&quot;os&quot;</span>
+
+<span class="w">    </span><span class="s">&quot;github.com/joho/godotenv&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// .envファイルを読み込む</span>
+<span class="w">    </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">godotenv</span><span class="p">.</span><span class="nx">Load</span><span class="p">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Warning: .env file not found, using OS environment variables&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 環境変数を取得</span>
+<span class="w">    </span><span class="nx">dbHost</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">&quot;DB_HOST&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">dbPort</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">&quot;DB_PORT&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">apiPort</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">&quot;API_PORT&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// デフォルト値の設定</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">apiPort</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">apiPort</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;9090&quot;</span><span class="w"> </span><span class="c1">// デフォルトポート</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 以降の処理...</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="43">4.3 複数の環境に対応<a class="headerlink" href="#43" title="Permanent link">&para;</a></h3>
+<p>異なる環境（開発、テスト、本番）に対応するために、複数の<code>.env</code>ファイルを使用できます：</p>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span><span class="w"> </span><span class="nx">loadEnv</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">env</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">&quot;GO_ENV&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">env</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">env</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;development&quot;</span><span class="w"> </span><span class="c1">// デフォルト環境</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 環境に応じた.envファイルを読み込む</span>
+<span class="w">    </span><span class="nx">envFile</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="s">&quot;.env.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">env</span>
+<span class="w">    </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">godotenv</span><span class="p">.</span><span class="nx">Load</span><span class="p">(</span><span class="nx">envFile</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 特定の環境の.envファイルが見つからない場合、デフォルトの.envを試す</span>
+<span class="w">        </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">godotenv</span><span class="p">.</span><span class="nx">Load</span><span class="p">()</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Warning: No .env file found, using OS environment variables&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>この場合、以下のファイルを作成します：
+- <code>.env.development</code> - 開発環境用
+- <code>.env.test</code> - テスト環境用
+- <code>.env.production</code> - 本番環境用</p>
+<h2 id="5-go-ddd">5. Go-DDDマーケットプレイスでの実装<a class="headerlink" href="#5-go-ddd" title="Permanent link">&para;</a></h2>
+<h3 id="51">5.1 設定管理パッケージの作成<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<p>環境変数を一元管理するための設定管理パッケージを作成します：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// internal/infrastructure/config/config.go</span>
+<span class="kn">package</span><span class="w"> </span><span class="nx">config</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;log&quot;</span>
+<span class="w">    </span><span class="s">&quot;os&quot;</span>
+<span class="w">    </span><span class="s">&quot;strconv&quot;</span>
+<span class="w">    </span><span class="s">&quot;time&quot;</span>
+
+<span class="w">    </span><span class="s">&quot;github.com/joho/godotenv&quot;</span>
+<span class="p">)</span>
+
+<span class="c1">// Config はアプリケーション設定を保持する構造体</span>
+<span class="kd">type</span><span class="w"> </span><span class="nx">Config</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// データベース設定</span>
+<span class="w">    </span><span class="nx">DBHost</span><span class="w">     </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">DBPort</span><span class="w">     </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">DBUser</span><span class="w">     </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">DBPassword</span><span class="w"> </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">DBName</span><span class="w">     </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">DBSSLMode</span><span class="w">  </span><span class="kt">string</span>
+
+<span class="w">    </span><span class="c1">// APIサーバー設定</span>
+<span class="w">    </span><span class="nx">APIPort</span><span class="w"> </span><span class="kt">string</span>
+
+<span class="w">    </span><span class="c1">// JWT設定</span>
+<span class="w">    </span><span class="nx">JWTSecret</span><span class="w">     </span><span class="kt">string</span>
+<span class="w">    </span><span class="nx">JWTExpiration</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+<span class="p">}</span>
+
+<span class="c1">// LoadConfig は環境変数から設定を読み込む</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">LoadConfig</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="nx">Config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// .envファイルを読み込む</span>
+<span class="w">    </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">godotenv</span><span class="p">.</span><span class="nx">Load</span><span class="p">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Warning: .env file not found, using OS environment variables&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// JWTの有効期限を解析</span>
+<span class="w">    </span><span class="nx">jwtExp</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">&quot;JWT_EXPIRATION&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">jwtExpDuration</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">jwtExp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">jwtExpDuration</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">ParseDuration</span><span class="p">(</span><span class="nx">jwtExp</span><span class="p">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Warning: Invalid JWT_EXPIRATION format: %v, using default 24h&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">            </span><span class="nx">jwtExpDuration</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Hour</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">jwtExpDuration</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Hour</span><span class="w"> </span><span class="c1">// デフォルト24時間</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">Config</span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// データベース設定</span>
+<span class="w">        </span><span class="nx">DBHost</span><span class="p">:</span><span class="w">     </span><span class="nx">getEnv</span><span class="p">(</span><span class="s">&quot;DB_HOST&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;localhost&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">DBPort</span><span class="p">:</span><span class="w">     </span><span class="nx">getEnv</span><span class="p">(</span><span class="s">&quot;DB_PORT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;9920&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">DBUser</span><span class="p">:</span><span class="w">     </span><span class="nx">getEnv</span><span class="p">(</span><span class="s">&quot;DB_USER&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;root&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">DBPassword</span><span class="p">:</span><span class="w"> </span><span class="nx">getEnv</span><span class="p">(</span><span class="s">&quot;DB_PASSWORD&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;password&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">DBName</span><span class="p">:</span><span class="w">     </span><span class="nx">getEnv</span><span class="p">(</span><span class="s">&quot;DB_NAME&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mydb&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">DBSSLMode</span><span class="p">:</span><span class="w">  </span><span class="nx">getEnv</span><span class="p">(</span><span class="s">&quot;DB_SSL_MODE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;disable&quot;</span><span class="p">),</span>
+
+<span class="w">        </span><span class="c1">// APIサーバー設定</span>
+<span class="w">        </span><span class="nx">APIPort</span><span class="p">:</span><span class="w"> </span><span class="nx">getEnv</span><span class="p">(</span><span class="s">&quot;API_PORT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;9090&quot;</span><span class="p">),</span>
+
+<span class="w">        </span><span class="c1">// JWT設定</span>
+<span class="w">        </span><span class="nx">JWTSecret</span><span class="p">:</span><span class="w">     </span><span class="nx">getEnv</span><span class="p">(</span><span class="s">&quot;JWT_SECRET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;default_jwt_secret&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">JWTExpiration</span><span class="p">:</span><span class="w"> </span><span class="nx">jwtExpDuration</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// getEnv は環境変数を取得し、設定されていない場合はデフォルト値を返す</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">getEnv</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="nx">defaultValue</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">value</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">defaultValue</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">value</span>
+<span class="p">}</span>
+
+<span class="c1">// GetDSN はデータベース接続文字列を生成する</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">Config</span><span class="p">)</span><span class="w"> </span><span class="nx">GetDSN</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;host=&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">DBHost</span><span class="w"> </span><span class="o">+</span><span class="w"> </span>
+<span class="w">           </span><span class="s">&quot; user=&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">DBUser</span><span class="w"> </span><span class="o">+</span><span class="w"> </span>
+<span class="w">           </span><span class="s">&quot; password=&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">DBPassword</span><span class="w"> </span><span class="o">+</span><span class="w"> </span>
+<span class="w">           </span><span class="s">&quot; dbname=&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">DBName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span>
+<span class="w">           </span><span class="s">&quot; port=&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">DBPort</span><span class="w"> </span><span class="o">+</span><span class="w"> </span>
+<span class="w">           </span><span class="s">&quot; sslmode=&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">DBSSLMode</span><span class="w"> </span><span class="o">+</span><span class="w"> </span>
+<span class="w">           </span><span class="s">&quot; TimeZone=Asia/Shanghai&quot;</span>
+<span class="p">}</span>
+
+<span class="c1">// GetAPIPort はAPIポートを取得する（&quot;:&quot;プレフィックス付き）</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">Config</span><span class="p">)</span><span class="w"> </span><span class="nx">GetAPIPort</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;:&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">APIPort</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="52">5.2 メイン関数での使用<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<p>アプリケーションのメイン関数で設定を読み込み、使用します：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// cmd/marketplace/main.go</span>
+<span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;log&quot;</span>
+
+<span class="w">    </span><span class="s">&quot;github.com/labstack/echo/v4&quot;</span>
+<span class="w">    </span><span class="s">&quot;gorm.io/driver/postgres&quot;</span>
+<span class="w">    </span><span class="s">&quot;gorm.io/gorm&quot;</span>
+
+<span class="w">    </span><span class="s">&quot;github.com/yourusername/go-ddd/internal/application/services&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/yourusername/go-ddd/internal/infrastructure/config&quot;</span>
+<span class="w">    </span><span class="nx">postgres2</span><span class="w"> </span><span class="s">&quot;github.com/yourusername/go-ddd/internal/infrastructure/db/postgres&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/yourusername/go-ddd/internal/interface/api/rest&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 設定を読み込む</span>
+<span class="w">    </span><span class="nx">cfg</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">config</span><span class="p">.</span><span class="nx">LoadConfig</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1">// データベース接続</span>
+<span class="w">    </span><span class="nx">gormDB</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">gorm</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">postgres</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">cfg</span><span class="p">.</span><span class="nx">GetDSN</span><span class="p">()),</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">gorm</span><span class="p">.</span><span class="nx">Config</span><span class="p">{})</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Failed to connect to database: %v&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// データベースマイグレーションを実行</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">postgres2</span><span class="p">.</span><span class="nx">RunMigrations</span><span class="p">(</span><span class="nx">gormDB</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Failed to run migrations: %v&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// リポジトリの初期化</span>
+<span class="w">    </span><span class="nx">productRepo</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">postgres2</span><span class="p">.</span><span class="nx">NewGormProductRepository</span><span class="p">(</span><span class="nx">gormDB</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">sellerRepo</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">postgres2</span><span class="p">.</span><span class="nx">NewGormSellerRepository</span><span class="p">(</span><span class="nx">gormDB</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// サービスの初期化</span>
+<span class="w">    </span><span class="nx">productService</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">services</span><span class="p">.</span><span class="nx">NewProductService</span><span class="p">(</span><span class="nx">productRepo</span><span class="p">,</span><span class="w"> </span><span class="nx">sellerRepo</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">sellerService</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">services</span><span class="p">.</span><span class="nx">NewSellerService</span><span class="p">(</span><span class="nx">sellerRepo</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// Echoサーバーの初期化</span>
+<span class="w">    </span><span class="nx">e</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">echo</span><span class="p">.</span><span class="nx">New</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1">// ルーターの設定</span>
+<span class="w">    </span><span class="nx">rest</span><span class="p">.</span><span class="nx">SetupRouter</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="w"> </span><span class="nx">productService</span><span class="p">,</span><span class="w"> </span><span class="nx">sellerService</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// サーバーの起動</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">Start</span><span class="p">(</span><span class="nx">cfg</span><span class="p">.</span><span class="nx">GetAPIPort</span><span class="p">());</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;Failed to start server: %v&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="6">6. テスト環境での使用<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<p>テスト時には、テスト用の環境変数を設定するために<code>.env.test</code>ファイルを使用できます：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// internal/infrastructure/config/config_test.go</span>
+<span class="kn">package</span><span class="w"> </span><span class="nx">config</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;os&quot;</span>
+<span class="w">    </span><span class="s">&quot;testing&quot;</span>
+<span class="w">    </span><span class="s">&quot;time&quot;</span>
+
+<span class="w">    </span><span class="s">&quot;github.com/joho/godotenv&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">TestLoadConfig</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// テスト用の環境変数を設定</span>
+<span class="w">    </span><span class="nx">os</span><span class="p">.</span><span class="nx">Setenv</span><span class="p">(</span><span class="s">&quot;DB_HOST&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test-host&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">os</span><span class="p">.</span><span class="nx">Setenv</span><span class="p">(</span><span class="s">&quot;API_PORT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;8080&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">os</span><span class="p">.</span><span class="nx">Setenv</span><span class="p">(</span><span class="s">&quot;JWT_EXPIRATION&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;1h&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// 設定を読み込む</span>
+<span class="w">    </span><span class="nx">cfg</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">LoadConfig</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1">// 設定値を検証</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">cfg</span><span class="p">.</span><span class="nx">DBHost</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;test-host&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Expected DBHost to be &#39;test-host&#39;, got &#39;%s&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">cfg</span><span class="p">.</span><span class="nx">DBHost</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">cfg</span><span class="p">.</span><span class="nx">APIPort</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;8080&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Expected APIPort to be &#39;8080&#39;, got &#39;%s&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">cfg</span><span class="p">.</span><span class="nx">APIPort</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">cfg</span><span class="p">.</span><span class="nx">JWTExpiration</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Hour</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Expected JWTExpiration to be 1h, got &#39;%v&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">cfg</span><span class="p">.</span><span class="nx">JWTExpiration</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 環境変数をクリア</span>
+<span class="w">    </span><span class="nx">os</span><span class="p">.</span><span class="nx">Unsetenv</span><span class="p">(</span><span class="s">&quot;DB_HOST&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">os</span><span class="p">.</span><span class="nx">Unsetenv</span><span class="p">(</span><span class="s">&quot;API_PORT&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">os</span><span class="p">.</span><span class="nx">Unsetenv</span><span class="p">(</span><span class="s">&quot;JWT_EXPIRATION&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">TestGetDSN</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">cfg</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">Config</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">DBHost</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;localhost&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">DBPort</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;5432&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">DBUser</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;testuser&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">DBPassword</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;testpass&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">DBName</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;testdb&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">DBSSLMode</span><span class="p">:</span><span class="w">  </span><span class="s">&quot;disable&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">expected</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="s">&quot;host=localhost user=testuser password=testpass dbname=testdb port=5432 sslmode=disable TimeZone=Asia/Shanghai&quot;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">dsn</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cfg</span><span class="p">.</span><span class="nx">GetDSN</span><span class="p">();</span><span class="w"> </span><span class="nx">dsn</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">expected</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Expected DSN to be &#39;%s&#39;, got &#39;%s&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">expected</span><span class="p">,</span><span class="w"> </span><span class="nx">dsn</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="7">7. ベストプラクティス<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="71-env">7.1 <code>.env</code>ファイルのテンプレート<a class="headerlink" href="#71-env" title="Permanent link">&para;</a></h3>
+<p><code>.env</code>ファイルをGitリポジトリにコミットしないため、<code>.env.example</code>ファイルを作成して、必要な環境変数のテンプレートを提供することをお勧めします：</p>
+<div class="highlight"><pre><span></span><code># .env.example
+# このファイルをコピーして.envファイルを作成し、適切な値を設定してください
+
+# データベース設定
+DB_HOST=localhost
+DB_PORT=9920
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=mydb
+DB_SSL_MODE=disable
+
+# APIサーバー設定
+API_PORT=9090
+API_SECRET=your_secret_key
+
+# JWT設定
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRATION=24h
+</code></pre></div>
+<h3 id="72">7.2 環境変数の検証<a class="headerlink" href="#72" title="Permanent link">&para;</a></h3>
+<p>アプリケーション起動時に必須の環境変数が設定されているか検証することをお勧めします：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// 必須環境変数の検証</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">validateRequiredEnv</span><span class="p">()</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">required</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&quot;DB_HOST&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DB_USER&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DB_PASSWORD&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;JWT_SECRET&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="nx">missing</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">required</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">missing</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">missing</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">missing</span><span class="p">)</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Missing required environment variables: %v&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">missing</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="73">7.3 機密情報の管理<a class="headerlink" href="#73" title="Permanent link">&para;</a></h3>
+<p>機密情報（パスワード、APIキーなど）の管理には以下のプラクティスを推奨します：</p>
+<ol>
+<li>開発環境では<code>.env</code>ファイルを使用</li>
+<li>テスト環境ではCI/CDシステムの環境変数機能を使用</li>
+<li>本番環境ではKubernetesのSecretsやAWS Parameter Storeなどの専用サービスを使用</li>
+</ol>
+<h3 id="74-gitignore">7.4 <code>.gitignore</code>の設定<a class="headerlink" href="#74-gitignore" title="Permanent link">&para;</a></h3>
+<p><code>.gitignore</code>ファイルに以下を追加して、環境変数ファイルがリポジトリにコミットされないようにします：</p>
+<div class="highlight"><pre><span></span><code># 環境変数ファイル
+.env
+.env.*
+!.env.example
+</code></pre></div>
+<h2 id="8">8. まとめ<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<p>godotenvを使用した環境変数管理は、Go-DDDマーケットプレイスアプリケーションの設定を外部化し、異なる環境での実行を容易にします。この実装により、以下のメリットが得られます：</p>
+<ol>
+<li><strong>設定の一元管理</strong>: すべての設定が一箇所で管理され、変更が容易</li>
+<li><strong>環境ごとの設定</strong>: 開発、テスト、本番環境で異なる設定を使用可能</li>
+<li><strong>セキュリティの向上</strong>: 機密情報をコードから分離</li>
+<li><strong>デプロイの簡素化</strong>: 環境変数を変更するだけで設定を変更可能</li>
+</ol>
+<p>godotenvを使用することで、12-Factorアプリケーションの「設定」の原則に従い、より堅牢で保守性の高いアプリケーションを構築できます。</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/yourusername/go-ddd" target="_blank" rel="noopener" title="GitHub Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+        <script src="../wiki/assets/js/extra.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1757 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="GORMのGenを使用したデータアクセス実装の詳細解説">
+      
+      
+        <meta name="author" content="Project Team">
+      
+      
+      
+        <link rel="prev" href="../orm_mapper_implementation/">
+      
+      
+        <link rel="next" href="../echo_framework_implementation/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
+    
+    
+      
+        <title>ORMからGenへの移行と使い方 - Go-DDD Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../wiki/assets/css/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ormgen" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Go-DDD Wiki" class="md-header__button md-logo" aria-label="Go-DDD Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go-DDD Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ORMからGenへの移行と使い方
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/yourusername/go-ddd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    go-ddd
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../home/" class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../feature_list/" class="md-tabs__link">
+        
+  
+    
+  
+  Features
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../user_stories/" class="md-tabs__link">
+        
+  
+    
+  
+  User Stories
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../release_plan/" class="md-tabs__link">
+          
+  
+  Planning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../architecture/" class="md-tabs__link">
+        
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../go_application_setup/" class="md-tabs__link">
+          
+  
+  Implementation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../setup_guide/" class="md-tabs__link">
+          
+  
+  Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../documentation_summary/" class="md-tabs__link">
+          
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Go-DDD Wiki" class="md-nav__button md-logo" aria-label="Go-DDD Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Go-DDD Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/yourusername/go-ddd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    go-ddd
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../home/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../feature_list/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user_stories/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    User Stories
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Planning
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Planning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release Plan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iteration_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration Plan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Implementation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Implementation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../go_application_setup/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../product_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Product
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../seller_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Seller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules_explanation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modules Explanation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm_mapper_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ORM Mapper
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Gen Implementation
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Gen Implementation
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 概要
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概要">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-gen" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 Genの特徴
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-ormgen" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 ORMからGenへの移行理由
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-gen" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Genの実装
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Genの実装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 モデル生成の設定
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 生成されるモデルファイル
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 生成されるクエリファイル
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-gen" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Genの使い方
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Genの使い方">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 基本的な使い方
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 データの作成
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 データの取得
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 データの更新
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5 データの削除
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.6 リレーションを使用したクエリ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.7 トランザクション
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ormgen" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. ORMとGenの比較
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. ORMとGenの比較">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 基本的なクエリの比較
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1 基本的なクエリの比較">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#411" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1.1 データの取得
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#412" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1.2 条件付き検索
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#413" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1.3 結合クエリ
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-gen" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Genの利点
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. まとめ
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. 参考リンク
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../echo_framework_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Echo Framework
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../echo_jwt_authentication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Echo JWT Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../environment_variable_management/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Environment Variables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../go_cucumber_setup/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Acceptance Tests
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cucumber_japanese_support/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Japanese Cucumber Support
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testcontainer_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testcontainer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../swagger_implementation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Swagger
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Setup
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setup Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_guide_mermaid/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setup Guide (Mermaid)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation_summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Documentation Summary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../revision_summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Revision Summary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ormgen">ORMからGenへの移行と使い方<a class="headerlink" href="#ormgen" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概要<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>この文書では、Go-DDDマーケットプレイスアプリケーションにおけるデータアクセス層の実装を、従来のORMマッパーからGORMのGenに移行した詳細について解説します。Genは、GORMの上に構築された強力なコード生成ツールで、型安全なデータアクセスAPIを提供します。</p>
+<h3 id="11-gen">1.1 Genの特徴<a class="headerlink" href="#11-gen" title="Permanent link">&para;</a></h3>
+<p>Genは以下の特徴を持っています：</p>
+<ol>
+<li><strong>型安全なAPI</strong>: <code>interface{}</code>を使わない100%型安全なデータアクセスAPIを提供します。</li>
+<li><strong>動的なSQLからの使いやすく再利用可能なAPI</strong>: SQLをGoの文法で扱えるようにします。</li>
+<li><strong>データベースからの自動生成</strong>: データベーススキーマからGORMの規約に従ったコードを自動生成します。</li>
+<li><strong>GORMの機能をすべてサポート</strong>: GORMの下で動作するため、GORMのすべての機能、プラグイン、サポートするDBMSを利用できます。</li>
+</ol>
+<h3 id="12-ormgen">1.2 ORMからGenへの移行理由<a class="headerlink" href="#12-ormgen" title="Permanent link">&para;</a></h3>
+<p>従来のORMマッパーでは、以下のような課題がありました：</p>
+<ol>
+<li><strong>SQLとGoの混在</strong>: 複雑なクエリを書く際に、GoのコードとSQL文字列が混在し、コンテキストスイッチのコストが発生していました。</li>
+<li><strong>型安全性の欠如</strong>: SQL文字列を使用する場合、型安全性が失われる場合がありました。</li>
+<li><strong>カラム名の手動入力</strong>: テーブルのカラム名を手動で入力する必要があり、ミスの原因となっていました。</li>
+</ol>
+<p>Genを使用することで、これらの課題を解決し、より保守性の高いコードを実現できます。</p>
+<h2 id="2-gen">2. Genの実装<a class="headerlink" href="#2-gen" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 モデル生成の設定<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<p>Genを使用するには、まずモデル生成のための設定を行います。以下は、<code>generate_models.go</code>ファイルの例です：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/infrastructure/db/postgres&quot;</span>
+<span class="w">    </span><span class="s">&quot;gorm.io/gen&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">g</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">gen</span><span class="p">.</span><span class="nx">NewGenerator</span><span class="p">(</span><span class="nx">gen</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">OutPath</span><span class="p">:</span><span class="w">           </span><span class="s">&quot;./internal/infrastructure/db/postgres/gen/query&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// 出力パス</span>
+<span class="w">        </span><span class="nx">Mode</span><span class="p">:</span><span class="w">              </span><span class="nx">gen</span><span class="p">.</span><span class="nx">WithoutContext</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">gen</span><span class="p">.</span><span class="nx">WithDefaultQuery</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">gen</span><span class="p">.</span><span class="nx">WithQueryInterface</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">FieldWithIndexTag</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">FieldWithTypeTag</span><span class="p">:</span><span class="w">  </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">FieldNullable</span><span class="p">:</span><span class="w">     </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="p">})</span>
+
+<span class="w">    </span><span class="c1">// データベース接続の取得</span>
+<span class="w">    </span><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">postgres</span><span class="p">.</span><span class="nx">NewConnection</span><span class="p">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">g</span><span class="p">.</span><span class="nx">UseDB</span><span class="p">(</span><span class="nx">db</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// すべてのテーブルを生成</span>
+<span class="w">    </span><span class="nx">all</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">GenerateAllTable</span><span class="p">()</span>
+
+<span class="w">    </span><span class="nx">g</span><span class="p">.</span><span class="nx">ApplyBasic</span><span class="p">(</span><span class="nx">all</span><span class="o">...</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// コードの生成</span>
+<span class="w">    </span><span class="nx">g</span><span class="p">.</span><span class="nx">Execute</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>このスクリプトを実行すると、データベーススキーマから以下のファイルが生成されます：</p>
+<ol>
+<li><strong>モデルファイル</strong>: <code>gen/model/</code>ディレクトリに、各テーブルに対応するGoの構造体が生成されます。</li>
+<li><strong>クエリファイル</strong>: <code>gen/query/</code>ディレクトリに、各テーブルに対する型安全なクエリAPIが生成されます。</li>
+</ol>
+<h3 id="22">2.2 生成されるモデルファイル<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<p>生成されるモデルファイルは、データベーステーブルの構造を反映したGoの構造体です。以下は、<code>Product</code>モデルの例です：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Code generated by gorm.io/gen. DO NOT EDIT.</span>
+
+<span class="kn">package</span><span class="w"> </span><span class="nx">model</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;time&quot;</span>
+
+<span class="w">    </span><span class="s">&quot;github.com/google/uuid&quot;</span>
+<span class="w">    </span><span class="s">&quot;gorm.io/gorm&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">TableNameProduct</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;products&quot;</span>
+
+<span class="c1">// Product mapped from table &lt;products&gt;</span>
+<span class="kd">type</span><span class="w"> </span><span class="nx">Product</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Id</span><span class="w">        </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">UUID</span><span class="w">      </span><span class="s">`gorm:&quot;column:id;type:uuid;primaryKey&quot; json:&quot;id&quot;`</span>
+<span class="w">    </span><span class="nx">Name</span><span class="w">      </span><span class="kt">string</span><span class="w">         </span><span class="s">`gorm:&quot;column:name;type:varchar(255);not null&quot; json:&quot;name&quot;`</span>
+<span class="w">    </span><span class="nx">Price</span><span class="w">     </span><span class="kt">float64</span><span class="w">        </span><span class="s">`gorm:&quot;column:price;type:float;not null&quot; json:&quot;price&quot;`</span>
+<span class="w">    </span><span class="nx">SellerId</span><span class="w">  </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">UUID</span><span class="w">      </span><span class="s">`gorm:&quot;column:seller_id;type:uuid;index&quot; json:&quot;seller_id&quot;`</span>
+<span class="w">    </span><span class="nx">Seller</span><span class="w">    </span><span class="nx">Seller</span><span class="w">         </span><span class="s">`gorm:&quot;foreignKey:SellerId&quot; json:&quot;seller&quot;`</span>
+<span class="w">    </span><span class="nx">CreatedAt</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w">      </span><span class="s">`gorm:&quot;column:created_at;type:timestamp;not null&quot; json:&quot;created_at&quot;`</span>
+<span class="w">    </span><span class="nx">UpdatedAt</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w">      </span><span class="s">`gorm:&quot;column:updated_at;type:timestamp;not null&quot; json:&quot;updated_at&quot;`</span>
+<span class="w">    </span><span class="nx">DeletedAt</span><span class="w"> </span><span class="nx">gorm</span><span class="p">.</span><span class="nx">DeletedAt</span><span class="w"> </span><span class="s">`gorm:&quot;column:deleted_at;type:timestamp&quot; json:&quot;deleted_at&quot;`</span>
+<span class="p">}</span>
+
+<span class="c1">// TableName Product&#39;s table name</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">Product</span><span class="p">)</span><span class="w"> </span><span class="nx">TableName</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">TableNameProduct</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="23">2.3 生成されるクエリファイル<a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
+<p>生成されるクエリファイルは、型安全なデータアクセスAPIを提供します。以下は、<code>Product</code>テーブルに対するクエリAPIの一部です：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Code generated by gorm.io/gen. DO NOT EDIT.</span>
+
+<span class="kn">package</span><span class="w"> </span><span class="nx">query</span>
+
+<span class="c1">// ...</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">productDo</span><span class="w"> </span><span class="kd">struct</span><span class="p">{</span><span class="w"> </span><span class="nx">gen</span><span class="p">.</span><span class="nx">DO</span><span class="w"> </span><span class="p">}</span>
+
+<span class="c1">// Create creates new product records</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">productDo</span><span class="p">)</span><span class="w"> </span><span class="nx">Create</span><span class="p">(</span><span class="nx">values</span><span class="w"> </span><span class="o">...*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Product</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">values</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">DO</span><span class="p">.</span><span class="nx">Create</span><span class="p">(</span><span class="nx">values</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// First finds the first product record</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">productDo</span><span class="p">)</span><span class="w"> </span><span class="nx">First</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Product</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">DO</span><span class="p">.</span><span class="nx">First</span><span class="p">();</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="p">.(</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Product</span><span class="p">),</span><span class="w"> </span><span class="kc">nil</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Find finds product records</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">productDo</span><span class="p">)</span><span class="w"> </span><span class="nx">Find</span><span class="p">()</span><span class="w"> </span><span class="p">([]</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Product</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">DO</span><span class="p">.</span><span class="nx">Find</span><span class="p">()</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="p">.([]</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Product</span><span class="p">),</span><span class="w"> </span><span class="nx">err</span>
+<span class="p">}</span>
+
+<span class="c1">// Where adds conditions to query</span>
+<span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">productDo</span><span class="p">)</span><span class="w"> </span><span class="nx">Where</span><span class="p">(</span><span class="nx">conds</span><span class="w"> </span><span class="o">...</span><span class="nx">gen</span><span class="p">.</span><span class="nx">Condition</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">productDo</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">withDO</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">DO</span><span class="p">.</span><span class="nx">Where</span><span class="p">(</span><span class="nx">conds</span><span class="o">...</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="c1">// ...</span>
+</code></pre></div>
+<h2 id="3-gen">3. Genの使い方<a class="headerlink" href="#3-gen" title="Permanent link">&para;</a></h2>
+<h3 id="31">3.1 基本的な使い方<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<p>Genを使用するには、まず生成されたクエリAPIをインポートし、データベース接続を渡してクエリオブジェクトを初期化します：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;context&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/infrastructure/db/postgres&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/infrastructure/db/postgres/gen/model&quot;</span>
+<span class="w">    </span><span class="s">&quot;github.com/sklinkert/go-ddd/internal/infrastructure/db/postgres/gen/query&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// データベース接続の取得</span>
+<span class="w">    </span><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">postgres</span><span class="p">.</span><span class="nx">NewConnection</span><span class="p">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// クエリオブジェクトの初期化</span>
+<span class="w">    </span><span class="nx">q</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">query</span><span class="p">.</span><span class="nx">Use</span><span class="p">(</span><span class="nx">db</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">productQuery</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">q</span><span class="p">.</span><span class="nx">Product</span>
+<span class="w">    </span><span class="nx">sellerQuery</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">q</span><span class="p">.</span><span class="nx">Seller</span>
+
+<span class="w">    </span><span class="nx">ctx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1">// 以下、クエリの実行</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="32">3.2 データの作成<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// 新しい商品の作成</span>
+<span class="nx">product</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">model</span><span class="p">.</span><span class="nx">Product</span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Name</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;テスト商品&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">Price</span><span class="p">:</span><span class="w">    </span><span class="mf">9.99</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">SellerId</span><span class="p">:</span><span class="w"> </span><span class="nx">sellerId</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">q</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">tx</span><span class="w"> </span><span class="o">*</span><span class="nx">query</span><span class="p">.</span><span class="nx">Query</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">tx</span><span class="p">.</span><span class="nx">Product</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span><span class="nx">Create</span><span class="p">(</span><span class="nx">product</span><span class="p">)</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="33">3.3 データの取得<a class="headerlink" href="#33" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// IDによる商品の取得</span>
+<span class="nx">product</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span><span class="nx">Where</span><span class="p">(</span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">Id</span><span class="p">.</span><span class="nx">Eq</span><span class="p">(</span><span class="nx">productId</span><span class="p">)).</span><span class="nx">First</span><span class="p">()</span>
+
+<span class="c1">// 全商品の取得</span>
+<span class="nx">products</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span><span class="nx">Find</span><span class="p">()</span>
+
+<span class="c1">// 条件付き検索</span>
+<span class="nx">products</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span>
+<span class="w">    </span><span class="nx">Where</span><span class="p">(</span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">Price</span><span class="p">.</span><span class="nx">Gt</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)).</span>
+<span class="w">    </span><span class="nx">Order</span><span class="p">(</span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="p">.</span><span class="nx">Desc</span><span class="p">()).</span>
+<span class="w">    </span><span class="nx">Find</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="34">3.4 データの更新<a class="headerlink" href="#34" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// 商品の更新</span>
+<span class="nx">product</span><span class="p">.</span><span class="nx">Price</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">19.99</span>
+<span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span><span class="nx">Save</span><span class="p">(</span><span class="nx">product</span><span class="p">)</span>
+
+<span class="c1">// または特定のフィールドのみ更新</span>
+<span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span>
+<span class="w">    </span><span class="nx">Where</span><span class="p">(</span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">Id</span><span class="p">.</span><span class="nx">Eq</span><span class="p">(</span><span class="nx">productId</span><span class="p">)).</span>
+<span class="w">    </span><span class="nx">UpdateSimple</span><span class="p">(</span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">Price</span><span class="p">.</span><span class="nx">Value</span><span class="p">(</span><span class="mf">19.99</span><span class="p">))</span>
+</code></pre></div>
+<h3 id="35">3.5 データの削除<a class="headerlink" href="#35" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// 商品の削除</span>
+<span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span><span class="nx">Where</span><span class="p">(</span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">Id</span><span class="p">.</span><span class="nx">Eq</span><span class="p">(</span><span class="nx">productId</span><span class="p">)).</span><span class="nx">Delete</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="36">3.6 リレーションを使用したクエリ<a class="headerlink" href="#36" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// 出品者とその商品を取得</span>
+<span class="nx">seller</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">sellerQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span>
+<span class="w">    </span><span class="nx">Where</span><span class="p">(</span><span class="nx">sellerQuery</span><span class="p">.</span><span class="nx">Id</span><span class="p">.</span><span class="nx">Eq</span><span class="p">(</span><span class="nx">sellerId</span><span class="p">)).</span>
+<span class="w">    </span><span class="nx">Preload</span><span class="p">(</span><span class="nx">sellerQuery</span><span class="p">.</span><span class="nx">Products</span><span class="p">).</span>
+<span class="w">    </span><span class="nx">First</span><span class="p">()</span>
+
+<span class="c1">// 商品と出品者を結合して取得</span>
+<span class="nx">products</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span>
+<span class="w">    </span><span class="nx">Join</span><span class="p">(</span><span class="nx">sellerQuery</span><span class="p">,</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">SellerId</span><span class="p">.</span><span class="nx">EqCol</span><span class="p">(</span><span class="nx">sellerQuery</span><span class="p">.</span><span class="nx">Id</span><span class="p">)).</span>
+<span class="w">    </span><span class="nx">Where</span><span class="p">(</span><span class="nx">sellerQuery</span><span class="p">.</span><span class="nx">Name</span><span class="p">.</span><span class="nx">Eq</span><span class="p">(</span><span class="s">&quot;テスト出品者&quot;</span><span class="p">)).</span>
+<span class="w">    </span><span class="nx">Find</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="37">3.7 トランザクション<a class="headerlink" href="#37" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">q</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">tx</span><span class="w"> </span><span class="o">*</span><span class="nx">query</span><span class="p">.</span><span class="nx">Query</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// トランザクション内の処理</span>
+<span class="w">    </span><span class="nx">product</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">model</span><span class="p">.</span><span class="nx">Product</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">Name</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;トランザクションテスト&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Price</span><span class="p">:</span><span class="w">    </span><span class="mf">9.99</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">SellerId</span><span class="p">:</span><span class="w"> </span><span class="nx">sellerId</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">tx</span><span class="p">.</span><span class="nx">Product</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span><span class="nx">Create</span><span class="p">(</span><span class="nx">product</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 他の処理...</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">})</span>
+</code></pre></div>
+<h2 id="4-ormgen">4. ORMとGenの比較<a class="headerlink" href="#4-ormgen" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 基本的なクエリの比較<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<h4 id="411">4.1.1 データの取得<a class="headerlink" href="#411" title="Permanent link">&para;</a></h4>
+<p><strong>ORM（GORM）</strong>:
+<div class="highlight"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">product</span><span class="w"> </span><span class="nx">Product</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">Where</span><span class="p">(</span><span class="s">&quot;id = ?&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">productId</span><span class="p">).</span><span class="nx">First</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">product</span><span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Gen</strong>:
+<div class="highlight"><pre><span></span><code><span class="nx">product</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span><span class="nx">Where</span><span class="p">(</span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">Id</span><span class="p">.</span><span class="nx">Eq</span><span class="p">(</span><span class="nx">productId</span><span class="p">)).</span><span class="nx">First</span><span class="p">()</span>
+</code></pre></div></p>
+<h4 id="412">4.1.2 条件付き検索<a class="headerlink" href="#412" title="Permanent link">&para;</a></h4>
+<p><strong>ORM（GORM）</strong>:
+<div class="highlight"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">products</span><span class="w"> </span><span class="p">[]</span><span class="nx">Product</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">Where</span><span class="p">(</span><span class="s">&quot;price &gt; ?&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">).</span><span class="nx">Order</span><span class="p">(</span><span class="s">&quot;created_at DESC&quot;</span><span class="p">).</span><span class="nx">Find</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">products</span><span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Gen</strong>:
+<div class="highlight"><pre><span></span><code><span class="nx">products</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span>
+<span class="w">    </span><span class="nx">Where</span><span class="p">(</span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">Price</span><span class="p">.</span><span class="nx">Gt</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)).</span>
+<span class="w">    </span><span class="nx">Order</span><span class="p">(</span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="p">.</span><span class="nx">Desc</span><span class="p">()).</span>
+<span class="w">    </span><span class="nx">Find</span><span class="p">()</span>
+</code></pre></div></p>
+<h4 id="413">4.1.3 結合クエリ<a class="headerlink" href="#413" title="Permanent link">&para;</a></h4>
+<p><strong>ORM（GORM）</strong>:
+<div class="highlight"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">products</span><span class="w"> </span><span class="p">[]</span><span class="nx">Product</span>
+<span class="nx">db</span><span class="p">.</span><span class="nx">Joins</span><span class="p">(</span><span class="s">&quot;JOIN sellers ON sellers.id = products.seller_id&quot;</span><span class="p">).</span>
+<span class="w">    </span><span class="nx">Where</span><span class="p">(</span><span class="s">&quot;sellers.name = ?&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;テスト出品者&quot;</span><span class="p">).</span>
+<span class="w">    </span><span class="nx">Find</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">products</span><span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Gen</strong>:
+<div class="highlight"><pre><span></span><code><span class="nx">products</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">).</span>
+<span class="w">    </span><span class="nx">Join</span><span class="p">(</span><span class="nx">sellerQuery</span><span class="p">,</span><span class="w"> </span><span class="nx">productQuery</span><span class="p">.</span><span class="nx">SellerId</span><span class="p">.</span><span class="nx">EqCol</span><span class="p">(</span><span class="nx">sellerQuery</span><span class="p">.</span><span class="nx">Id</span><span class="p">)).</span>
+<span class="w">    </span><span class="nx">Where</span><span class="p">(</span><span class="nx">sellerQuery</span><span class="p">.</span><span class="nx">Name</span><span class="p">.</span><span class="nx">Eq</span><span class="p">(</span><span class="s">&quot;テスト出品者&quot;</span><span class="p">)).</span>
+<span class="w">    </span><span class="nx">Find</span><span class="p">()</span>
+</code></pre></div></p>
+<h3 id="42-gen">4.2 Genの利点<a class="headerlink" href="#42-gen" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>型安全性</strong>: カラム名やテーブル名が型として表現されるため、タイプミスによるエラーを防ぐことができます。</li>
+<li><strong>コード補完</strong>: IDEのコード補完機能を活用できるため、開発効率が向上します。</li>
+<li><strong>リファクタリングのしやすさ</strong>: カラム名が変更された場合、コンパイル時にエラーが検出されるため、安全にリファクタリングできます。</li>
+<li><strong>SQLの知識が少なくても使える</strong>: SQLの文法を覚える必要がなく、Goの文法だけで複雑なクエリを構築できます。</li>
+<li><strong>自動生成</strong>: データベーススキーマからコードが自動生成されるため、モデルとデータベースの同期が容易です。</li>
+</ol>
+<h2 id="5">5. まとめ<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<p>GORMのGenを使用することで、型安全で保守性の高いデータアクセスコードを実現できます。従来のORMマッパーと比較して、以下のような利点があります：</p>
+<ol>
+<li><strong>型安全性の向上</strong>: カラム名やテーブル名が型として表現されるため、タイプミスによるエラーを防ぐことができます。</li>
+<li><strong>開発効率の向上</strong>: IDEのコード補完機能を活用できるため、開発効率が向上します。</li>
+<li><strong>コードの可読性向上</strong>: SQLの文字列とGoのコードが混在せず、一貫したGoの文法でクエリを記述できます。</li>
+<li><strong>保守性の向上</strong>: データベーススキーマの変更があった場合、コードを再生成するだけで対応できます。</li>
+</ol>
+<p>Genは、GORMの上に構築された強力なツールであり、GORMのすべての機能を利用しながら、より型安全で使いやすいAPIを提供します。特に大規模なプロジェクトや、複雑なクエリを多用するプロジェクトでは、Genの導入を検討する価値があります。</p>
+<h2 id="6">6. 参考リンク<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://gorm.io/gen/">GORM Gen 公式ドキュメント</a></li>
+<li><a href="https://gorm.io/">GORM 公式ドキュメント</a></li>
+<li><a href="https://github.com/sklinkert/go-ddd/tree/main/internal/infrastructure/db/postgres/gen">Go-DDD プロジェクトのGen実装例</a></li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/yourusername/go-ddd" target="_blank" rel="noopener" title="GitHub Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+        <script src="../wiki/assets/js/extra.js"></script>
+      
+    
+  </body>
+</html>
