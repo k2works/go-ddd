@@ -66,6 +66,7 @@ nav:
     - System: system_implementation.md
     - Product: product_implementation.md
     - Seller: seller_implementation.md
+    - Frontend: frontend_implementation.md
     - Modules Explanation: modules_explanation.md
     - ORM Mapper: orm_mapper_implementation.md
     - Gen Implementation: gen_implementation.md
