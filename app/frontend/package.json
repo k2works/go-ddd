@@ -1,0 +1,37 @@
+{
+  "name": "marketplace-frontend",
+  "version": "1.0.0",
+  "description": "Electron client application for Marketplace API",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run dev:webpack\" \"npm run dev:electron\"",
+    "dev:webpack": "webpack --config webpack.config.js --watch",
+    "dev:electron": "wait-on dist/main.js && electron .",
+    "build": "webpack --config webpack.config.js",
+    "generate-api": "openapi-generator-cli generate -i ../backend/docs/swagger.json -g typescript-axios -o src/api"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.7.0",
+    "@types/electron": "^1.6.10",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "concurrently": "^8.2.2",
+    "css-loader": "^6.8.1",
+    "electron": "^27.1.0",
+    "html-webpack-plugin": "^5.5.3",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.2.2",
+    "wait-on": "^7.2.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
