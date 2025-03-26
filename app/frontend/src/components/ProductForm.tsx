@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ProductsApi, Configuration } from '../api';
+import { useAuth } from '../contexts/AuthContext';
+import { getToken } from '../utils/auth';
 
 interface ProductFormData {
   name: string;
@@ -9,6 +11,7 @@ interface ProductFormData {
 }
 
 const ProductForm: React.FC = () => {
+  const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',
     description: '',
@@ -34,8 +37,15 @@ const ProductForm: React.FC = () => {
     setSuccess(false);
 
     try {
+      // Get authentication token
+      const token = getToken();
+      if (!token) {
+        throw new Error('Authentication required to create products');
+      }
+
       const configuration = new Configuration({
         basePath: 'http://localhost:9090/api/v1',
+        accessToken: token
       });
       const api = new ProductsApi(configuration);
 
