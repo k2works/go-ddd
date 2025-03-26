@@ -34,3 +34,7 @@ ops/docker/mssql/data
 app/backend/cmd/marketplace/marketplace
 
 vendor
+.junie
+
+docs/wiki
+docs/wiki-sms
