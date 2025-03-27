@@ -78,9 +78,11 @@ nav:
     - Testcontainer: testcontainer_implementation.md
     - Swagger: swagger_implementation.md
     - Echo JWT Authentication: authentication_implementation.md
+    - DB Schema: wiki/database_structure.md
   - Setup:
     - Setup Guide: setup_guide.md
     - Setup Guide (Mermaid): setup_guide_mermaid.md
+    - Database Setup: wiki/database_setup.md
   - Documentation:
     - Documentation Summary: documentation_summary.md
     - Revision Summary: revision_summary.md
