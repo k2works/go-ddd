@@ -12,6 +12,7 @@ interface AuthContextType {
   register: (email: string, password: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
+  token: string | null;
 }
 
 // Create the context with a default value
@@ -23,6 +24,7 @@ const AuthContext = createContext<AuthContextType>({
   register: async () => {},
   logout: () => {},
   isAuthenticated: false,
+  token: null,
 });
 
 // Custom hook to use the auth context
@@ -38,6 +40,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [token, setAuthToken] = useState<string | null>(null);
 
   // Initialize API client
   const configuration = new Configuration({
@@ -48,15 +51,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Check if user is already logged in on mount
   useEffect(() => {
     const initAuth = async () => {
-      const token = getToken();
-      if (token) {
+      const storedToken = getToken();
+      if (storedToken) {
         try {
-          const response = await authApi.getProfile(token);
+          setAuthToken(storedToken);
+          const response = await authApi.getProfile(storedToken);
           setUser(response.data.user);
           setIsAuthenticated(true);
         } catch (error) {
           console.error('Failed to get user profile:', error);
           removeToken();
+          setAuthToken(null);
         }
       }
       setLoading(false);
@@ -73,6 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await authApi.login({ email, password });
       const { user, token } = response.data;
       setToken(token);
+      setAuthToken(token);
       setUser(user);
       setIsAuthenticated(true);
     } catch (error) {
@@ -92,6 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await authApi.register({ email, password });
       const { user, token } = response.data;
       setToken(token);
+      setAuthToken(token);
       setUser(user);
       setIsAuthenticated(true);
     } catch (error) {
@@ -106,6 +113,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Logout function
   const logout = () => {
     removeToken();
+    setAuthToken(null);
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -119,6 +127,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     logout,
     isAuthenticated,
+    token,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
