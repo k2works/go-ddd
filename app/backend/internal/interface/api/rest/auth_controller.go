@@ -38,17 +38,18 @@ func NewAuthController(e *echo.Echo, userService *services.UserService, jwtConfi
 }
 
 // Register @Summary Register a new user
-// @Description Register a new user with email and password
+// @Description Register a new user with username, email and password
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param request body object{email=string,password=string} true "Registration details"
-// @Success 201 {object} object{user=object{id=string,email=string},token=string}
+// @Param request body object{username=string,email=string,password=string} true "Registration details"
+// @Success 201 {object} object{user=object{id=string,username=string,email=string,role=string,status=string},token=string}
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /register [post]
 func (c *AuthController) Register(ctx echo.Context) error {
 	var req struct {
+		Username string `json:"username"`
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
@@ -58,12 +59,12 @@ func (c *AuthController) Register(ctx echo.Context) error {
 	}
 
 	// Validate input
-	if req.Email == "" || req.Password == "" {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Email and password are required"})
+	if req.Username == "" || req.Email == "" || req.Password == "" {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Username, email, and password are required"})
 	}
 
 	// Register user
-	user, err := c.userService.RegisterUser(req.Email, req.Password)
+	user, err := c.userService.RegisterUser(req.Username, req.Email, req.Password)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
@@ -76,8 +77,11 @@ func (c *AuthController) Register(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusCreated, map[string]interface{}{
 		"user": map[string]string{
-			"id":    user.ID,
-			"email": user.Email,
+			"id":       user.ID,
+			"username": user.Username,
+			"email":    user.Email,
+			"role":     string(user.Role),
+			"status":   string(user.Status),
 		},
 		"token": token,
 	})
@@ -89,7 +93,7 @@ func (c *AuthController) Register(ctx echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param request body object{email=string,password=string} true "Login credentials"
-// @Success 200 {object} object{user=object{id=string,email=string},token=string}
+// @Success 200 {object} object{user=object{id=string,username=string,email=string,role=string,status=string},token=string}
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Failure 500 {object} map[string]string
@@ -118,8 +122,11 @@ func (c *AuthController) Login(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"user": map[string]string{
-			"id":    user.ID,
-			"email": user.Email,
+			"id":       user.ID,
+			"username": user.Username,
+			"email":    user.Email,
+			"role":     string(user.Role),
+			"status":   string(user.Status),
 		},
 		"token": token,
 	})
@@ -131,7 +138,7 @@ func (c *AuthController) Login(ctx echo.Context) error {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Success 200 {object} object{user=object{id=string,email=string}}
+// @Success 200 {object} object{user=object{id=string,username=string,email=string,role=string,status=string}}
 // @Failure 401 {object} map[string]string
 // @Failure 404 {object} map[string]string
 // @Failure 500 {object} map[string]string
@@ -151,8 +158,11 @@ func (c *AuthController) GetProfile(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"user": map[string]string{
-			"id":    userEntity.ID,
-			"email": userEntity.Email,
+			"id":       userEntity.ID,
+			"username": userEntity.Username,
+			"email":    userEntity.Email,
+			"role":     string(userEntity.Role),
+			"status":   string(userEntity.Status),
 		},
 	})
 }

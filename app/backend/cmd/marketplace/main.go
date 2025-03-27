@@ -57,6 +57,7 @@ func main() {
 	rest.NewProductController(e, productService)
 	rest.NewSellerController(e, sellerService)
 	rest.NewAuthController(e, userService, jwtConfig)
+	rest.NewUserController(e, userService)
 
 	if err := e.Start(port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
